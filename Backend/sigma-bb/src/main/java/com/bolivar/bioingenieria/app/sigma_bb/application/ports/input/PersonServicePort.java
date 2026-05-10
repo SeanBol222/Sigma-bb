@@ -1,0 +1,14 @@
+package com.bolivar.bioingenieria.app.sigma_bb.application.ports.input;
+
+import com.bolivar.bioingenieria.app.sigma_bb.domain.model.Person;
+
+import java.util.List;
+import java.util.UUID;
+
+public interface PersonServicePort {
+    Person findById(UUID id);
+    List<Person> findAll();
+    Person save(Person person);
+    Person update(UUID id, Person person);
+    void delete(UUID id);
+}
