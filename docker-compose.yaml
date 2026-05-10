@@ -3,9 +3,9 @@ services:
     container_name: postgres17
     image: postgres:17-alpine
     environment:
+      POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_ROOT_USER}
       POSTGRES_PASSWORD: ${POSTGRES_ROOT_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
     ports:
       - "${POSTGRES_HOST_PORT}:${POSTGRES_PORT}"
     volumes:
@@ -52,7 +52,7 @@ services:
       PORT: ${SIGMA_PORT}
       POSTGRES_HOST: ${POSTGRES_HOST}
       POSTGRES_PORT: ${POSTGRES_PORT}
-      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_DB: ${POSTGRES_DB:-sigma_db}
       POSTGRES_ROOT_USER: ${POSTGRES_ROOT_USER}
       POSTGRES_ROOT_PASSWORD: ${POSTGRES_ROOT_PASSWORD}
     networks:

@@ -1,6 +1,7 @@
 package com.bolivar.bioingenieria.app.sigma_bb.infrastructure.adapters.output.persistence.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -21,26 +22,26 @@ public class PersonEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private UUID k_identificador;
 
-    @NotNull
+    @NotBlank
     @Column(name = "k_cedula", nullable = false, unique = true)
-    private int k_cedula;
+    private String k_cedula;
 
-    @NotNull
+    @NotBlank
     @Column(name = "n_primer_nombre", nullable = false)
     private String n_primer_nombre;
 
     @Column(name = "n_segundo_nombre")
     private String n_segundo_nombre;
 
-    @NotNull
+    @NotBlank
     @Column(name = "n_primer_apellido", nullable = false)
     private String n_primer_apellido;
 
-    @NotNull
+    @NotBlank
     @Column(name = "n_segundo_apellido", nullable = false)
     private String n_segundo_apellido;
 
-    @NotNull
+    @NotBlank
     @Column(name = "t_tipo_persona", nullable = false)
     private String t_tipo_persona;
 

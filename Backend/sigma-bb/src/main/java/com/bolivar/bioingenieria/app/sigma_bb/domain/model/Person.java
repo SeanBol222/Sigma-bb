@@ -12,7 +12,7 @@ import java.util.UUID;
 public class Person {
 
     private UUID k_identificador;
-    private int k_cedula;
+    private String k_cedula;
     private String n_primer_nombre;
     private String n_segundo_nombre;
     private String n_primer_apellido;

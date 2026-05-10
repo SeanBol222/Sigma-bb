@@ -4,6 +4,7 @@
 /*  DBMS       : PostgreSQL 						*/
 /* ---------------------------------------------------- */
 
+
 /* Drop Tables */
 
 DROP TABLE IF EXISTS area_servicio CASCADE
