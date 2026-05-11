@@ -2,23 +2,17 @@ spring:
   application:
     name: sigma-bb
   profiles:
-    active: ${SPRING_PROFILE:default}
+    active: ${SPRING_PROFILE:h2}
 
-  Jackson:
+  jackson:
     default-property-inclusion: non_null
     property-naming-strategy: SNAKE_CASE
 
   datasource:
-    url: jdbc:postgresql://${POSTGRES_HOST:postgres17}:${POSTGRES_PORT:5432}/${POSTGRES_DB:sigma_db}
-    username: ${POSTGRES_ROOT_USER:postgres}
-    password: ${POSTGRES_ROOT_PASSWORD:password}
-    driver-class-name: org.postgresql.Driver
-    hikari:
-      maximum-pool-size: 10
-      minimum-idle: 5
-      connection-timeout: 30000
-      idle-timeout: 600000
-      max-lifetime: 1800000
+    url: jdbc:h2:mem:sigma_db;DB_CLOSE_DELAY=-1;MODE=PostgreSQL
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: ""
 
   jpa:
     show-sql: true
@@ -26,11 +20,14 @@ spring:
       ddl-auto: update
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.PostgreSQLDialect
+        dialect: org.hibernate.dialect.H2Dialect
+
+  h2:
+    console:
+      enabled: true
 
 logging:
   level:
     org:
       hibernate:
         SQL: debug
-

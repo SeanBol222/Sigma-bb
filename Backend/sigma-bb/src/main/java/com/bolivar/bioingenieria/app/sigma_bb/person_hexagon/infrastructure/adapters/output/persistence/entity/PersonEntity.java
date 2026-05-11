@@ -19,7 +19,7 @@ import java.util.UUID;
 public class PersonEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID k_identificador;
 
     @NotBlank
