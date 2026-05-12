@@ -10,7 +10,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class PersonCreateRequest {
+public class PersonUpdateRequest {
 
     @NotEmpty(message = "La cédula es obligatoria")
     private String cedula;
@@ -29,9 +29,5 @@ public class PersonCreateRequest {
     private String tipoPersona;
 
     private String segundoTipoPersona;
-
-    private List<PhonePersonCreateRequest> phonePersonList;
-
-    private List<EmailPersonCreateRequest> emailPersonList;
 
 }

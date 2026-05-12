@@ -2,6 +2,7 @@ package com.bolivar.bioingenieria.app.sigma_bb.person_hexagon.domain.model;
 
 import lombok.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @Builder
@@ -9,14 +10,19 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class Person {
 
-    private UUID k_identificador;
-    private String k_cedula;
-    private String n_primer_nombre;
-    private String n_segundo_nombre;
-    private String n_primer_apellido;
-    private String n_segundo_apellido;
-    private String t_tipo_persona;
-    private String t_segundo_tipo_persona;
+    private UUID identificador;
+    private String cedula;
+    private String primerNombre;
+    private String segundoNombre;
+    private String primerApellido;
+    private String segundoApellido;
+    private String tipoPersona;
+    private String segundoTipoPersona;
+    private List<EmailPerson> emailPersonList;
+    private List<PhonePerson> phonePersonList;
+
+
 }
