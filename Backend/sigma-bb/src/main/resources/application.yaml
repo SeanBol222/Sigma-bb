@@ -14,14 +14,13 @@ spring:
     hibernate:
       ddl-auto: validate
 
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          issuer-uri: http://keycloak:8080/realms/employee-realm
+#  security:
+#    oauth2:
+#      resourceserver:
+#        jwt:
+#          issuer-uri: http://keycloak:8080/realms/employee-realm
 logging:
   level:
     org:
       hibernate:
         SQL: debug
-

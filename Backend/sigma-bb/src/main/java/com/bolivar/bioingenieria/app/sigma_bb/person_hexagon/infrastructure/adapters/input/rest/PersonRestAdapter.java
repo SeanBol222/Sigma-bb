@@ -11,6 +11,7 @@ import com.bolivar.bioingenieria.app.sigma_bb.person_hexagon.infrastructure.adap
 import com.bolivar.bioingenieria.app.sigma_bb.person_hexagon.infrastructure.adapters.input.rest.model.response.PersonResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -24,6 +25,7 @@ import java.util.UUID;
 @RequestMapping("/person")
 public class PersonRestAdapter {
 
+    @Qualifier("personService")
     private final PersonServicePort personServicePort;
 
     private final PersonRestMapper personRestMapper;

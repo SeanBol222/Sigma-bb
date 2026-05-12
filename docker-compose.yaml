@@ -9,11 +9,17 @@ services:
     ports:
       - "${POSTGRES_HOST_PORT}:${POSTGRES_PORT}"
     volumes:
-      - ./DataBase/data:/var/lib/postgresql/data
+      - data-postgres:/var/lib/postgresql/data
       - ./DataBase/v2/initdb:/docker-entrypoint-initdb.d
     networks:
       - sigma-bb-network
     restart: always
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_ROOT_USER}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   pgadmin:
     container_name: pgAdmin
@@ -85,7 +91,7 @@ services:
       - sigma-bb-network
     depends_on:
       postgres17:
-        condition: service_started
+        condition: service_healthy
       rabbitmq:
         condition: service_started
     restart: always
