@@ -2,6 +2,7 @@ package com.bolivar.bioingenieria.app.sigma_bb.person_hexagon.infrastructure.ada
 
 import com.bolivar.bioingenieria.app.sigma_bb.person_hexagon.domain.exception.PersonNotFoundException;
 import com.bolivar.bioingenieria.app.sigma_bb.person_hexagon.domain.model.ErrorResponse;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
@@ -16,8 +17,8 @@ import java.util.stream.Collectors;
 
 import static com.bolivar.bioingenieria.app.sigma_bb.person_hexagon.utils.ErrorCatalog.*;
 
-@RestControllerAdvice
-public class GlobalControllerAdvice {
+@RestControllerAdvice("personGlobalControllerAdvice")
+public class PersonGlobalControllerAdvice {
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(PersonNotFoundException.class)
@@ -45,16 +46,4 @@ public class GlobalControllerAdvice {
                 .timestamp(LocalDateTime.now())
                 .build();
     }
-
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    @ExceptionHandler(Exception.class)
-    public ErrorResponse handleGenericException(Exception ex) {
-        return ErrorResponse.builder()
-                .code(UNKNOWN_ERROR.getCode())
-                .message(UNKNOWN_ERROR.getMessage())
-                .details(Collections.singletonList(ex.getMessage()))
-                .timestamp(LocalDateTime.now())
-                .build();
-    }
-
 }

@@ -4,33 +4,23 @@ spring:
   profiles:
     active: ${SPRING_PROFILE:default}
 
-  Jackson:
-    default-property-inclusion: non_null
-    property-naming-strategy: SNAKE_CASE
-
   datasource:
     url: jdbc:postgresql://${POSTGRES_HOST:postgres17}:${POSTGRES_PORT:5432}/${POSTGRES_DB:sigma_db}
     username: ${POSTGRES_ROOT_USER:postgres}
     password: ${POSTGRES_ROOT_PASSWORD:password}
     driver-class-name: org.postgresql.Driver
-    hikari:
-      maximum-pool-size: 10
-      minimum-idle: 5
-      connection-timeout: 30000
-      idle-timeout: 600000
-      max-lifetime: 1800000
 
   jpa:
-    show-sql: true
     hibernate:
-      ddl-auto: update
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.PostgreSQLDialect
+      ddl-auto: validate
 
+#  security:
+#    oauth2:
+#      resourceserver:
+#        jwt:
+#          issuer-uri: http://keycloak:8080/realms/employee-realm
 logging:
   level:
     org:
       hibernate:
         SQL: debug
-
