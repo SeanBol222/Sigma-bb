@@ -2,12 +2,12 @@ package com.bolivar.bioingenieria.app.sigma_bb.person_hexagon.infrastructure.ada
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -19,32 +19,38 @@ import java.util.UUID;
 public class PersonEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private UUID k_identificador;
+    @Column(name = "k_identificador", nullable = false, unique = true)
+    private UUID identificador;
 
     @NotBlank
     @Column(name = "k_cedula", nullable = false, unique = true)
-    private String k_cedula;
+    private String cedula;
 
     @NotBlank
     @Column(name = "n_primer_nombre", nullable = false)
-    private String n_primer_nombre;
+    private String primerNombre;
 
     @Column(name = "n_segundo_nombre")
-    private String n_segundo_nombre;
+    private String segundoNombre;
 
     @NotBlank
     @Column(name = "n_primer_apellido", nullable = false)
-    private String n_primer_apellido;
+    private String primerApellido;
 
     @NotBlank
     @Column(name = "n_segundo_apellido", nullable = false)
-    private String n_segundo_apellido;
+    private String segundoApellido;
 
     @NotBlank
     @Column(name = "t_tipo_persona", nullable = false)
-    private String t_tipo_persona;
+    private String tipoPersona;
 
     @Column(name = "t_segundo_tipo_persona")
-    private String t_segundo_tipo_persona;
+    private String segundoTipoPersona;
+
+    @OneToMany(mappedBy = "person", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PhonePersonEntity> phonePersonList;
+
+    @OneToMany(mappedBy = "person", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<EmailPersonEntity> emailPersonList;
 }

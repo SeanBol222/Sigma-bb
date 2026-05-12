@@ -10,7 +10,7 @@ services:
       - "${POSTGRES_HOST_PORT}:${POSTGRES_PORT}"
     volumes:
       - ./DataBase/data:/var/lib/postgresql/data
-      - ./DataBase/initdb:/docker-entrypoint-initdb.d
+      - ./DataBase/v2/initdb:/docker-entrypoint-initdb.d
     networks:
       - sigma-bb-network
     restart: always
@@ -36,6 +36,32 @@ services:
     environment:
       RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER}
       RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
+    networks:
+      - sigma-bb-network
+    restart: always
+
+  keycloak:
+    container_name: keycloak
+    image: quay.io/keycloak/keycloak:26.6.1
+    command: 
+      - start-dev
+    environment:
+      KC_BOOTSTRAP_ADMIN_USERNAME: ${KC_ADMIN_USER}
+      KC_BOOTSTRAP_ADMIN_PASSWORD: ${KC_ADMIN_PASSWORD}
+
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://postgres17:${POSTGRES_PORT}/keycloak
+      KC_DB_USERNAME: ${POSTGRES_ROOT_USER}
+      KC_DB_PASSWORD: ${POSTGRES_ROOT_PASSWORD}
+
+      KC_HOSTNAME_STRICT: false
+      KC_HOSTNAME_STRICT_HTTPS: false
+      KC_HTTP_ENABLED: true
+      
+    ports:
+      - "8180:8080"
+    depends_on:
+      - postgres17
     networks:
       - sigma-bb-network
     restart: always
