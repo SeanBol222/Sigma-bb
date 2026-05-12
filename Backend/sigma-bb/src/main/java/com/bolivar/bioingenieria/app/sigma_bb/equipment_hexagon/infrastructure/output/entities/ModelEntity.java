@@ -25,14 +25,14 @@ public class ModelEntity {
     @Column(name = "k_id_modelo")
     private UUID id;
 
-    @Column(name = "n_invmia", nullable = false)
-    private String name;
+    @Column(name = "n_invima", nullable = false)
+    private String invima;
 
     @Column(name = "k_id_fabricante")
     private UUID manufacturerId;
 
     @Column(name = "k_id_equipo")
-    private String equipmentId;
+    private UUID equipmentId;
 
     @Column(name = "deleted_at", nullable = false)
     private Boolean deleted = false;

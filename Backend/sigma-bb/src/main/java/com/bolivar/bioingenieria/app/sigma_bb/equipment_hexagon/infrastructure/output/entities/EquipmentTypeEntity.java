@@ -46,7 +46,7 @@ public class EquipmentTypeEntity {
     @Column(name = "b_verificable")
     private Boolean verifiable;
 
-    @Column(name = "v_valor_unitario_mantenimiento")
+    @Column(name = "m_valor_unitario_mantenimiento")
     private Long unitMaintenanceValue;
 
     @Column(name = "deleted_at", nullable = false)

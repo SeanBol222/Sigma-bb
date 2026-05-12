@@ -12,8 +12,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ModelRequest {
 
-    @NotBlank(message = "El nombre del modelo es obligatorio")
-    private String name;
+    @NotBlank(message = "El invima del modelo es obligatorio")
+    private String invima;
 
     @NotBlank(message = "El id del fabricante es obligatorio")
     private String manufacturerId;

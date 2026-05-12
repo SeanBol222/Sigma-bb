@@ -14,5 +14,5 @@ import java.util.UUID;
 public class Manufacturer {
     private UUID id;
     private String name;
-    private UUID countryId;
+    private String countryId;
 }

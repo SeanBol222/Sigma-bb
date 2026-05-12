@@ -13,7 +13,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public class Model {
     private UUID id;
-    private String name;
+    private String invima;
     private UUID manufacturerId;
-    private String equipmentId;
+    private UUID equipmentId;
 }

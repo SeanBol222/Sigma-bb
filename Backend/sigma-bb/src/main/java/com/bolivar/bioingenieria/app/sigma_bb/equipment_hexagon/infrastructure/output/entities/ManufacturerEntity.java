@@ -28,7 +28,7 @@ public class ManufacturerEntity {
     private String name;
 
     @Column(name = "k_id_pais")
-    private UUID countryId;
+    private String countryId;
 
     @Column(name = "deleted_at", nullable = false)
     private Boolean deleted = false;
