@@ -15,7 +15,6 @@ public class EquipmentReponse {
     private UUID id;
     private UUID equipmentTypeId;
     private UUID brandId;
-
     private BrandResponse brandResponse;
     private EquipmentTypeResponse equipmentTypeResponse;
 }

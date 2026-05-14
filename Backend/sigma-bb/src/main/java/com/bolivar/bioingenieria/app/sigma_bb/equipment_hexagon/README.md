@@ -20,7 +20,7 @@ equipment_hexagon/
 `-- infrastructure/
     |-- input/
     |   |-- errors/
-    |   |   `-- GlobalHandlerError.java
+    |   |   `-- EquipmentGlobalHandlerError.java
     |   |-- mapper/
     |   |   `-- ManufacturerRestMapper.java
     |   |-- model/
@@ -132,7 +132,7 @@ equipment_hexagon/
   - `List<String> details`
   - `LocalDateTime timestamp`
 
-#### `errors/GlobalHandlerError.java`
+#### `errors/EquipmentGlobalHandlerError.java`
 - Rol: manejador global de excepciones REST (`@RestControllerAdvice`).
 - Manejos actuales:
   - `ManufacturerNotFoundException` -> `404 NOT_FOUND`.

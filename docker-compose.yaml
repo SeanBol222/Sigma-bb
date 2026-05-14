@@ -10,7 +10,7 @@ services:
       - "${POSTGRES_HOST_PORT}:${POSTGRES_PORT}"
     volumes:
       - data-postgres:/var/lib/postgresql/data
-      - ./DataBase/v2/initdb:/docker-entrypoint-initdb.d
+      - ./DataBase/v3/initdb:/docker-entrypoint-initdb.d
     networks:
       - sigma-bb-network
     restart: always

@@ -18,8 +18,8 @@ public interface EquipmentPersistenceMapper {
 
     @Mapping(target = "equipmentTypeId", source = "equipmentType.id")
     @Mapping(target = "brandId", source = "brand.id")
-    @Mapping(target = "equipmentType", source = "equipmentType")
-    @Mapping(target = "brand", source = "brand")
+    @Mapping(target = "equipmentType", source="equipmentType")
+    @Mapping(target = "brand", source="brand")
     Equipment toEquipment(EquipmentEntity equipmentEntity);
 
     @Mapping(target = "equipmentType.id", source = "equipmentTypeId")
@@ -31,6 +31,6 @@ public interface EquipmentPersistenceMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "equipmentType", ignore = true)
     @Mapping(target = "brand", ignore = true)
-    @Mapping(target = "deleted", ignore = true)
+    @Mapping(target = "active", ignore = true)
     void updateEntityFromDomain(Equipment source, @MappingTarget EquipmentEntity target);
 }

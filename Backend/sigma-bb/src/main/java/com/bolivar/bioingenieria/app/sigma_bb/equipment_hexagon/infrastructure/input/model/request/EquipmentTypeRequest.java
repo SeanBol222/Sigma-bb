@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Data
 @Builder
@@ -37,4 +38,6 @@ public class EquipmentTypeRequest {
 
     @NotNull(message = "El valor unitario de mantenimiento es obligatorio")
     private Long unitMaintenanceValue;
+
+    private List<MetrologicalDataRequest> metrologicalData;
 }

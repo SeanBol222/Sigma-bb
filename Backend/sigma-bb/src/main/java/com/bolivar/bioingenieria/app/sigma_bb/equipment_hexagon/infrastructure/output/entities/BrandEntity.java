@@ -15,18 +15,17 @@ import java.util.UUID;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@SQLRestriction("deleted_at = false")
-@SQLDelete(sql = "UPDATE marca SET deleted_at = true WHERE k_id_marca = ?")
+@SQLRestriction("b_estado_activo = true")
+@SQLDelete(sql = "UPDATE marca SET b_estado_activo = false WHERE k_id_marca = ?")
 @Table(name = "marca")
 public class BrandEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "k_id_marca")
     private UUID id;
 
     @Column(name = "n_nombre_marca", nullable = false)
     private String name;
 
-    @Column(name = "deleted_at", nullable = false)
-    private Boolean deleted = false;
+    @Column(name = "b_estado_activo", nullable = false)
+    private Boolean active = true;
 }

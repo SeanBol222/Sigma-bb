@@ -8,7 +8,9 @@ import org.mapstruct.ReportingPolicy;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring", unmappedSourcePolicy = ReportingPolicy.IGNORE)
+@Mapper(componentModel = "spring",
+        unmappedSourcePolicy = ReportingPolicy.IGNORE,
+        uses = {MetrologicalDataRestMapper.class})
 public interface EquipmentTypeRestMapper {
     EquipmentType toEquipmentType(EquipmentTypeRequest equipmentTypeRequest);
     EquipmentTypeResponse toEquipmentTypeResponse(EquipmentType equipmentType);

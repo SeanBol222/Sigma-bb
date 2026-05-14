@@ -19,7 +19,4 @@ public class MetrologicalDataRequest {
 
     @NotBlank(message = "El tipo es obligatorio")
     private String type;
-
-    @NotBlank(message = "El id del tipo de equipo es obligatorio")
-    private String equipmentTypeId;
 }

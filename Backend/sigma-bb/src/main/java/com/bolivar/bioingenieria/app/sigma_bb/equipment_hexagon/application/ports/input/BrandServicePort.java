@@ -1,5 +1,8 @@
 package com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.application.ports.input;
 
+import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.application.services.brand_services.commands.CreateBrandCommand;
+import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.application.services.brand_services.commands.DeleteBrandCommand;
+import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.application.services.brand_services.commands.UpdateBrandCommand;
 import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.domain.Brand;
 
 import java.util.List;
@@ -7,7 +10,7 @@ import java.util.List;
 public interface BrandServicePort {
     List<Brand> findAll();
     Brand findById(String id);
-    Brand save(Brand brand);
-    Brand update(String id, Brand brand);
-    void delete(String id);
+    Brand save(CreateBrandCommand createBrandCommand);
+    Brand update(String id, UpdateBrandCommand updateBrandCommand);
+    void delete(DeleteBrandCommand deleteBrandCommand);
 }

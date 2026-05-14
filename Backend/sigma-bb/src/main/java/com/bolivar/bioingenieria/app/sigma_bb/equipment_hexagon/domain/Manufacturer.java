@@ -1,18 +1,56 @@
 package com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.domain.manufacturer.events.ManufacturerCreatedEvent;
+import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.domain.manufacturer.events.ManufacturerDeletedEvent;
+import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.domain.manufacturer.events.ManufacturerPayload;
+import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.domain.manufacturer.events.ManufacturerUpdatedEvent;
+import com.bolivar.bioingenieria.app.sigma_bb.shared.domain.AggregateRoot;
+import com.bolivar.bioingenieria.app.sigma_bb.shared.domain.EventMetadata;
+import lombok.*;
 
+import java.time.Instant;
 import java.util.UUID;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
-@Builder
 @NoArgsConstructor
-@AllArgsConstructor
-public class Manufacturer {
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Builder(access = AccessLevel.PRIVATE)
+public class Manufacturer extends AggregateRoot {
     private UUID id;
     private String name;
     private String countryId;
+
+    public static Manufacturer create(String name, String countryId) {
+        Manufacturer manufacturer = Manufacturer.builder()
+                .id(UUID.randomUUID())
+                .name(name)
+                .countryId(countryId)
+                .build();
+
+        EventMetadata metadata = new EventMetadata(
+                UUID.randomUUID().toString(), "manufacturer.created", 1, Instant.now(), manufacturer.id.toString());
+
+        manufacturer.registerEvent(new ManufacturerCreatedEvent(metadata,
+                new ManufacturerPayload(manufacturer.name, manufacturer.countryId)));
+        return manufacturer;
+    }
+
+    public void updateManufacturer(String name, String countryId) {
+        this.name = name;
+        this.countryId = countryId;
+
+        EventMetadata metadata = new EventMetadata(
+                UUID.randomUUID().toString(), "manufacturer.updated", 1, Instant.now(), this.id.toString());
+
+        registerEvent(new ManufacturerUpdatedEvent(metadata,
+                new ManufacturerPayload(this.name, this.countryId)));
+    }
+
+    public void deleteManufacturer() {
+        EventMetadata metadata = new EventMetadata(
+                UUID.randomUUID().toString(), "manufacturer.deleted", 1, Instant.now(), this.id.toString());
+
+        registerEvent(new ManufacturerDeletedEvent(metadata, new ManufacturerPayload(this.name, this.countryId)));
+    }
 }

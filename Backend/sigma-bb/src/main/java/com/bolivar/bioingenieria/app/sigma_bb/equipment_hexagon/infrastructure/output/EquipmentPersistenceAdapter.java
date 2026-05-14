@@ -12,67 +12,64 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Component
 public class EquipmentPersistenceAdapter implements EquipmentPersistencePort {
-    private final SpringEquipmentRepository springEquipmentRepository;
-    private final EquipmentPersistenceMapper equipmentPersistenceMapper;
+    private final SpringEquipmentRepository repository;
+    private final EquipmentPersistenceMapper mapper;
+    private final EquipmentTypePersistenceMapper equipmentTypeMapper;
+    private final BrandPersistenceMapper brandMapper;
 
     @Autowired
-    public EquipmentPersistenceAdapter(SpringEquipmentRepository springEquipmentRepository,
-                                       EquipmentPersistenceMapper equipmentPersistenceMapper) {
-        this.springEquipmentRepository = springEquipmentRepository;
-        this.equipmentPersistenceMapper = equipmentPersistenceMapper;
+    public EquipmentPersistenceAdapter(SpringEquipmentRepository repository,
+                                       EquipmentPersistenceMapper mapper,
+                                       EquipmentTypePersistenceMapper equipmentTypeMapper,
+                                       BrandPersistenceMapper brandMapper) {
+        this.repository = repository;
+        this.mapper = mapper;
+        this.equipmentTypeMapper = equipmentTypeMapper;
+        this.brandMapper = brandMapper;
     }
 
     @Override
     public List<Equipment> findAll() {
-        List<EquipmentEntity> entities = springEquipmentRepository.findAll();
-        return entities.stream()
-                .map(this::mapToDomain).toList();
+        return repository.findAll().stream().map(this::mapToDomain).toList();
     }
 
     @Override
-    public Equipment findById(String id) {
-        UUID uuid = UUID.fromString(id);
-        EquipmentEntity entity = springEquipmentRepository.findById(uuid)
-                .orElseThrow(() -> new EquipmentNotFoundException(id));
-        return mapToDomain(entity);
+    public Optional<Equipment> findById(String id) {
+        return repository.findById(UUID.fromString(id)).map(this::mapToDomain);
     }
 
     @Override
     public Equipment save(Equipment equipment) {
-        EquipmentEntity entity = equipmentPersistenceMapper.toEquipmentEntity(equipment);
-        EquipmentEntity saved = springEquipmentRepository.save(entity);
-        EquipmentEntity reloaded = springEquipmentRepository.findById(saved.getId()).orElse(saved);
-        return mapToDomain(reloaded);
+        EquipmentEntity saved = repository.save(mapper.toEquipmentEntity(equipment));
+        return mapToDomain(saved);
     }
 
     @Override
     public Equipment update(String id, Equipment equipment) {
         UUID uuid = UUID.fromString(id);
-        EquipmentEntity existing = springEquipmentRepository.findById(uuid)
+        EquipmentEntity existing = repository.findById(uuid)
                 .orElseThrow(() -> new EquipmentNotFoundException(id));
-
-        equipmentPersistenceMapper.updateEntityFromDomain(equipment, existing);
-
-        EquipmentEntity saved = springEquipmentRepository.save(existing);
-        EquipmentEntity reloaded = springEquipmentRepository.findById(saved.getId()).orElse(saved);
-
-        return mapToDomain(reloaded);
+        mapper.updateEntityFromDomain(equipment, existing);
+        EquipmentEntity saved = repository.save(existing);
+        return mapToDomain(saved);
     }
 
     @Override
     public void delete(String id) {
         UUID uuid = UUID.fromString(id);
-        if (!springEquipmentRepository.existsById(uuid)) {
-            throw new EquipmentNotFoundException(id);
-        }
-        springEquipmentRepository.deleteById(uuid);
+        if (!repository.existsById(uuid)) throw new EquipmentNotFoundException(id);
+        repository.deleteById(uuid);
     }
 
     private Equipment mapToDomain(EquipmentEntity entity) {
-        return equipmentPersistenceMapper.toEquipment(entity);
+        Equipment equipment = mapper.toEquipment(entity);
+        equipment.setEquipmentType(equipmentTypeMapper.toEquipmentType(entity.getEquipmentType()));
+        equipment.setBrand(brandMapper.toBrand(entity.getBrand()));
+        return equipment;
     }
 }

@@ -9,6 +9,7 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -16,12 +17,11 @@ import java.util.UUID;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@SQLRestriction("deleted_at = false")
-@SQLDelete(sql = "UPDATE tipo_equipo SET deleted_at = true WHERE k_id_tipo_equipo = ?")
+@SQLRestriction("b_estado_activo = true")
+@SQLDelete(sql = "UPDATE tipo_equipo SET b_estado_activo = false WHERE k_id_tipo_equipo = ?")
 @Table(name = "tipo_equipo")
 public class EquipmentTypeEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "k_id_tipo_equipo")
     private UUID id;
 
@@ -49,6 +49,9 @@ public class EquipmentTypeEntity {
     @Column(name = "m_valor_unitario_mantenimiento")
     private Long unitMaintenanceValue;
 
-    @Column(name = "deleted_at", nullable = false)
-    private Boolean deleted = false;
+    @Column(name = "b_estado_activo", nullable = false)
+    private Boolean active = true;
+
+    @OneToMany(mappedBy = "equipmentType", fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    private List<MetrologicalDataEntity> metrologicalDataEntities;
 }
