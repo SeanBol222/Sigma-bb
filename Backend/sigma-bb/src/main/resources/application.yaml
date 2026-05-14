@@ -12,15 +12,19 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: validate
+      ddl-auto: none
 
-#  security:
-#    oauth2:
-#      resourceserver:
-#        jwt:
-#          issuer-uri: http://keycloak:8080/realms/employee-realm
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://keycloak:8080/realms/employee-realm
 logging:
   level:
     org:
       hibernate:
         SQL: debug
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
