@@ -3,68 +3,101 @@ package com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.infrastructure.
 import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.application.ports.output.EquipmentTypePersistencePort;
 import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.domain.EquipmentType;
 import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.infrastructure.output.entities.EquipmentTypeEntity;
+import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.infrastructure.output.entities.MetrologicalDataEntity;
+import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.infrastructure.output.entities.MetrologicalDataId;
 import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.infrastructure.output.errors.EquipmentTypeNotFoundException;
 import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.infrastructure.output.mapper.EquipmentTypePersistenceMapper;
+import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.infrastructure.output.mapper.MetrologicalDataPersistenceMapper;
 import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.infrastructure.output.repository.SpringEquipmentTypeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Component
 public class EquipmentTypePersistenceAdapter implements EquipmentTypePersistencePort {
-    private final SpringEquipmentTypeRepository springEquipmentTypeRepository;
-    private final EquipmentTypePersistenceMapper equipmentTypePersistenceMapper;
+    private final SpringEquipmentTypeRepository repository;
+    private final EquipmentTypePersistenceMapper mapper;
+    private final MetrologicalDataPersistenceMapper mdMapper;
 
     @Autowired
-    public EquipmentTypePersistenceAdapter(SpringEquipmentTypeRepository springEquipmentTypeRepository,
-                                           EquipmentTypePersistenceMapper equipmentTypePersistenceMapper) {
-        this.springEquipmentTypeRepository = springEquipmentTypeRepository;
-        this.equipmentTypePersistenceMapper = equipmentTypePersistenceMapper;
+    public EquipmentTypePersistenceAdapter(SpringEquipmentTypeRepository repository,
+                                           EquipmentTypePersistenceMapper mapper,
+                                           MetrologicalDataPersistenceMapper mdMapper) {
+        this.repository = repository;
+        this.mapper = mapper;
+        this.mdMapper = mdMapper;
     }
 
     @Override
+    @Transactional
     public List<EquipmentType> findAll() {
-        List<EquipmentTypeEntity> equipmentTypeEntities = springEquipmentTypeRepository.findAll();
-        return equipmentTypeEntities.stream()
-                .map(equipmentTypePersistenceMapper::toEquipmentType).toList();
+        return repository.findAll().stream().map(mapper::toEquipmentType).toList();
     }
 
     @Override
-    public EquipmentType findById(String id) {
-        UUID uuid = UUID.fromString(id);
-        EquipmentTypeEntity equipmentTypeEntity =
-                springEquipmentTypeRepository.findById(uuid).orElseThrow(() -> new EquipmentTypeNotFoundException(id));
-        return equipmentTypePersistenceMapper.toEquipmentType(equipmentTypeEntity);
+    @Transactional
+    public Optional<EquipmentType> findById(String id) {
+        return repository.findById(UUID.fromString(id)).map(mapper::toEquipmentType);
     }
 
     @Override
+    @Transactional
     public EquipmentType save(EquipmentType equipmentType) {
-        EquipmentTypeEntity equipmentTypeEntity = equipmentTypePersistenceMapper.toEquipmentTypeEntity(equipmentType);
-        EquipmentTypeEntity equipmentTypeEntitySaved = springEquipmentTypeRepository.save(equipmentTypeEntity);
-        return equipmentTypePersistenceMapper.toEquipmentType(equipmentTypeEntitySaved);
+        EquipmentTypeEntity entity = mapper.toEquipmentTypeEntity(equipmentType);
+        linkChildren(entity);
+        return mapper.toEquipmentType(repository.save(entity));
     }
 
     @Override
+    @Transactional
     public EquipmentType update(String id, EquipmentType equipmentType) {
         UUID uuid = UUID.fromString(id);
-        EquipmentTypeEntity existing = springEquipmentTypeRepository.findById(uuid)
+        EquipmentTypeEntity existing = repository.findById(uuid)
                 .orElseThrow(() -> new EquipmentTypeNotFoundException(id));
 
-        equipmentTypePersistenceMapper.updateEntityFromDomain(equipmentType, existing);
+        softDeleteChildren(existing);
+        existing.getMetrologicalDataEntities().clear();
 
-        EquipmentTypeEntity saved = springEquipmentTypeRepository.save(existing);
+        mapper.updateEntityFromDomain(equipmentType, existing);
+        linkChildren(existing);
 
-        return equipmentTypePersistenceMapper.toEquipmentType(saved);
+        return mapper.toEquipmentType(repository.save(existing));
     }
 
     @Override
+    @Transactional
     public void delete(String id) {
         UUID uuid = UUID.fromString(id);
-        if (!springEquipmentTypeRepository.existsById(uuid)) {
-            throw new EquipmentTypeNotFoundException(id);
+        EquipmentTypeEntity entity = repository.findById(uuid)
+                .orElseThrow(() -> new EquipmentTypeNotFoundException(id));
+
+        softDeleteChildren(entity);
+        entity.setActive(false);
+
+        repository.save(entity);
+    }
+
+    private void linkChildren(EquipmentTypeEntity parent) {
+        if (parent.getMetrologicalDataEntities() != null) {
+            for (MetrologicalDataEntity child : parent.getMetrologicalDataEntities()) {
+                if (child.getId() == null) {
+                    child.setId(new MetrologicalDataId());
+                }
+                child.getId().setEquipmentTypeId(parent.getId());
+                child.setEquipmentType(parent);
+            }
         }
-        springEquipmentTypeRepository.deleteById(uuid);
+    }
+
+    private void softDeleteChildren(EquipmentTypeEntity parent) {
+        if (parent.getMetrologicalDataEntities() != null) {
+            for (MetrologicalDataEntity child : parent.getMetrologicalDataEntities()) {
+                child.setActive(false);
+            }
+        }
     }
 }

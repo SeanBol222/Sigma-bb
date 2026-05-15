@@ -10,6 +10,13 @@ spring:
     password: ${POSTGRES_ROOT_PASSWORD:password}
     driver-class-name: org.postgresql.Driver
 
+  rabbitmq:
+    host: ${RABBITMQ_HOST:rabbitmq}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USER:guest}
+    password: ${RABBITMQ_PASSWORD:guest}
+    virtual-host: ${RABBITMQ_VHOST:/}
+
   jpa:
     hibernate:
       ddl-auto: none
@@ -19,12 +26,16 @@ spring:
       resourceserver:
         jwt:
           issuer-uri: http://keycloak:8080/realms/employee-realm
+  
 logging:
   level:
     org:
       hibernate:
         SQL: debug
 
+app:
+  security:
+    enabled: false
 springdoc:
   swagger-ui:
     path: /swagger-ui.html

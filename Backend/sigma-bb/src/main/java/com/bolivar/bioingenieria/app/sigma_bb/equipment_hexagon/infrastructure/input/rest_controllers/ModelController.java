@@ -1,6 +1,9 @@
 package com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.infrastructure.input.rest_controllers;
 
 import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.application.ports.input.ModelServicePort;
+import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.application.services.model_services.commands.CreateModelCommand;
+import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.application.services.model_services.commands.DeleteModelCommand;
+import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.application.services.model_services.commands.UpdateModelCommand;
 import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.domain.Model;
 import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.infrastructure.input.mapper.ModelRestMapper;
 import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.infrastructure.input.model.request.ModelRequest;
@@ -16,7 +19,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/v1/api/models")
 public class ModelController {
-
     private final ModelServicePort modelServicePort;
     private final ModelRestMapper modelRestMapper;
 
@@ -42,8 +44,9 @@ public class ModelController {
 
     @PostMapping
     public ResponseEntity<ModelResponse> createModel(@Valid @RequestBody ModelRequest request) {
-        Model model = modelRestMapper.toModel(request);
-        Model created = modelServicePort.save(model);
+        CreateModelCommand command = new CreateModelCommand(
+                request.getInvima(), request.getManufacturerId(), request.getEquipmentId());
+        Model created = modelServicePort.save(command);
         ModelResponse response = modelRestMapper.toModelResponse(created);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
@@ -52,15 +55,17 @@ public class ModelController {
     public ResponseEntity<ModelResponse> updateModel(
             @PathVariable String id,
             @Valid @RequestBody ModelRequest request) {
-        Model model = modelRestMapper.toModel(request);
-        Model updated = modelServicePort.update(id, model);
+        UpdateModelCommand command = new UpdateModelCommand(
+                request.getInvima(), request.getManufacturerId(), request.getEquipmentId());
+        Model updated = modelServicePort.update(id, command);
         ModelResponse response = modelRestMapper.toModelResponse(updated);
         return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteModel(@PathVariable String id) {
-        modelServicePort.delete(id);
+        DeleteModelCommand command = new DeleteModelCommand(id);
+        modelServicePort.delete(command);
         return ResponseEntity.noContent().build();
     }
 }

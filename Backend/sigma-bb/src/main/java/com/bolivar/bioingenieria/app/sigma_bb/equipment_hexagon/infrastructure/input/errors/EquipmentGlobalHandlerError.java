@@ -22,7 +22,7 @@ import java.util.Collections;
 import java.util.stream.Collectors;
 
 @RestControllerAdvice
-public class GlobalHandlerError {
+public class EquipmentGlobalHandlerError {
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(ManufacturerNotFoundException.class)
@@ -93,7 +93,7 @@ public class GlobalHandlerError {
                 .timestamp(LocalDateTime.now())
                 .build();
     }
-
+    /*
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ErrorResponse handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
@@ -109,5 +109,5 @@ public class GlobalHandlerError {
                         .collect(Collectors.toList()))
                 .timestamp(LocalDateTime.now())
                 .build();
-    }
+    }*/
 }

@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.UUID;
 
 @Data
@@ -22,4 +23,5 @@ public class EquipmentTypeResponse {
     private String predominantTechnology;
     private Boolean verifiable;
     private Long unitMaintenanceValue;
+    private List<MetrologicalDataResponse> metrologicalData;
 }

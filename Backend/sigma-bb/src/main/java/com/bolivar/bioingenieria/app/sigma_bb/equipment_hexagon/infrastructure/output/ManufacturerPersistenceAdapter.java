@@ -6,7 +6,6 @@ import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.infrastructure.o
 import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.infrastructure.output.errors.ManufacturerNotFoundException;
 import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.infrastructure.output.mapper.ManufacturerPersistenceMapper;
 import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.infrastructure.output.repository.SpringManufacturerRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -20,7 +19,7 @@ public class ManufacturerPersistenceAdapter implements ManufacturerPersistencePo
 
     @Autowired
     public ManufacturerPersistenceAdapter(SpringManufacturerRepository springManufacturerRepository,
-                                          ManufacturerPersistenceMapper manufacturerPersistenceMapper) {
+                                           ManufacturerPersistenceMapper manufacturerPersistenceMapper) {
         this.springManufacturerRepository = springManufacturerRepository;
         this.manufacturerPersistenceMapper = manufacturerPersistenceMapper;
     }
@@ -28,16 +27,14 @@ public class ManufacturerPersistenceAdapter implements ManufacturerPersistencePo
     @Override
     public List<Manufacturer> findAll() {
         List<ManufacturerEntity> manufacturersEntities = springManufacturerRepository.findAll();
-        return manufacturersEntities.stream().
-                map(manufacturerPersistenceMapper::toManufacturer).toList();
-
+        return manufacturersEntities.stream()
+                .map(manufacturerPersistenceMapper::toManufacturer).toList();
     }
 
     @Override
-    public Manufacturer findById(String id) {
-        ManufacturerEntity manufacturerEntity =
-                springManufacturerRepository.findById(id).orElseThrow(() -> new ManufacturerNotFoundException(id));
-        return manufacturerPersistenceMapper.toManufacturer(manufacturerEntity);
+    public Optional<Manufacturer> findById(String id) {
+        return springManufacturerRepository.findById(id)
+                .map(manufacturerPersistenceMapper::toManufacturer);
     }
 
     @Override
@@ -61,7 +58,7 @@ public class ManufacturerPersistenceAdapter implements ManufacturerPersistencePo
 
     @Override
     public void delete(String id) {
-        if(!springManufacturerRepository.existsById(id)) {
+        if (!springManufacturerRepository.existsById(id)) {
             throw new ManufacturerNotFoundException(id);
         }
         springManufacturerRepository.deleteById(id);

@@ -1,6 +1,9 @@
 package com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.infrastructure.input.rest_controllers;
 
 import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.application.ports.input.BrandServicePort;
+import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.application.services.brand_services.commands.CreateBrandCommand;
+import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.application.services.brand_services.commands.DeleteBrandCommand;
+import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.application.services.brand_services.commands.UpdateBrandCommand;
 import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.domain.Brand;
 import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.infrastructure.input.mapper.BrandRestMapper;
 import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.infrastructure.input.model.request.BrandRequest;
@@ -45,9 +48,8 @@ public class RestControllerBrand {
     public ResponseEntity<BrandResponse> createBrand(
             @Valid @RequestBody BrandRequest request) {
 
-        Brand brand = brandRestMapper.toBrand(request);
-
-        Brand created = brandServicePort.save(brand);
+        CreateBrandCommand command = new CreateBrandCommand(request.getName());
+        Brand created = brandServicePort.save(command);
 
         BrandResponse response = brandRestMapper.toBrandResponse(created);
 
@@ -59,9 +61,8 @@ public class RestControllerBrand {
             @PathVariable String id,
             @Valid @RequestBody BrandRequest request) {
 
-        Brand brand = brandRestMapper.toBrand(request);
-
-        Brand updated = brandServicePort.update(id, brand);
+        UpdateBrandCommand command = new UpdateBrandCommand(request.getName());
+        Brand updated = brandServicePort.update(id, command);
 
         BrandResponse response = brandRestMapper.toBrandResponse(updated);
 
@@ -70,7 +71,8 @@ public class RestControllerBrand {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteBrand(@PathVariable String id) {
-        brandServicePort.delete(id);
+        DeleteBrandCommand command = new DeleteBrandCommand(id);
+        brandServicePort.delete(command);
         return ResponseEntity.noContent().build();
     }
 }

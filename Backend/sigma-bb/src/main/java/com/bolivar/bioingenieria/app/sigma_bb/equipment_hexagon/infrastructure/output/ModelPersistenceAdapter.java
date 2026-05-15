@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Component
@@ -31,11 +32,10 @@ public class ModelPersistenceAdapter implements ModelPersistencePort {
     }
 
     @Override
-    public Model findById(String id) {
+    public Optional<Model> findById(String id) {
         UUID uuid = UUID.fromString(id);
-        ModelEntity entity = springModelRepository.findById(uuid)
-                .orElseThrow(() -> new ModelNotFoundException(id));
-        return modelPersistenceMapper.toModel(entity);
+        return springModelRepository.findById(uuid)
+                .map(modelPersistenceMapper::toModel);
     }
 
     @Override

@@ -6,30 +6,32 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
+import org.mapstruct.ReportingPolicy;
 
 import java.util.List;
 
 @Mapper(
         componentModel = "spring",
-        nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE
+        nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
+        unmappedSourcePolicy = ReportingPolicy.IGNORE
 )
 public interface MetrologicalDataPersistenceMapper {
 
-    @Mapping(target = "id.value", source = "value")
-    @Mapping(target = "id.type", source = "type")
-    @Mapping(target = "id.equipmentTypeId", source = "equipmentTypeId")
-    MetrologicalDataEntity toMetrologicalDataEntity(MetrologicalData metrologicalData);
-
     @Mapping(target = "value", source = "id.value")
     @Mapping(target = "type", source = "id.type")
-    @Mapping(target = "equipmentTypeId", source = "id.equipmentTypeId")
-    MetrologicalData toMetrologicalData(MetrologicalDataEntity metrologicalDataEntity);
+    MetrologicalData toMetrologicalData(MetrologicalDataEntity entity);
 
-    List<MetrologicalData> toMetrologicalDataList(List<MetrologicalDataEntity> metrologicalDataEntities);
-
-    @Mapping(target = "id", ignore = true)
     @Mapping(target = "id.value", source = "value")
     @Mapping(target = "id.type", source = "type")
-    @Mapping(target = "id.equipmentTypeId", source = "equipmentTypeId")
+    @Mapping(target = "id.equipmentTypeId", ignore = true)
+    @Mapping(target = "equipmentType", ignore = true)
+    @Mapping(target = "active", ignore = true)
+    MetrologicalDataEntity toMetrologicalDataEntity(MetrologicalData domain);
+
+    List<MetrologicalData> toMetrologicalDataList(List<MetrologicalDataEntity> entities);
+
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "equipmentType", ignore = true)
+    @Mapping(target = "active", ignore = true)
     void updateEntityFromDomain(MetrologicalData source, @MappingTarget MetrologicalDataEntity target);
 }

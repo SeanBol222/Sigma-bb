@@ -3,11 +3,14 @@ package com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.application.por
 import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.domain.EquipmentType;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface EquipmentTypePersistencePort {
     List<EquipmentType> findAll();
-    EquipmentType findById(String id);
+    Optional<EquipmentType> findById(String id);
     EquipmentType save(EquipmentType equipmentType);
     EquipmentType update(String id, EquipmentType equipmentType);
     void delete(String id);
+
+
 }

@@ -10,61 +10,48 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Component
 public class TechnicalVerificationPersistenceAdapter implements TechnicalVerificationPersistencePort {
-    private final SpringTechnicalVerificationRepository springTechnicalVerificationRepository;
-    private final TechnicalVerificationPersistenceMapper technicalVerificationPersistenceMapper;
+    private final SpringTechnicalVerificationRepository repository;
+    private final TechnicalVerificationPersistenceMapper mapper;
 
     @Autowired
-    public TechnicalVerificationPersistenceAdapter(SpringTechnicalVerificationRepository springTechnicalVerificationRepository,
-                                                   TechnicalVerificationPersistenceMapper technicalVerificationPersistenceMapper) {
-        this.springTechnicalVerificationRepository = springTechnicalVerificationRepository;
-        this.technicalVerificationPersistenceMapper = technicalVerificationPersistenceMapper;
+    public TechnicalVerificationPersistenceAdapter(SpringTechnicalVerificationRepository repository,
+                                                   TechnicalVerificationPersistenceMapper mapper) {
+        this.repository = repository;
+        this.mapper = mapper;
     }
 
     @Override
     public List<TechnicalVerification> findAll() {
-        List<TechnicalVerificationEntity> entities = springTechnicalVerificationRepository.findAll();
-        return entities.stream()
-                .map(technicalVerificationPersistenceMapper::toTechnicalVerification).toList();
+        return repository.findAll().stream().map(mapper::toTechnicalVerification).toList();
     }
 
     @Override
-    public TechnicalVerification findById(String id) {
-        UUID uuid = UUID.fromString(id);
-        TechnicalVerificationEntity entity = springTechnicalVerificationRepository.findById(uuid)
+    public Optional<TechnicalVerification> findById(String id) {
+        return repository.findById(UUID.fromString(id)).map(mapper::toTechnicalVerification);
+    }
+
+    @Override
+    public TechnicalVerification save(TechnicalVerification tv) {
+        return mapper.toTechnicalVerification(repository.save(mapper.toTechnicalVerificationEntity(tv)));
+    }
+
+    @Override
+    public TechnicalVerification update(String id, TechnicalVerification tv) {
+        TechnicalVerificationEntity existing = repository.findById(UUID.fromString(id))
                 .orElseThrow(() -> new TechnicalVerificationNotFoundException(id));
-        return technicalVerificationPersistenceMapper.toTechnicalVerification(entity);
-    }
-
-    @Override
-    public TechnicalVerification save(TechnicalVerification technicalVerification) {
-        TechnicalVerificationEntity entity = technicalVerificationPersistenceMapper.toTechnicalVerificationEntity(technicalVerification);
-        TechnicalVerificationEntity saved = springTechnicalVerificationRepository.save(entity);
-        return technicalVerificationPersistenceMapper.toTechnicalVerification(saved);
-    }
-
-    @Override
-    public TechnicalVerification update(String id, TechnicalVerification technicalVerification) {
-        UUID uuid = UUID.fromString(id);
-        TechnicalVerificationEntity existing = springTechnicalVerificationRepository.findById(uuid)
-                .orElseThrow(() -> new TechnicalVerificationNotFoundException(id));
-
-        technicalVerificationPersistenceMapper.updateEntityFromDomain(technicalVerification, existing);
-
-        TechnicalVerificationEntity saved = springTechnicalVerificationRepository.save(existing);
-
-        return technicalVerificationPersistenceMapper.toTechnicalVerification(saved);
+        mapper.updateEntityFromDomain(tv, existing);
+        return mapper.toTechnicalVerification(repository.save(existing));
     }
 
     @Override
     public void delete(String id) {
         UUID uuid = UUID.fromString(id);
-        if (!springTechnicalVerificationRepository.existsById(uuid)) {
-            throw new TechnicalVerificationNotFoundException(id);
-        }
-        springTechnicalVerificationRepository.deleteById(uuid);
+        if (!repository.existsById(uuid)) throw new TechnicalVerificationNotFoundException(id);
+        repository.deleteById(uuid);
     }
 }

@@ -15,12 +15,11 @@ import java.util.UUID;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@SQLRestriction("deleted_at = false")
-@SQLDelete(sql = "UPDATE verificacion_tecnica SET deleted_at = true WHERE k_id_verificacion = ?")
+@SQLRestriction("b_estado_activo = true")
+@SQLDelete(sql = "UPDATE verificacion_tecnica SET b_estado_activo = false WHERE k_id_verificacion = ?")
 @Table(name = "verificacion_tecnica")
 public class TechnicalVerificationEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "k_id_verificacion")
     private UUID id;
 
@@ -30,6 +29,6 @@ public class TechnicalVerificationEntity {
     @Column(name = "t_tipo_verificacion", length = 25, nullable = false)
     private String verificationType;
 
-    @Column(name = "deleted_at", nullable = false)
-    private Boolean deleted = false;
+    @Column(name = "b_estado_activo", nullable = false)
+    private Boolean active = true;
 }

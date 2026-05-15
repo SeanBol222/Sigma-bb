@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class BrandPersistenceAdapter implements BrandPersistencePort {
@@ -31,10 +32,9 @@ public class BrandPersistenceAdapter implements BrandPersistencePort {
     }
 
     @Override
-    public Brand findById(String id) {
-        BrandEntity brandEntity =
-                springBrandRepository.findById(id).orElseThrow(() -> new BrandNotFoundException(id));
-        return brandPersistenceMapper.toBrand(brandEntity);
+    public Optional<Brand> findById(String id) {
+        return springBrandRepository.findById(id)
+                .map(brandPersistenceMapper::toBrand);
     }
 
     @Override

@@ -2,7 +2,14 @@ package com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.application.ser
 
 import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.application.ports.input.ModelServicePort;
 import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.application.ports.output.ModelPersistencePort;
+import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.application.services.model_services.commands.CreateModelCommand;
+import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.application.services.model_services.commands.DeleteModelCommand;
+import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.application.services.model_services.commands.UpdateModelCommand;
 import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.domain.Model;
+import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.infrastructure.output.errors.ModelNotFoundException;
+import com.bolivar.bioingenieria.app.sigma_bb.shared.application.ports.output.EventDispatcherPort;
+import com.bolivar.bioingenieria.app.sigma_bb.shared.domain.DomainEvent;
+import com.bolivar.bioingenieria.app.sigma_bb.shared.domain.Payload;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,10 +18,13 @@ import java.util.List;
 @Service
 public class ModelService implements ModelServicePort {
     private final ModelPersistencePort modelPersistencePort;
+    private final EventDispatcherPort eventDispatcherPort;
 
     @Autowired
-    public ModelService(ModelPersistencePort modelPersistencePort) {
+    public ModelService(ModelPersistencePort modelPersistencePort,
+                        EventDispatcherPort eventDispatcherPort) {
         this.modelPersistencePort = modelPersistencePort;
+        this.eventDispatcherPort = eventDispatcherPort;
     }
 
     @Override
@@ -24,21 +34,39 @@ public class ModelService implements ModelServicePort {
 
     @Override
     public Model findById(String id) {
-        return modelPersistencePort.findById(id);
+        return this.modelPersistencePort.findById(id)
+                .orElseThrow(() -> new ModelNotFoundException(id));
     }
 
     @Override
-    public Model save(Model model) {
-        return modelPersistencePort.save(model);
+    public Model save(CreateModelCommand command) {
+        Model model = Model.create(command.invima(), command.manufacturerId(), command.equipmentId());
+        modelPersistencePort.save(model);
+        dispatchEvents(model);
+        return model;
     }
 
     @Override
-    public Model update(String id, Model model) {
-        return modelPersistencePort.update(id, model);
+    public Model update(String id, UpdateModelCommand command) {
+        Model model = modelPersistencePort.findById(id)
+                .orElseThrow(() -> new ModelNotFoundException(id));
+        model.updateModel(command.invima(), command.manufacturerId(), command.equipmentId());
+        modelPersistencePort.update(id, model);
+        dispatchEvents(model);
+        return model;
     }
 
     @Override
-    public void delete(String id) {
-        modelPersistencePort.delete(id);
+    public void delete(DeleteModelCommand command) {
+        Model model = modelPersistencePort.findById(command.id())
+                .orElseThrow(() -> new ModelNotFoundException(command.id()));
+        model.deleteModel();
+        modelPersistencePort.delete(command.id());
+        dispatchEvents(model);
+    }
+
+    private void dispatchEvents(Model aggregate) {
+        List<DomainEvent<? extends Payload>> events = aggregate.pullEvents();
+        events.forEach(e -> eventDispatcherPort.dispatch("modelEntity", e.metadata().eventType(), e));
     }
 }

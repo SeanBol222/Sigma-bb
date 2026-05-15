@@ -15,12 +15,11 @@ import java.util.UUID;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@SQLRestriction("deleted_at = false")
-@SQLDelete(sql = "UPDATE fabricante SET deleted_at = true WHERE k_id_fabricante = ?")
+@SQLRestriction("b_estado_activo = true")
+@SQLDelete(sql = "UPDATE fabricante SET b_estado_activo = false WHERE k_id_fabricante = ?")
 @Table(name = "fabricante")
 public class ManufacturerEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "k_id_fabricante")
     private UUID id;
 
@@ -30,6 +29,6 @@ public class ManufacturerEntity {
     @Column(name = "k_id_pais")
     private String countryId;
 
-    @Column(name = "deleted_at", nullable = false)
-    private Boolean deleted = false;
+    @Column(name = "b_estado_activo", nullable = false)
+    private Boolean active = true;
 }

@@ -2,7 +2,14 @@ package com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.application.ser
 
 import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.application.ports.input.EquipmentServicePort;
 import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.application.ports.output.EquipmentPersistencePort;
+import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.application.services.equipment_services.commands.CreateEquipmentCommand;
+import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.application.services.equipment_services.commands.DeleteEquipmentCommand;
+import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.application.services.equipment_services.commands.UpdateEquipmentCommand;
 import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.domain.Equipment;
+import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.infrastructure.output.errors.EquipmentNotFoundException;
+import com.bolivar.bioingenieria.app.sigma_bb.shared.application.ports.output.EventDispatcherPort;
+import com.bolivar.bioingenieria.app.sigma_bb.shared.domain.DomainEvent;
+import com.bolivar.bioingenieria.app.sigma_bb.shared.domain.Payload;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,35 +17,56 @@ import java.util.List;
 
 @Service
 public class EquipmentService implements EquipmentServicePort {
-    private final EquipmentPersistencePort equipmentPersistencePort;
+    private final EquipmentPersistencePort persistencePort;
+    private final EventDispatcherPort eventDispatcherPort;
 
     @Autowired
-    public EquipmentService(EquipmentPersistencePort equipmentPersistencePort) {
-        this.equipmentPersistencePort = equipmentPersistencePort;
+    public EquipmentService(EquipmentPersistencePort persistencePort,
+                            EventDispatcherPort eventDispatcherPort) {
+        this.persistencePort = persistencePort;
+        this.eventDispatcherPort = eventDispatcherPort;
     }
 
     @Override
     public List<Equipment> findAll() {
-        return equipmentPersistencePort.findAll();
+        return persistencePort.findAll();
     }
 
     @Override
     public Equipment findById(String id) {
-        return this.equipmentPersistencePort.findById(id);
+        return this.persistencePort.findById(id)
+                .orElseThrow(() -> new EquipmentNotFoundException(id));
     }
 
     @Override
-    public Equipment save(Equipment equipment) {
-        return equipmentPersistencePort.save(equipment);
+    public Equipment save(CreateEquipmentCommand command) {
+        Equipment equipment = Equipment.create(command.equipmentTypeId(), command.brandId());
+        equipment = persistencePort.save(equipment);
+        dispatchEvents(equipment);
+        return equipment;
     }
 
     @Override
-    public Equipment update(String id, Equipment equipment) {
-        return equipmentPersistencePort.update(id, equipment);
+    public Equipment update(String id, UpdateEquipmentCommand command) {
+        Equipment equipment = persistencePort.findById(id)
+                .orElseThrow(() -> new EquipmentNotFoundException(id));
+        equipment.updateEquipment(command.equipmentTypeId(), command.brandId());
+        equipment = persistencePort.update(id, equipment);
+        dispatchEvents(equipment);
+        return equipment;
     }
 
     @Override
-    public void delete(String id) {
-        equipmentPersistencePort.delete(id);
+    public void delete(DeleteEquipmentCommand command) {
+        Equipment equipment = persistencePort.findById(command.id())
+                .orElseThrow(() -> new EquipmentNotFoundException(command.id()));
+        equipment.deleteEquipment();
+        persistencePort.delete(command.id());
+        dispatchEvents(equipment);
+    }
+
+    private void dispatchEvents(Equipment aggregate) {
+        List<DomainEvent<? extends Payload>> events = aggregate.pullEvents();
+        events.forEach(e -> eventDispatcherPort.dispatch("equipmentEntity", e.metadata().eventType(), e));
     }
 }
