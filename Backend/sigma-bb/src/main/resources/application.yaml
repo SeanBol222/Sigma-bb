@@ -19,7 +19,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: validate
+      ddl-auto: none
 
   security:
     oauth2:
@@ -36,3 +36,6 @@ logging:
 app:
   security:
     enabled: false
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html

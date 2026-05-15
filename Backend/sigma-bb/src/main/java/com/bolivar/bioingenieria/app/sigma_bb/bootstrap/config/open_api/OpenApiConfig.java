@@ -1,0 +1,67 @@
+package com.bolivar.bioingenieria.app.sigma_bb.bootstrap.config.open_api;
+
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.info.Contact;
+import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.info.License;
+import io.swagger.v3.oas.models.security.SecurityRequirement;
+import io.swagger.v3.oas.models.security.SecurityScheme;
+import org.springdoc.core.models.GroupedOpenApi;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+/**
+ * Configuración de OpenAPI / Swagger para la aplicación.
+ *
+ * Esta clase expone beans que personalizan la información del API (título,
+ * descripción, contacto, licencia) y agrega la configuración de seguridad
+ * para que la interfaz de Swagger UI pueda ser utilizada con tokens Bearer/JWT.
+ *
+ * También se exponen grupos de APIs para segmentar la documentación por módulos
+ * (por ejemplo: personas).
+ */
+@Configuration
+public class OpenApiConfig {
+
+    private static final String SECURITY_SCHEME_NAME = "bearer-jwt";
+
+    /**
+     * Bean principal que personaliza el documento OpenAPI (Info y Security).
+     *
+     * @return instancia de {@link OpenAPI} con metadata y esquema de seguridad
+     */
+    @Bean
+    public OpenAPI customOpenAPI() {
+        return new OpenAPI()
+                .info(new Info()
+                        .title("Sigma BB API")
+                        .version("v0.0.1")
+                        .description("API REST para la gestión de personas y recursos de Bolivar Bioingeniería")
+                        .contact(new Contact().name("Equipo Bioingeniería").email("devops@bolivar.com"))
+                        .license(new License().name("MIT").url("https://opensource.org/licenses/MIT"))
+                )
+                // Define esquema de seguridad Bearer JWT para los endpoints protegidos
+                .addSecurityItem(new SecurityRequirement().addList(SECURITY_SCHEME_NAME))
+                .schemaRequirement(SECURITY_SCHEME_NAME, new SecurityScheme()
+                        .name(SECURITY_SCHEME_NAME)
+                        .type(SecurityScheme.Type.HTTP)
+                        .scheme("bearer")
+                        .bearerFormat("JWT")
+                );
+    }
+
+    /**
+     * Grupo de documentación para los endpoints relacionados con personas.
+     * Permite filtrar las rutas que se muestran en un grupo separado dentro de Swagger UI.
+     *
+     * @return instancia de {@link GroupedOpenApi} para el grupo "person"
+     */
+    @Bean
+    public GroupedOpenApi personApi() {
+        return GroupedOpenApi.builder()
+                .group("person")
+                .pathsToMatch("/person/**") // Incluye todas las rutas bajo /person/**
+                .build();
+    }
+}
+
