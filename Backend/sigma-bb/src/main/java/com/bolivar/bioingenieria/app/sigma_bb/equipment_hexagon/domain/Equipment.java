@@ -4,8 +4,8 @@ import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.domain.equipment
 import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.domain.equipment.events.EquipmentDeletedEvent;
 import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.domain.equipment.events.EquipmentPayload;
 import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.domain.equipment.events.EquipmentUpdatedEvent;
-import com.bolivar.bioingenieria.app.sigma_bb.shared.domain.AggregateRoot;
-import com.bolivar.bioingenieria.app.sigma_bb.shared.domain.EventMetadata;
+import com.bolivar.bioingenieria.app.sigma_bb.shared.domain.events.AggregateRoot;
+import com.bolivar.bioingenieria.app.sigma_bb.shared.domain.events.EventMetadata;
 import lombok.*;
 
 import java.time.Instant;
@@ -30,8 +30,8 @@ public class Equipment extends AggregateRoot {
                 .brandId(UUID.fromString(brandId))
                 .build();
 
-        EventMetadata metadata = new EventMetadata(
-                UUID.randomUUID().toString(), "equipment.created", 1, Instant.now(), equipment.id.toString());
+        EventMetadata metadata = new EventMetadata("events-domain",
+                UUID.randomUUID().toString(), "Equipment", "equipment.created", 1, Instant.now(), equipment.id.toString());
 
         equipment.registerEvent(new EquipmentCreatedEvent(metadata,
                 new EquipmentPayload(equipment.equipmentTypeId.toString(), equipment.brandId.toString())));
@@ -43,7 +43,8 @@ public class Equipment extends AggregateRoot {
         this.brandId = UUID.fromString(brandId);
 
         EventMetadata metadata = new EventMetadata(
-                UUID.randomUUID().toString(), "equipment.updated", 1, Instant.now(), this.id.toString());
+                "events-domain",
+                UUID.randomUUID().toString(), "Equipment", "equipment.updated", 1, Instant.now(), this.id.toString());
 
         registerEvent(new EquipmentUpdatedEvent(metadata,
                 new EquipmentPayload(this.equipmentTypeId.toString(), this.brandId.toString())));
@@ -51,7 +52,8 @@ public class Equipment extends AggregateRoot {
 
     public void deleteEquipment() {
         EventMetadata metadata = new EventMetadata(
-                UUID.randomUUID().toString(), "equipment.deleted", 1, Instant.now(), this.id.toString());
+                "events-domain",
+                UUID.randomUUID().toString(), "Equipment", "equipment.deleted", 1, Instant.now(), this.id.toString());
         registerEvent(new EquipmentDeletedEvent(metadata, new EquipmentPayload(this.equipmentTypeId.toString(), this.brandId.toString())));
     }
 }

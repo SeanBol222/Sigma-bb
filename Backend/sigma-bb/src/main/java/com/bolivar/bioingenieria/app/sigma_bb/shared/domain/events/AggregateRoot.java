@@ -1,4 +1,4 @@
-package com.bolivar.bioingenieria.app.sigma_bb.shared.domain;
+package com.bolivar.bioingenieria.app.sigma_bb.shared.domain.events;
 
 import java.util.ArrayList;
 import java.util.List;

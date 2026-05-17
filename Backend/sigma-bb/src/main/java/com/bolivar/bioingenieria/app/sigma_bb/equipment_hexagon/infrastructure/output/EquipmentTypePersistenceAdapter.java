@@ -35,13 +35,17 @@ public class EquipmentTypePersistenceAdapter implements EquipmentTypePersistence
     @Override
     @Transactional
     public List<EquipmentType> findAll() {
-        return repository.findAll().stream().map(mapper::toEquipmentType).toList();
+        List<EquipmentTypeEntity> entities = repository.findAllWithMetrologicalData();
+        return entities.stream()
+                .map(mapper::toEquipmentType).toList();
     }
 
     @Override
     @Transactional
     public Optional<EquipmentType> findById(String id) {
-        return repository.findById(UUID.fromString(id)).map(mapper::toEquipmentType);
+        UUID uuid = UUID.fromString(id);
+        return repository.findByIdWithMetrologicalData(uuid)
+                .map(mapper::toEquipmentType);
     }
 
     @Override
@@ -56,7 +60,7 @@ public class EquipmentTypePersistenceAdapter implements EquipmentTypePersistence
     @Transactional
     public EquipmentType update(String id, EquipmentType equipmentType) {
         UUID uuid = UUID.fromString(id);
-        EquipmentTypeEntity existing = repository.findById(uuid)
+        EquipmentTypeEntity existing = repository.findByIdWithMetrologicalData(uuid)
                 .orElseThrow(() -> new EquipmentTypeNotFoundException(id));
 
         softDeleteChildren(existing);
@@ -72,7 +76,7 @@ public class EquipmentTypePersistenceAdapter implements EquipmentTypePersistence
     @Transactional
     public void delete(String id) {
         UUID uuid = UUID.fromString(id);
-        EquipmentTypeEntity entity = repository.findById(uuid)
+        EquipmentTypeEntity entity = repository.findByIdWithMetrologicalData(uuid)
                 .orElseThrow(() -> new EquipmentTypeNotFoundException(id));
 
         softDeleteChildren(entity);

@@ -4,8 +4,8 @@ import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.domain.technical
 import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.domain.technical_verification.events.TechnicalVerificationDeletedEvent;
 import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.domain.technical_verification.events.TechnicalVerificationPayload;
 import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.domain.technical_verification.events.TechnicalVerificationUpdatedEvent;
-import com.bolivar.bioingenieria.app.sigma_bb.shared.domain.AggregateRoot;
-import com.bolivar.bioingenieria.app.sigma_bb.shared.domain.EventMetadata;
+import com.bolivar.bioingenieria.app.sigma_bb.shared.domain.events.AggregateRoot;
+import com.bolivar.bioingenieria.app.sigma_bb.shared.domain.events.EventMetadata;
 import lombok.*;
 
 import java.time.Instant;
@@ -29,7 +29,8 @@ public class TechnicalVerification extends AggregateRoot {
                 .build();
 
         EventMetadata metadata = new EventMetadata(
-                UUID.randomUUID().toString(), "technicalVerification.created", 1, Instant.now(), tv.id.toString());
+                "events-domain",
+                UUID.randomUUID().toString(), "TechnicalVerification", "technicalVerification.created", 1, Instant.now(), tv.id.toString());
 
         tv.registerEvent(new TechnicalVerificationCreatedEvent(metadata,
                 new TechnicalVerificationPayload(tv.description, tv.verificationType)));
@@ -41,7 +42,8 @@ public class TechnicalVerification extends AggregateRoot {
         this.verificationType = verificationType;
 
         EventMetadata metadata = new EventMetadata(
-                UUID.randomUUID().toString(), "technicalVerification.updated", 1, Instant.now(), this.id.toString());
+                "events-domain",
+                UUID.randomUUID().toString(), "TechnicalVerification", "technicalVerification.updated", 1, Instant.now(), this.id.toString());
 
         registerEvent(new TechnicalVerificationUpdatedEvent(metadata,
                 new TechnicalVerificationPayload(this.description, this.verificationType)));
@@ -49,7 +51,8 @@ public class TechnicalVerification extends AggregateRoot {
 
     public void deleteTechnicalVerification() {
         EventMetadata metadata = new EventMetadata(
-                UUID.randomUUID().toString(), "technicalVerification.deleted", 1, Instant.now(), this.id.toString());
+                "events-domain",
+                UUID.randomUUID().toString(), "TechnicalVerification", "technicalVerification.deleted", 1, Instant.now(), this.id.toString());
 
         registerEvent(new TechnicalVerificationDeletedEvent(metadata, new TechnicalVerificationPayload(this.description, this.verificationType)));
     }

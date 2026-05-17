@@ -8,9 +8,10 @@ import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.application.serv
 import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.domain.TechnicalVerification;
 import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.infrastructure.output.errors.TechnicalVerificationNotFoundException;
 import com.bolivar.bioingenieria.app.sigma_bb.shared.application.ports.output.EventDispatcherPort;
-import com.bolivar.bioingenieria.app.sigma_bb.shared.domain.DomainEvent;
-import com.bolivar.bioingenieria.app.sigma_bb.shared.domain.Payload;
+import com.bolivar.bioingenieria.app.sigma_bb.shared.domain.events.DomainEvent;
+import com.bolivar.bioingenieria.app.sigma_bb.shared.domain.events.Payload;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,7 +23,7 @@ public class TechnicalVerificationService implements TechnicalVerificationServic
 
     @Autowired
     public TechnicalVerificationService(TechnicalVerificationPersistencePort persistencePort,
-                                        EventDispatcherPort eventDispatcherPort) {
+                                        @Qualifier(value = "springDispatcher") EventDispatcherPort eventDispatcherPort) {
         this.persistencePort = persistencePort;
         this.eventDispatcherPort = eventDispatcherPort;
     }
@@ -67,6 +68,6 @@ public class TechnicalVerificationService implements TechnicalVerificationServic
 
     private void dispatchEvents(TechnicalVerification aggregate) {
         List<DomainEvent<? extends Payload>> events = aggregate.pullEvents();
-        events.forEach(e -> eventDispatcherPort.dispatch("technicalVerificationEntity", e.metadata().eventType(), e));
+        events.forEach(eventDispatcherPort::dispatch);
     }
 }
