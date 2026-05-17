@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Component
 public class ManufacturerPersistenceAdapter implements ManufacturerPersistencePort {
@@ -26,41 +27,38 @@ public class ManufacturerPersistenceAdapter implements ManufacturerPersistencePo
 
     @Override
     public List<Manufacturer> findAll() {
-        List<ManufacturerEntity> manufacturersEntities = springManufacturerRepository.findAll();
-        return manufacturersEntities.stream()
+        return springManufacturerRepository.findAll().stream()
                 .map(manufacturerPersistenceMapper::toManufacturer).toList();
     }
 
     @Override
     public Optional<Manufacturer> findById(String id) {
-        return springManufacturerRepository.findById(id)
+        return springManufacturerRepository.findById(UUID.fromString(id))
                 .map(manufacturerPersistenceMapper::toManufacturer);
     }
 
     @Override
     public Manufacturer save(Manufacturer manufacturer) {
-        ManufacturerEntity manufacturerEntity = manufacturerPersistenceMapper.toManufacturerEntity(manufacturer);
-        ManufacturerEntity manufacturerEntitySaved = springManufacturerRepository.save(manufacturerEntity);
-        return manufacturerPersistenceMapper.toManufacturer(manufacturerEntitySaved);
+        return manufacturerPersistenceMapper.toManufacturer(
+                springManufacturerRepository.save(
+                        manufacturerPersistenceMapper.toManufacturerEntity(manufacturer)));
     }
 
     @Override
     public Manufacturer update(String id, Manufacturer manufacturer) {
-        ManufacturerEntity existing = springManufacturerRepository.findById(id)
+        UUID uuid = UUID.fromString(id);
+        ManufacturerEntity existing = springManufacturerRepository.findById(uuid)
                 .orElseThrow(() -> new ManufacturerNotFoundException(id));
-
         manufacturerPersistenceMapper.updateEntityFromDomain(manufacturer, existing);
-
-        ManufacturerEntity saved = springManufacturerRepository.save(existing);
-
-        return manufacturerPersistenceMapper.toManufacturer(saved);
+        return manufacturerPersistenceMapper.toManufacturer(springManufacturerRepository.save(existing));
     }
 
     @Override
     public void delete(String id) {
-        if (!springManufacturerRepository.existsById(id)) {
+        UUID uuid = UUID.fromString(id);
+        if (!springManufacturerRepository.existsById(uuid)) {
             throw new ManufacturerNotFoundException(id);
         }
-        springManufacturerRepository.deleteById(id);
+        springManufacturerRepository.deleteById(uuid);
     }
 }

@@ -8,13 +8,12 @@ import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.domain.error.Dom
 import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.domain.metrological_data.events.MetrologicalDataCreatedEvent;
 import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.domain.metrological_data.events.MetrologicalDataDeletedEvent;
 import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.domain.metrological_data.events.MetrologicalDataUpdatedEvent;
-import com.bolivar.bioingenieria.app.sigma_bb.shared.domain.AggregateRoot;
-import com.bolivar.bioingenieria.app.sigma_bb.shared.domain.EventMetadata;
+import com.bolivar.bioingenieria.app.sigma_bb.shared.domain.events.AggregateRoot;
+import com.bolivar.bioingenieria.app.sigma_bb.shared.domain.events.EventMetadata;
 import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -56,7 +55,8 @@ public class EquipmentType extends AggregateRoot {
                 .build();
 
         EventMetadata metadata = new EventMetadata(
-                UUID.randomUUID().toString(), "equipmentType.created", 1, Instant.now(), et.id.toString());
+                "events-domain",
+                UUID.randomUUID().toString(), "EquipmentType", "equipmentType.created", 1, Instant.now(), et.id.toString());
 
         et.registerEvent(new EquipmentTypeCreatedEvent(metadata, new EquipmentTypePayload(
                 et.equipmentTypeName, et.technicalDefinition, et.careRecommendations,
@@ -78,7 +78,8 @@ public class EquipmentType extends AggregateRoot {
         this.unitMaintenanceValue = unitMaintenanceValue;
 
         EventMetadata metadata = new EventMetadata(
-                UUID.randomUUID().toString(), "equipmentType.updated", 1, Instant.now(), this.id.toString());
+                "events-domain",
+                UUID.randomUUID().toString(), "EquipmentType", "equipmentType.updated", 1, Instant.now(), this.id.toString());
 
         registerEvent(new EquipmentTypeUpdatedEvent(metadata, new EquipmentTypePayload(
                 this.equipmentTypeName, this.technicalDefinition, this.careRecommendations,
@@ -87,16 +88,14 @@ public class EquipmentType extends AggregateRoot {
 
     public void deleteEquipmentType() {
         EventMetadata metadata = new EventMetadata(
-                UUID.randomUUID().toString(), "equipmentType.deleted", 1, Instant.now(), this.id.toString());
+                "events-domain",
+                UUID.randomUUID().toString(), "EquipmentType", "equipmentType.deleted", 1, Instant.now(), this.id.toString());
         registerEvent(new EquipmentTypeDeletedEvent(metadata, new EquipmentTypePayload(
                 this.equipmentTypeName, this.technicalDefinition, this.careRecommendations,
                 this.voltage, this.amperage, this.predominantTechnology, this.verifiable, this.unitMaintenanceValue)));
     }
 
     public void addMetrologicalData(MetrologicalData md) {
-        if (!this.verifiable)
-            throw new DomainException("Cannot add metrological data to non-verifiable equipment type");
-
         boolean duplicated = this.metrologicalData.stream()
                 .anyMatch(existing -> existing.getValue().equals(md.getValue())
                         && existing.getType().equals(md.getType()));
@@ -104,14 +103,12 @@ public class EquipmentType extends AggregateRoot {
 
         this.metrologicalData.add(md);
 
-        EventMetadata metadata = new EventMetadata(UUID.randomUUID().toString(), "metrologicalData.added", 1, Instant.now(), this.id.toString());
+        EventMetadata metadata = new EventMetadata(
+                "events-domain",UUID.randomUUID().toString(), "EquipmentType", "metrologicalData.added", 1, Instant.now(), this.id.toString());
         registerEvent(new MetrologicalDataCreatedEvent(metadata, md));
     }
 
     public void updateMetrologicalData(MetrologicalData oldData, MetrologicalData newData) {
-        if (!this.verifiable)
-            throw new DomainException("Cannot update metrological data on non-verifiable equipment type");
-
         boolean duplicated = this.metrologicalData.stream()
                 .anyMatch(existing -> !existing.equals(oldData)
                         && existing.getValue().equals(newData.getValue())
@@ -123,14 +120,11 @@ public class EquipmentType extends AggregateRoot {
 
         this.metrologicalData.set(index, newData);
 
-        EventMetadata metadata = new EventMetadata(UUID.randomUUID().toString(), "metrologicalData.updated", 1, Instant.now(), this.id.toString());
+        EventMetadata metadata = new EventMetadata("events-domain",UUID.randomUUID().toString(), "EquipmentType", "metrologicalData.updated", 1, Instant.now(), this.id.toString());
         registerEvent(new MetrologicalDataUpdatedEvent(metadata, oldData));
     }
 
     public void removeMetrologicalData(MetrologicalData md) {
-        if (!this.verifiable)
-            throw new DomainException("Cannot remove metrological data from non-verifiable equipment type");
-
         boolean exists = this.metrologicalData.stream()
                 .anyMatch(existing -> existing.getValue().equals(md.getValue())
                         && existing.getType().equals(md.getType()));
@@ -138,7 +132,7 @@ public class EquipmentType extends AggregateRoot {
 
         this.metrologicalData.removeIf(p -> p.equals(md));
 
-        EventMetadata metadata = new EventMetadata(UUID.randomUUID().toString(), "metrologicalData.removed", 1, Instant.now(), this.id.toString());
+        EventMetadata metadata = new EventMetadata("events-domain",UUID.randomUUID().toString(), "EquipmentType", "metrologicalData.removed", 1, Instant.now(), this.id.toString());
         registerEvent(new MetrologicalDataDeletedEvent(metadata, md));
     }
 

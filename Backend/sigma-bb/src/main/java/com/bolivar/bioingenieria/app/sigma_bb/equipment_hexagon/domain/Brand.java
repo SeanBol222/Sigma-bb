@@ -4,8 +4,8 @@ import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.domain.brand.eve
 import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.domain.brand.events.BrandDeletedEvent;
 import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.domain.brand.events.BrandPayload;
 import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.domain.brand.events.BrandUpdatedEvent;
-import com.bolivar.bioingenieria.app.sigma_bb.shared.domain.AggregateRoot;
-import com.bolivar.bioingenieria.app.sigma_bb.shared.domain.EventMetadata;
+import com.bolivar.bioingenieria.app.sigma_bb.shared.domain.events.AggregateRoot;
+import com.bolivar.bioingenieria.app.sigma_bb.shared.domain.events.EventMetadata;
 import lombok.*;
 
 import java.time.Instant;
@@ -26,8 +26,8 @@ public class Brand extends AggregateRoot {
                 .name(name)
                 .build();
 
-        EventMetadata metadata = new EventMetadata(
-                UUID.randomUUID().toString(), "brand.created", 1, Instant.now(), brand.id.toString());
+        EventMetadata metadata = new EventMetadata("events-domain",
+                UUID.randomUUID().toString(), "Brand", "brand.created", 1, Instant.now(), brand.id.toString());
 
         brand.registerEvent(new BrandCreatedEvent(metadata, new BrandPayload(brand.name)));
         return brand;
@@ -37,14 +37,15 @@ public class Brand extends AggregateRoot {
         this.name = name;
 
         EventMetadata metadata = new EventMetadata(
-                UUID.randomUUID().toString(), "brand.updated", 1, Instant.now(), this.id.toString());
+                "events-domain",
+                UUID.randomUUID().toString(), "Brand", "brand.updated", 1, Instant.now(), this.id.toString());
 
         registerEvent(new BrandUpdatedEvent(metadata, new BrandPayload(this.name)));
     }
 
     public void deleteBrand() {
-        EventMetadata metadata = new EventMetadata(
-                UUID.randomUUID().toString(), "brand.deleted", 1, Instant.now(), this.id.toString());
+        EventMetadata metadata = new EventMetadata("events-domain",
+                UUID.randomUUID().toString(), "Brand", "brand.deleted", 1, Instant.now(), this.id.toString());
 
         registerEvent(new BrandDeletedEvent(metadata, new BrandPayload(this.name)));
     }

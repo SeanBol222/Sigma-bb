@@ -10,10 +10,12 @@ import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.domain.Equipment
 import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.domain.MetrologicalData;
 import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.infrastructure.output.errors.EquipmentTypeNotFoundException;
 import com.bolivar.bioingenieria.app.sigma_bb.shared.application.ports.output.EventDispatcherPort;
-import com.bolivar.bioingenieria.app.sigma_bb.shared.domain.DomainEvent;
-import com.bolivar.bioingenieria.app.sigma_bb.shared.domain.Payload;
+import com.bolivar.bioingenieria.app.sigma_bb.shared.domain.events.DomainEvent;
+import com.bolivar.bioingenieria.app.sigma_bb.shared.domain.events.Payload;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -25,7 +27,7 @@ public class EquipmentTypeService implements EquipmentTypeServicePort {
 
     @Autowired
     public EquipmentTypeService(EquipmentTypePersistencePort equipmentTypePersistencePort,
-                                EventDispatcherPort eventDispatcherPort) {
+                                @Qualifier(value = "springDispatcher") EventDispatcherPort eventDispatcherPort) {
         this.equipmentTypePersistencePort = equipmentTypePersistencePort;
         this.eventDispatcherPort = eventDispatcherPort;
     }
@@ -36,6 +38,7 @@ public class EquipmentTypeService implements EquipmentTypeServicePort {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public EquipmentType findById(String id) {
         return this.equipmentTypePersistencePort.findById(id)
                 .orElseThrow(() -> new EquipmentTypeNotFoundException(id));
@@ -203,6 +206,6 @@ public class EquipmentTypeService implements EquipmentTypeServicePort {
 
     private void dispatchEvents(EquipmentType aggregate) {
         List<DomainEvent<? extends Payload>> events = aggregate.pullEvents();
-        events.forEach(e -> eventDispatcherPort.dispatch("equipmentTypeEntity", e.metadata().eventType(), e));
+        events.forEach(eventDispatcherPort::dispatch);
     }
 }
