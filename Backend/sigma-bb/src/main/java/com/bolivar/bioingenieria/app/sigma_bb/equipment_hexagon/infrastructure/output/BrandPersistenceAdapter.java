@@ -1,7 +1,7 @@
 package com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.infrastructure.output;
 
 import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.application.ports.output.BrandPersistencePort;
-import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.domain.Brand;
+import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.domain.brand.Brand;
 import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.infrastructure.output.entities.BrandEntity;
 import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.infrastructure.output.errors.BrandNotFoundException;
 import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.infrastructure.output.mapper.BrandPersistenceMapper;

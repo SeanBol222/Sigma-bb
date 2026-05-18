@@ -5,7 +5,7 @@ import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.application.port
 import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.application.services.equipment_services.commands.CreateEquipmentCommand;
 import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.application.services.equipment_services.commands.DeleteEquipmentCommand;
 import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.application.services.equipment_services.commands.UpdateEquipmentCommand;
-import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.domain.Equipment;
+import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.domain.equipment.Equipment;
 import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.infrastructure.output.errors.EquipmentNotFoundException;
 import com.bolivar.bioingenieria.app.sigma_bb.shared.application.ports.output.EventDispatcherPort;
 import com.bolivar.bioingenieria.app.sigma_bb.shared.domain.events.DomainEvent;

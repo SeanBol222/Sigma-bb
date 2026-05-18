@@ -8,6 +8,9 @@ import com.bolivar.bioingenieria.app.sigma_bb.location_hexagon.domain.country.Co
 import com.bolivar.bioingenieria.app.sigma_bb.location_hexagon.infrastructure.input.mapper.CountryRestMapper;
 import com.bolivar.bioingenieria.app.sigma_bb.location_hexagon.infrastructure.input.model.request.CountryRequest;
 import com.bolivar.bioingenieria.app.sigma_bb.location_hexagon.infrastructure.input.model.response.CountryResponse;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,6 +21,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/v1/api/countries")
+@Tag(name = "Country REST API", description = "Endpoints para la gestión de Country")
 public class RestControllerCountry {
     private final CountryServicePort countryServicePort;
     private final CountryRestMapper countryRestMapper;
@@ -29,6 +33,9 @@ public class RestControllerCountry {
         this.countryRestMapper = countryRestMapper;
     }
 
+    @Operation(
+            summary = "Obtener todos los países",
+            description = "Recupera la lista completa de países registrados en el sistema.")
     @GetMapping
     public ResponseEntity<List<CountryResponse>> getAllCountries() {
         List<CountryResponse> response = countryRestMapper
@@ -37,14 +44,22 @@ public class RestControllerCountry {
         return ResponseEntity.ok(response);
     }
 
+    @Operation(
+            summary = "Obtener país por ID",
+            description = "Recupera la información de un país específico utilizando su identificador único.")
     @GetMapping("/{id}")
-    public ResponseEntity<CountryResponse> getCountry(@PathVariable String id) {
+    public ResponseEntity<CountryResponse> getCountry(
+            @Parameter(description = "Identificador único del país", required = true)
+            @PathVariable String id) {
         CountryResponse response = countryRestMapper
                 .toCountryResponse(countryServicePort.findById(id));
 
         return ResponseEntity.ok(response);
     }
 
+    @Operation(
+            summary = "Crear nuevo país",
+            description = "Crea un nuevo país en el sistema a partir de los datos proporcionados.")
     @PostMapping
     public ResponseEntity<CountryResponse> createCountry(
             @Valid @RequestBody CountryRequest request) {
@@ -57,8 +72,12 @@ public class RestControllerCountry {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
+    @Operation(
+            summary = "Actualizar país",
+            description = "Actualiza la información de un país existente utilizando su identificador único y los nuevos datos proporcionados.")
     @PutMapping("/{id}")
     public ResponseEntity<CountryResponse> updateCountry(
+            @Parameter(description = "Identificador único del país a actualizar", required = true)
             @PathVariable String id,
             @Valid @RequestBody CountryRequest request) {
 
@@ -70,8 +89,13 @@ public class RestControllerCountry {
         return ResponseEntity.ok(response);
     }
 
+    @Operation(
+            summary = "Eliminar país",
+            description = "Elimina un país del sistema utilizando su identificador único.")
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteCountry(@PathVariable String id) {
+    public ResponseEntity<Void> deleteCountry(
+            @Parameter(description = "Identificador único del país a eliminar", required = true)
+            @PathVariable String id) {
         DeleteCountryCommand command = new DeleteCountryCommand(id);
         countryServicePort.delete(command);
         return ResponseEntity.noContent().build();

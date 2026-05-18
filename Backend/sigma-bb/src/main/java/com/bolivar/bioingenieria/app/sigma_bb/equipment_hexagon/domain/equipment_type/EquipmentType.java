@@ -1,5 +1,6 @@
-package com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.domain;
+package com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.domain.equipment_type;
 
+import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.domain.metrological_data.MetrologicalData;
 import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.domain.equipment_type.events.EquipmentTypeCreatedEvent;
 import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.domain.equipment_type.events.EquipmentTypeDeletedEvent;
 import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.domain.equipment_type.events.EquipmentTypePayload;
@@ -8,6 +9,10 @@ import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.domain.error.Dom
 import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.domain.metrological_data.events.MetrologicalDataCreatedEvent;
 import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.domain.metrological_data.events.MetrologicalDataDeletedEvent;
 import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.domain.metrological_data.events.MetrologicalDataUpdatedEvent;
+import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.domain.tecnical_verification_equipment.events.TechnicalVerificationEquipmentCreated;
+import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.domain.tecnical_verification_equipment.events.TechnicalVerificationEquipmentDeleted;
+import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.domain.tecnical_verification_equipment.events.TechnicalVerificationEquipmentPayload;
+import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.domain.tecnical_verification_equipment.events.TechnicalVerificationEquipmentUpdated;
 import com.bolivar.bioingenieria.app.sigma_bb.shared.domain.events.AggregateRoot;
 import com.bolivar.bioingenieria.app.sigma_bb.shared.domain.events.EventMetadata;
 import lombok.*;
@@ -17,13 +22,15 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.HashSet;
+import java.util.Set;
 
 @EqualsAndHashCode(callSuper = true)
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-@Builder(access = AccessLevel.PRIVATE)
+@Builder
 public class EquipmentType extends AggregateRoot {
     private UUID id;
     private String equipmentTypeName;
@@ -35,6 +42,7 @@ public class EquipmentType extends AggregateRoot {
     private Boolean verifiable;
     private Long unitMaintenanceValue;
     private List<MetrologicalData> metrologicalData = new ArrayList<>();
+    private Set<UUID> technicalVerification = new HashSet<>();
 
     public static EquipmentType create(
             String equipmentTypeName, String technicalDefinition, String careRecommendations,
@@ -51,7 +59,7 @@ public class EquipmentType extends AggregateRoot {
                 .predominantTechnology(predominantTechnology)
                 .verifiable(verifiable)
                 .unitMaintenanceValue(unitMaintenanceValue)
-                .metrologicalData(metrologicalData)
+                .metrologicalData(metrologicalData == null ? new ArrayList<>() : new ArrayList<>(metrologicalData))
                 .build();
 
         EventMetadata metadata = new EventMetadata(
@@ -95,6 +103,59 @@ public class EquipmentType extends AggregateRoot {
                 this.voltage, this.amperage, this.predominantTechnology, this.verifiable, this.unitMaintenanceValue)));
     }
 
+    public void addTechicalVerificationId(UUID technicalVerification) {
+        boolean duplicated = this.technicalVerification.contains(technicalVerification);
+        if (duplicated) throw new DomainException("Technical verification already exists for this equipment type");
+
+        this.technicalVerification.add(technicalVerification);
+
+        EventMetadata metadata = new EventMetadata(
+                "events-domain",UUID.randomUUID().toString(), "EquipmentType",
+                "technical-verification.added", 1, Instant.now(), this.id.toString());
+        TechnicalVerificationEquipmentPayload tvPayload = new
+                TechnicalVerificationEquipmentPayload(
+                        technicalVerification,
+                        this.id
+                );
+
+        registerEvent(new TechnicalVerificationEquipmentCreated(metadata, tvPayload));
+    }
+
+    public void updateTechicalVerificationId(UUID oldTechnicalVerification,
+                                             UUID newTechnicalVerification) {
+        boolean duplicated = this.technicalVerification.contains(newTechnicalVerification)
+                && !newTechnicalVerification.equals(oldTechnicalVerification);
+        if (duplicated) throw new DomainException("Technical verification already exists for this equipment type");
+
+        if (!this.technicalVerification.contains(oldTechnicalVerification)) {
+            throw new DomainException("Technical verification to update does not exist");
+        }
+
+        this.technicalVerification.remove(oldTechnicalVerification);
+        this.technicalVerification.add(newTechnicalVerification);
+
+        EventMetadata metadata = new EventMetadata(
+                "events-domain",UUID.randomUUID().toString(), "EquipmentType",
+                "technical-verification.updated", 1, Instant.now(), this.id.toString());
+        TechnicalVerificationEquipmentPayload tvPayload = new TechnicalVerificationEquipmentPayload(newTechnicalVerification,this.id);
+
+        registerEvent(new TechnicalVerificationEquipmentUpdated(metadata, tvPayload));
+    }
+
+    public void removeTechicalVerificationId(UUID technicalVerification) {
+        boolean exists = this.technicalVerification.contains(technicalVerification);
+        if (!exists) throw new DomainException("Technical verification does not exist for this equipment type");
+
+        this.technicalVerification.remove(technicalVerification);
+
+        EventMetadata metadata = new EventMetadata(
+                "events-domain",UUID.randomUUID().toString(), "EquipmentType",
+                "technical-verification.removed", 1, Instant.now(), this.id.toString());
+        TechnicalVerificationEquipmentPayload tvPayload = new TechnicalVerificationEquipmentPayload(technicalVerification,this.id);
+
+        registerEvent(new TechnicalVerificationEquipmentDeleted(metadata, tvPayload));
+    }
+
     public void addMetrologicalData(MetrologicalData md) {
         boolean duplicated = this.metrologicalData.stream()
                 .anyMatch(existing -> existing.getValue().equals(md.getValue())
@@ -136,7 +197,13 @@ public class EquipmentType extends AggregateRoot {
         registerEvent(new MetrologicalDataDeletedEvent(metadata, md));
     }
 
-    public List<MetrologicalData> getMetrologicalData() {
-        return metrologicalData;
+    public void setMetrologicalData(List<MetrologicalData> metrologicalData) {
+        // Copia defensiva para evitar listas inmutables en el agregado.
+        this.metrologicalData = metrologicalData == null ? new ArrayList<>() : new ArrayList<>(metrologicalData);
+    }
+
+    public void setTechnicalVerification(Set<UUID> technicalVerification) {
+        // Copia defensiva para evitar sets inmutables en el agregado.
+        this.technicalVerification = technicalVerification == null ? new HashSet<>() : new HashSet<>(technicalVerification);
     }
 }

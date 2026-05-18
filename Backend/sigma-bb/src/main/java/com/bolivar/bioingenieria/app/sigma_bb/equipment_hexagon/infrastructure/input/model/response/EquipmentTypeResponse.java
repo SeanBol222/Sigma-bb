@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Data
@@ -24,4 +25,5 @@ public class EquipmentTypeResponse {
     private Boolean verifiable;
     private Long unitMaintenanceValue;
     private List<MetrologicalDataResponse> metrologicalData;
+    private Set<UUID> technicalVerification;
 }

@@ -1,5 +1,7 @@
-package com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.domain;
+package com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.domain.equipment;
 
+import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.domain.equipment_type.EquipmentType;
+import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.domain.brand.Brand;
 import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.domain.equipment.events.EquipmentCreatedEvent;
 import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.domain.equipment.events.EquipmentDeletedEvent;
 import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.domain.equipment.events.EquipmentPayload;

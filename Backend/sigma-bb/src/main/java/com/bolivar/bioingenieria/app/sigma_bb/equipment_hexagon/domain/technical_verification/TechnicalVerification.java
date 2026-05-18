@@ -1,4 +1,4 @@
-package com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.domain;
+package com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.domain.technical_verification;
 
 import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.domain.technical_verification.events.TechnicalVerificationCreatedEvent;
 import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.domain.technical_verification.events.TechnicalVerificationDeletedEvent;

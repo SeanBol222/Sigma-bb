@@ -6,8 +6,8 @@ import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.application.serv
 import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.application.services.equipment_type_services.commands.DeleteEquipmentTypeCommand;
 import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.application.services.equipment_type_services.commands.UpdateEquipmentTypeCommand;
 import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.application.services.metrological_data_services.commands.MetrologicalDataCommand;
-import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.domain.EquipmentType;
-import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.domain.MetrologicalData;
+import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.domain.equipment_type.EquipmentType;
+import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.domain.metrological_data.MetrologicalData;
 import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.infrastructure.output.errors.EquipmentTypeNotFoundException;
 import com.bolivar.bioingenieria.app.sigma_bb.shared.application.ports.output.EventDispatcherPort;
 import com.bolivar.bioingenieria.app.sigma_bb.shared.domain.events.DomainEvent;
@@ -18,6 +18,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 
 
 @Service
@@ -94,7 +96,7 @@ public class EquipmentTypeService implements EquipmentTypeServicePort {
                         .value(command.value())
                         .type(command.type())
                         .build());
-        equipmentTypePersistencePort.save(et);
+        equipmentTypePersistencePort.update(equipmentTypeId, et);
         dispatchEvents(et);
         return et;
     }
@@ -149,7 +151,7 @@ public class EquipmentTypeService implements EquipmentTypeServicePort {
                             .build());
         }
 
-        equipmentTypePersistencePort.save(et);
+        equipmentTypePersistencePort.update(equipmentTypeId, et);
         dispatchEvents(et);
         return et;
     }
@@ -197,6 +199,91 @@ public class EquipmentTypeService implements EquipmentTypeServicePort {
                             .value(newC.value())
                             .type(newC.type())
                             .build());
+        }
+
+        equipmentTypePersistencePort.update(equipmentTypeId, et);
+        dispatchEvents(et);
+        return et;
+    }
+
+    @Override
+    public EquipmentType addTechicalVerificationId(String equipmentTypeId, UUID technicalVerificationId) {
+        EquipmentType et = equipmentTypePersistencePort.findById(equipmentTypeId)
+                .orElseThrow(() -> new EquipmentTypeNotFoundException(equipmentTypeId));
+
+        et.addTechicalVerificationId(technicalVerificationId);
+        equipmentTypePersistencePort.update(equipmentTypeId, et);
+        dispatchEvents(et);
+        return et;
+    }
+
+    @Override
+    public EquipmentType removeTechicalVerificationId(String equipmentTypeId, UUID technicalVerificationId) {
+        EquipmentType et = equipmentTypePersistencePort.findById(equipmentTypeId)
+                .orElseThrow(() -> new EquipmentTypeNotFoundException(equipmentTypeId));
+
+        et.removeTechicalVerificationId(technicalVerificationId);
+        equipmentTypePersistencePort.update(equipmentTypeId, et);
+        dispatchEvents(et);
+        return et;
+    }
+
+    @Override
+    public EquipmentType updateTechicalVerificationId(String equipmentTypeId,
+                                                      UUID oldTechnicalVerificationId,
+                                                      UUID newTechnicalVerificationId) {
+        EquipmentType et = equipmentTypePersistencePort.findById(equipmentTypeId)
+                .orElseThrow(() -> new EquipmentTypeNotFoundException(equipmentTypeId));
+
+        et.updateTechicalVerificationId(
+                oldTechnicalVerificationId,
+                newTechnicalVerificationId);
+        equipmentTypePersistencePort.update(equipmentTypeId, et);
+        dispatchEvents(et);
+        return et;
+    }
+
+    @Override
+    public EquipmentType addTechicalVerificationIdList(String equipmentTypeId, Set<UUID> technicalVerificationIds) {
+        EquipmentType et = equipmentTypePersistencePort.findById(equipmentTypeId)
+                .orElseThrow(() -> new EquipmentTypeNotFoundException(equipmentTypeId));
+
+        for (UUID id : technicalVerificationIds) {
+            et.addTechicalVerificationId(id);
+        }
+
+        equipmentTypePersistencePort.update(equipmentTypeId, et);
+        dispatchEvents(et);
+        return et;
+    }
+
+    @Override
+    public EquipmentType removeTechicalVerificationIdList(String equipmentTypeId, Set<UUID> technicalVerificationIds) {
+        EquipmentType et = equipmentTypePersistencePort.findById(equipmentTypeId)
+                .orElseThrow(() -> new EquipmentTypeNotFoundException(equipmentTypeId));
+
+        for (UUID id : technicalVerificationIds) {
+            et.removeTechicalVerificationId(id);
+        }
+
+        equipmentTypePersistencePort.update(equipmentTypeId, et);
+        dispatchEvents(et);
+        return et;
+    }
+
+    @Override
+    public EquipmentType updateTechicalVerificationIdList(String equipmentTypeId,
+                                                          Set<UUID> oldTechnicalVerificationIds,
+                                                          Set<UUID> newTechnicalVerificationIds) {
+        EquipmentType et = equipmentTypePersistencePort.findById(equipmentTypeId)
+                .orElseThrow(() -> new EquipmentTypeNotFoundException(equipmentTypeId));
+
+        for (UUID id : oldTechnicalVerificationIds) {
+            et.removeTechicalVerificationId(id);
+        }
+
+        for (UUID id : newTechnicalVerificationIds) {
+            et.addTechicalVerificationId(id);
         }
 
         equipmentTypePersistencePort.update(equipmentTypeId, et);

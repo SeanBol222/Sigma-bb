@@ -60,7 +60,37 @@ public class OpenApiConfig {
     public GroupedOpenApi personApi() {
         return GroupedOpenApi.builder()
                 .group("person")
-                .pathsToMatch("/person/**") // Incluye todas las rutas bajo /person/**
+                .pathsToMatch("/person/**")
+                .build();
+    }
+
+    /**
+     * Grupo de documentación para los endpoints relacionados con ubicaciones geográficas.
+     * (países y ciudades).
+     *
+     * @return instancia de {@link GroupedOpenApi} para el grupo "location"
+     */
+    @Bean
+    public GroupedOpenApi locationApi() {
+        return GroupedOpenApi.builder()
+                .group("location")
+                .pathsToMatch("/v1/api/countries/**", "/v1/api/cities/**")
+                .build();
+    }
+
+    /**
+     * Grupo de documentación para los endpoints relacionados con equipos.
+     * (marcas, fabricantes, modelos, tipos de equipo, equipos y verificaciones técnicas).
+     *
+     * @return instancia de {@link GroupedOpenApi} para el grupo "equipment"
+     */
+    @Bean
+    public GroupedOpenApi equipmentApi() {
+        return GroupedOpenApi.builder()
+                .group("equipment")
+                .pathsToMatch("/v1/api/brands/**", "/v1/api/manufacturers/**", "/v1/api/models/**",
+                        "/v1/api/equipment/**", "/v1/api/equipment-types/**",
+                        "/v1/api/technical-verifications/**")
                 .build();
     }
 }
