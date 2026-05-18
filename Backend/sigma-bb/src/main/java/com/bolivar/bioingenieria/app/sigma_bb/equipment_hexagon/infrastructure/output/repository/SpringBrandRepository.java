@@ -4,6 +4,8 @@ import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.infrastructure.o
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.UUID;
+
 @Repository
-public interface SpringBrandRepository extends JpaRepository<BrandEntity, String> {
+public interface SpringBrandRepository extends JpaRepository<BrandEntity, UUID> {
 }

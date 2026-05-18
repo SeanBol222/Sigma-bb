@@ -4,8 +4,8 @@ import com.bolivar.bioingenieria.app.sigma_bb.location_hexagon.domain.city.event
 import com.bolivar.bioingenieria.app.sigma_bb.location_hexagon.domain.city.events.CityDeletedEvent;
 import com.bolivar.bioingenieria.app.sigma_bb.location_hexagon.domain.city.events.CityPayload;
 import com.bolivar.bioingenieria.app.sigma_bb.location_hexagon.domain.city.events.CityUpdatedEvent;
-import com.bolivar.bioingenieria.app.sigma_bb.shared.domain.AggregateRoot;
-import com.bolivar.bioingenieria.app.sigma_bb.shared.domain.EventMetadata;
+import com.bolivar.bioingenieria.app.sigma_bb.shared.domain.events.AggregateRoot;
+import com.bolivar.bioingenieria.app.sigma_bb.shared.domain.events.EventMetadata;
 import lombok.*;
 
 import java.time.Instant;
@@ -29,7 +29,8 @@ public class City extends AggregateRoot {
                 .build();
 
         EventMetadata metadata = new EventMetadata(
-                UUID.randomUUID().toString(), "city.created", 1, Instant.now(), newCity.id);
+                "events-domain",
+                UUID.randomUUID().toString(), "City", "city.created", 1, Instant.now(), newCity.id);
 
         newCity.registerEvent(new CityCreatedEvent(metadata, new CityPayload(newCity.name, newCity.countryId)));
         return newCity;
@@ -40,14 +41,16 @@ public class City extends AggregateRoot {
         this.countryId = countryId;
 
         EventMetadata metadata = new EventMetadata(
-                UUID.randomUUID().toString(), "city.updated", 1, Instant.now(), this.id);
+                "events-domain",
+                UUID.randomUUID().toString(), "City", "city.updated", 1, Instant.now(), this.id);
 
         registerEvent(new CityUpdatedEvent(metadata, new CityPayload(this.name, this.countryId)));
     }
 
     public void deleteCity() {
         EventMetadata metadata = new EventMetadata(
-                UUID.randomUUID().toString(), "city.deleted", 1, Instant.now(), this.id);
+                "events-domain",
+                UUID.randomUUID().toString(), "City", "city.deleted", 1, Instant.now(), this.id);
 
         registerEvent(new CityDeletedEvent(metadata, new CityPayload(this.name, this.countryId)));
     }

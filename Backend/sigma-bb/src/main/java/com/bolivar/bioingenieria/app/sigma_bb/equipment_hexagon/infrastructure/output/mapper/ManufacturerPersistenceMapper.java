@@ -1,6 +1,6 @@
 package com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.infrastructure.output.mapper;
 
-import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.domain.Manufacturer;
+import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.domain.manufacturer.Manufacturer;
 import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.infrastructure.output.entities.ManufacturerEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

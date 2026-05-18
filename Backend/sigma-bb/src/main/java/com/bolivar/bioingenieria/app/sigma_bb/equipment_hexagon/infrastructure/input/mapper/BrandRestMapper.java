@@ -1,6 +1,6 @@
 package com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.infrastructure.input.mapper;
 
-import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.domain.Brand;
+import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.domain.brand.Brand;
 import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.infrastructure.input.model.request.BrandRequest;
 import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.infrastructure.input.model.response.BrandResponse;
 import org.mapstruct.Mapper;

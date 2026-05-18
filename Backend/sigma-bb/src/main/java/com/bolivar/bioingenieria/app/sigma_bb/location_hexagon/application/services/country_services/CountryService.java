@@ -8,9 +8,10 @@ import com.bolivar.bioingenieria.app.sigma_bb.location_hexagon.application.servi
 import com.bolivar.bioingenieria.app.sigma_bb.location_hexagon.application.services.country_services.commands.UpdateCountryCommand;
 import com.bolivar.bioingenieria.app.sigma_bb.location_hexagon.domain.country.Country;
 import com.bolivar.bioingenieria.app.sigma_bb.location_hexagon.infrastructure.output.errors.CountryNotFoundException;
-import com.bolivar.bioingenieria.app.sigma_bb.shared.domain.DomainEvent;
-import com.bolivar.bioingenieria.app.sigma_bb.shared.domain.Payload;
+import com.bolivar.bioingenieria.app.sigma_bb.shared.domain.events.DomainEvent;
+import com.bolivar.bioingenieria.app.sigma_bb.shared.domain.events.Payload;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,7 +23,7 @@ public class CountryService implements CountryServicePort {
 
     @Autowired
     public CountryService(CountryPersistencePort countryPersistencePort,
-                          EventDispatcherPort eventDispatcherPort) {
+                          @Qualifier(value = "springDispatcher") EventDispatcherPort eventDispatcherPort) {
         this.countryPersistencePort = countryPersistencePort;
         this.eventDispatcherPort = eventDispatcherPort;
     }
@@ -67,6 +68,6 @@ public class CountryService implements CountryServicePort {
 
     private void dispatchEvents(Country aggregate) {
         List<DomainEvent<? extends Payload>> events = aggregate.pullEvents();
-        events.forEach(e -> eventDispatcherPort.dispatch("countryEntity", e.metadata().eventType(), e));
+        events.forEach(eventDispatcherPort::dispatch);
     }
 }

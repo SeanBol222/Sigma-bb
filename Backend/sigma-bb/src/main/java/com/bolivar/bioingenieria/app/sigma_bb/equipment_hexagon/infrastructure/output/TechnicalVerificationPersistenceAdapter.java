@@ -1,7 +1,7 @@
 package com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.infrastructure.output;
 
 import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.application.ports.output.TechnicalVerificationPersistencePort;
-import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.domain.TechnicalVerification;
+import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.domain.technical_verification.TechnicalVerification;
 import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.infrastructure.output.entities.TechnicalVerificationEntity;
 import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.infrastructure.output.errors.TechnicalVerificationNotFoundException;
 import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.infrastructure.output.mapper.TechnicalVerificationPersistenceMapper;
@@ -53,5 +53,13 @@ public class TechnicalVerificationPersistenceAdapter implements TechnicalVerific
         UUID uuid = UUID.fromString(id);
         if (!repository.existsById(uuid)) throw new TechnicalVerificationNotFoundException(id);
         repository.deleteById(uuid);
+    }
+
+    @Override
+    public List<TechnicalVerification> findAllById(List<String> ids) {
+        List<UUID> uuidList = ids.stream()
+                .map(UUID::fromString)
+                .toList();
+        return mapper.toTechnicalVerificationList(repository.findAllByIdIn(uuidList));
     }
 }

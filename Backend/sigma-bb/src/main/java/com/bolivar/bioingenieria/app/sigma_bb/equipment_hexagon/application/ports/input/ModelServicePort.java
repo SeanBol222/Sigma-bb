@@ -3,7 +3,7 @@ package com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.application.por
 import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.application.services.model_services.commands.CreateModelCommand;
 import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.application.services.model_services.commands.DeleteModelCommand;
 import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.application.services.model_services.commands.UpdateModelCommand;
-import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.domain.Model;
+import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.domain.model.Model;
 
 import java.util.List;
 

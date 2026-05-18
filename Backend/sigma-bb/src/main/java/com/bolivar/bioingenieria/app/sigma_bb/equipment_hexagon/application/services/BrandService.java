@@ -5,12 +5,13 @@ import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.application.port
 import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.application.services.brand_services.commands.CreateBrandCommand;
 import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.application.services.brand_services.commands.DeleteBrandCommand;
 import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.application.services.brand_services.commands.UpdateBrandCommand;
-import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.domain.Brand;
+import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.domain.brand.Brand;
 import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.infrastructure.output.errors.BrandNotFoundException;
 import com.bolivar.bioingenieria.app.sigma_bb.shared.application.ports.output.EventDispatcherPort;
-import com.bolivar.bioingenieria.app.sigma_bb.shared.domain.DomainEvent;
-import com.bolivar.bioingenieria.app.sigma_bb.shared.domain.Payload;
+import com.bolivar.bioingenieria.app.sigma_bb.shared.domain.events.DomainEvent;
+import com.bolivar.bioingenieria.app.sigma_bb.shared.domain.events.Payload;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,7 +23,7 @@ public class BrandService implements BrandServicePort {
 
     @Autowired
     public BrandService(BrandPersistencePort brandPersistencePort,
-                        EventDispatcherPort eventDispatcherPort) {
+                        @Qualifier(value = "springDispatcher") EventDispatcherPort eventDispatcherPort) {
         this.brandPersistencePort = brandPersistencePort;
         this.eventDispatcherPort = eventDispatcherPort;
     }
@@ -67,6 +68,6 @@ public class BrandService implements BrandServicePort {
 
     private void dispatchEvents(Brand aggregate) {
         List<DomainEvent<? extends Payload>> events = aggregate.pullEvents();
-        events.forEach(e -> eventDispatcherPort.dispatch("brandEntity", e.metadata().eventType(), e));
+        events.forEach(eventDispatcherPort::dispatch);
     }
 }

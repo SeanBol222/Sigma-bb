@@ -5,12 +5,13 @@ import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.application.port
 import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.application.services.model_services.commands.CreateModelCommand;
 import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.application.services.model_services.commands.DeleteModelCommand;
 import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.application.services.model_services.commands.UpdateModelCommand;
-import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.domain.Model;
+import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.domain.model.Model;
 import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.infrastructure.output.errors.ModelNotFoundException;
 import com.bolivar.bioingenieria.app.sigma_bb.shared.application.ports.output.EventDispatcherPort;
-import com.bolivar.bioingenieria.app.sigma_bb.shared.domain.DomainEvent;
-import com.bolivar.bioingenieria.app.sigma_bb.shared.domain.Payload;
+import com.bolivar.bioingenieria.app.sigma_bb.shared.domain.events.DomainEvent;
+import com.bolivar.bioingenieria.app.sigma_bb.shared.domain.events.Payload;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,7 +23,7 @@ public class ModelService implements ModelServicePort {
 
     @Autowired
     public ModelService(ModelPersistencePort modelPersistencePort,
-                        EventDispatcherPort eventDispatcherPort) {
+                        @Qualifier(value = "springDispatcher") EventDispatcherPort eventDispatcherPort) {
         this.modelPersistencePort = modelPersistencePort;
         this.eventDispatcherPort = eventDispatcherPort;
     }
@@ -67,6 +68,6 @@ public class ModelService implements ModelServicePort {
 
     private void dispatchEvents(Model aggregate) {
         List<DomainEvent<? extends Payload>> events = aggregate.pullEvents();
-        events.forEach(e -> eventDispatcherPort.dispatch("modelEntity", e.metadata().eventType(), e));
+        events.forEach(eventDispatcherPort::dispatch);
     }
 }

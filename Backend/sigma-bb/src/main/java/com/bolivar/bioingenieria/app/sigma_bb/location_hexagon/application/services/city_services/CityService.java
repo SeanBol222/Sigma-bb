@@ -8,9 +8,10 @@ import com.bolivar.bioingenieria.app.sigma_bb.location_hexagon.application.servi
 import com.bolivar.bioingenieria.app.sigma_bb.location_hexagon.application.services.city_services.commands.UpdateCityCommand;
 import com.bolivar.bioingenieria.app.sigma_bb.location_hexagon.domain.city.City;
 import com.bolivar.bioingenieria.app.sigma_bb.location_hexagon.infrastructure.output.errors.CityNotFoundException;
-import com.bolivar.bioingenieria.app.sigma_bb.shared.domain.DomainEvent;
-import com.bolivar.bioingenieria.app.sigma_bb.shared.domain.Payload;
+import com.bolivar.bioingenieria.app.sigma_bb.shared.domain.events.DomainEvent;
+import com.bolivar.bioingenieria.app.sigma_bb.shared.domain.events.Payload;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,7 +23,7 @@ public class CityService implements CityServicePort {
 
     @Autowired
     public CityService(CityPersistencePort cityPersistencePort,
-                       EventDispatcherPort eventDispatcherPort) {
+                       @Qualifier(value = "springDispatcher") EventDispatcherPort eventDispatcherPort) {
         this.cityPersistencePort = cityPersistencePort;
         this.eventDispatcherPort = eventDispatcherPort;
     }
@@ -66,6 +67,6 @@ public class CityService implements CityServicePort {
 
     private void dispatchEvents(City aggregate) {
         List<DomainEvent<? extends Payload>> events = aggregate.pullEvents();
-        events.forEach(e->eventDispatcherPort.dispatch("cityEntity",e.metadata().eventType(),e));
+        events.forEach(eventDispatcherPort::dispatch);
     }
 }

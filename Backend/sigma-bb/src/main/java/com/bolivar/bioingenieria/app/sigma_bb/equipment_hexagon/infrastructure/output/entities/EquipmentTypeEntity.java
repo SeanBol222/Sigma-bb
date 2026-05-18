@@ -1,10 +1,7 @@
 package com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.infrastructure.output.entities;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
@@ -15,6 +12,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @Entity
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @SQLRestriction("b_estado_activo = true")
@@ -54,4 +52,25 @@ public class EquipmentTypeEntity {
 
     @OneToMany(mappedBy = "equipmentType", fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<MetrologicalDataEntity> metrologicalDataEntities;
+
+    @OneToMany(mappedBy = "equipmentTypeEntity", fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    private List<TechnicalVerificationEquipmentEntity> technicalVerificationEquipmentEntities;
+
+    @Override
+    public String toString() {
+        return "EquipmentTypeEntity{" +
+                "id=" + id +
+                ", equipmentTypeName='" + equipmentTypeName + '\'' +
+                ", technicalDefinition='" + technicalDefinition + '\'' +
+                ", careRecommendations='" + careRecommendations + '\'' +
+                ", voltage=" + voltage +
+                ", amperage=" + amperage +
+                ", predominantTechnology='" + predominantTechnology + '\'' +
+                ", verifiable=" + verifiable +
+                ", unitMaintenanceValue=" + unitMaintenanceValue +
+                ", active=" + active +
+                ", list" + metrologicalDataEntities +
+                ", list" + technicalVerificationEquipmentEntities +
+                '}';
+    }
 }

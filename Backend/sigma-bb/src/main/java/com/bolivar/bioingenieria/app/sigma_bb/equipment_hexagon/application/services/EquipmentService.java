@@ -5,13 +5,15 @@ import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.application.port
 import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.application.services.equipment_services.commands.CreateEquipmentCommand;
 import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.application.services.equipment_services.commands.DeleteEquipmentCommand;
 import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.application.services.equipment_services.commands.UpdateEquipmentCommand;
-import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.domain.Equipment;
+import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.domain.equipment.Equipment;
 import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.infrastructure.output.errors.EquipmentNotFoundException;
 import com.bolivar.bioingenieria.app.sigma_bb.shared.application.ports.output.EventDispatcherPort;
-import com.bolivar.bioingenieria.app.sigma_bb.shared.domain.DomainEvent;
-import com.bolivar.bioingenieria.app.sigma_bb.shared.domain.Payload;
+import com.bolivar.bioingenieria.app.sigma_bb.shared.domain.events.DomainEvent;
+import com.bolivar.bioingenieria.app.sigma_bb.shared.domain.events.Payload;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -22,7 +24,7 @@ public class EquipmentService implements EquipmentServicePort {
 
     @Autowired
     public EquipmentService(EquipmentPersistencePort persistencePort,
-                            EventDispatcherPort eventDispatcherPort) {
+                            @Qualifier(value = "springDispatcher") EventDispatcherPort eventDispatcherPort) {
         this.persistencePort = persistencePort;
         this.eventDispatcherPort = eventDispatcherPort;
     }
@@ -33,6 +35,7 @@ public class EquipmentService implements EquipmentServicePort {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Equipment findById(String id) {
         return this.persistencePort.findById(id)
                 .orElseThrow(() -> new EquipmentNotFoundException(id));
@@ -67,6 +70,6 @@ public class EquipmentService implements EquipmentServicePort {
 
     private void dispatchEvents(Equipment aggregate) {
         List<DomainEvent<? extends Payload>> events = aggregate.pullEvents();
-        events.forEach(e -> eventDispatcherPort.dispatch("equipmentEntity", e.metadata().eventType(), e));
+        events.forEach(eventDispatcherPort::dispatch);
     }
 }

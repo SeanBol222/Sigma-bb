@@ -1,6 +1,6 @@
 package com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.application.ports.output;
 
-import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.domain.Manufacturer;
+import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.domain.manufacturer.Manufacturer;
 
 import java.util.List;
 import java.util.Optional;

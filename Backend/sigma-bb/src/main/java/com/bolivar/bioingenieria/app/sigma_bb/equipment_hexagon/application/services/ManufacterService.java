@@ -5,12 +5,13 @@ import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.application.port
 import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.application.services.manufacturer_services.commands.CreateManufacturerCommand;
 import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.application.services.manufacturer_services.commands.DeleteManufacturerCommand;
 import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.application.services.manufacturer_services.commands.UpdateManufacturerCommand;
-import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.domain.Manufacturer;
+import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.domain.manufacturer.Manufacturer;
 import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.infrastructure.output.errors.ManufacturerNotFoundException;
 import com.bolivar.bioingenieria.app.sigma_bb.shared.application.ports.output.EventDispatcherPort;
-import com.bolivar.bioingenieria.app.sigma_bb.shared.domain.DomainEvent;
-import com.bolivar.bioingenieria.app.sigma_bb.shared.domain.Payload;
+import com.bolivar.bioingenieria.app.sigma_bb.shared.domain.events.DomainEvent;
+import com.bolivar.bioingenieria.app.sigma_bb.shared.domain.events.Payload;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,7 +23,7 @@ public class ManufacterService implements ManufacturerServicePort {
 
     @Autowired
     public ManufacterService(ManufacturerPersistencePort manufacterPersistencePort,
-                              EventDispatcherPort eventDispatcherPort) {
+                             @Qualifier(value = "springDispatcher") EventDispatcherPort eventDispatcherPort) {
         this.manufacterPersistencePort = manufacterPersistencePort;
         this.eventDispatcherPort = eventDispatcherPort;
     }
@@ -67,6 +68,6 @@ public class ManufacterService implements ManufacturerServicePort {
 
     private void dispatchEvents(Manufacturer aggregate) {
         List<DomainEvent<? extends Payload>> events = aggregate.pullEvents();
-        events.forEach(e -> eventDispatcherPort.dispatch("manufacturerEntity", e.metadata().eventType(), e));
+        events.forEach(eventDispatcherPort::dispatch);
     }
 }

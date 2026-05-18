@@ -384,6 +384,23 @@ CREATE TABLE verificacion_tecnica_tipo_equipo
 )
 ;
 
+CREATE TABLE domain_events (
+    id              BIGSERIAL       PRIMARY KEY,
+    event_id        VARCHAR(36)     NOT NULL UNIQUE,
+    aggregate_id    VARCHAR(255)    NOT NULL,
+    aggregate_type  VARCHAR(100)    NOT NULL,
+    event_type      VARCHAR(255)    NOT NULL,
+    version         INT             NOT NULL DEFAULT 1,
+    occurred_at     TIMESTAMPTZ     NOT NULL,
+    metadata_json   JSONB           NOT NULL,
+    payload_json    JSONB           NOT NULL,
+    created_at      TIMESTAMPTZ     NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX idx_events_aggregate ON domain_events(aggregate_type, aggregate_id);
+CREATE INDEX idx_events_type      ON domain_events(event_type);
+CREATE INDEX idx_events_occurred  ON domain_events(occurred_at);
+
 /* Create Primary Keys, Indexes, Uniques, Checks */
 
 ALTER TABLE area_servicio ADD CONSTRAINT "PK_area_servicio"
