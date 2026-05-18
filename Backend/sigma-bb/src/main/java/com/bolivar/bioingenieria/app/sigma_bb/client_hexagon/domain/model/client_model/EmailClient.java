@@ -2,6 +2,8 @@ package com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.domain.model.clien
 
 import lombok.*;
 
+import java.util.UUID;
+
 /**
  * Modelo de dominio que representa un correo electrónico asociado a un cliente.
  *
@@ -16,9 +18,9 @@ import lombok.*;
 public class EmailClient {
 
     /**
-     * Identificador del correo del cliente. Puede ser una clave interna o cadena única.
+     * Identificador del correo del cliente.
      */
-    private String idCorreoCliente;
+    private UUID identificadorCorreoCliente;
 
     /**
      * Dirección de correo electrónico del cliente.

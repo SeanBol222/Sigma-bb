@@ -19,7 +19,7 @@ public class PhoneClient {
     /**
      * Identificador único del teléfono del cliente.
      */
-    private UUID idTelefonoCliente;
+    private UUID identificadorTelefonoCliente;
 
     /**
      * Número telefónico asociado al cliente.

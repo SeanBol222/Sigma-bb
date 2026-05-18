@@ -84,9 +84,9 @@ public class PersonGlobalControllerAdvice {
                 .code(INVALID_PERSON_DATA.getCode())
                 .message(INVALID_PERSON_DATA.getMessage())
                 .details(result.getFieldErrors()
-                .stream()
-                .map(DefaultMessageSourceResolvable::getDefaultMessage)
-                .collect(Collectors.toList()))
+                        .stream()
+                        .map(DefaultMessageSourceResolvable::getDefaultMessage)
+                        .collect(Collectors.toList()))
                 .timestamp(LocalDateTime.now())
                 .build();
     }

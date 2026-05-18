@@ -12,7 +12,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 /**
- * Adaptador de persistencia que implementa el puerto de salida PersonPersistencePort.
+ * Adaptador de persistencia que implementa el puerto de salida {@link PersonPersistencePort}.
  *
  * Proporciona las operaciones de persistencia para la entidad Person, actuando como
  * intermediario entre la lógica de aplicación y el repositorio de datos. Utiliza
@@ -45,7 +45,8 @@ public class PersonPersistenceAdapter implements PersonPersistencePort {
      */
     @Override
     public List<Person> findAll() {
-        return personPersistenceMapper.toPersonList(personRepository.findAll());
+        return personPersistenceMapper.toPersonList(
+                personRepository.findAll());
     }
 
     /**
@@ -57,7 +58,8 @@ public class PersonPersistenceAdapter implements PersonPersistencePort {
     @Override
     public Person save(Person person) {
         return personPersistenceMapper.toPerson(
-                personRepository.save(personPersistenceMapper.toPersonEntity(person)));
+                personRepository.save(
+                        personPersistenceMapper.toPersonEntity(person)));
     }
 
     /**
@@ -68,7 +70,8 @@ public class PersonPersistenceAdapter implements PersonPersistencePort {
     @Override
     public void delete(Person person) {
         personPersistenceMapper.toPerson(
-                personRepository.save(personPersistenceMapper.toPersonEntity(person)));
+                personRepository.save(
+                        personPersistenceMapper.toPersonEntity(person)));
     }
 
 }

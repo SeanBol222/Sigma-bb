@@ -38,14 +38,13 @@ import java.util.UUID;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/person")
-@Tag(name = "Person REST API", description = "Endpoints para la gestión de Person")
+@Tag(name = "Person REST API",
+        description = "Endpoints para la gestión de Person")
 public class PersonRestAdapter {
 
     private final PersonServicePort personServicePort;
 
     private final PersonRestMapper personRestMapper;
-    private final PhonePersonRestMapper phonePersonRestMapper;
-    private final EmailPersonRestMapper emailPersonRestMapper;
 
     // -------------------------------------------------------
     // -------------------- CRUD PERSONA ---------------------
