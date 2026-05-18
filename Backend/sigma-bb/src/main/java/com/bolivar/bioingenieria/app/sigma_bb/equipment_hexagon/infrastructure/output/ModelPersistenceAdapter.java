@@ -1,7 +1,7 @@
 package com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.infrastructure.output;
 
 import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.application.ports.output.ModelPersistencePort;
-import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.domain.Model;
+import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.domain.model.Model;
 import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.infrastructure.output.entities.ModelEntity;
 import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.infrastructure.output.errors.ModelNotFoundException;
 import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.infrastructure.output.mapper.ModelPersistenceMapper;

@@ -1,7 +1,7 @@
 package com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.infrastructure.output;
 
 import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.application.ports.output.ManufacturerPersistencePort;
-import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.domain.Manufacturer;
+import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.domain.manufacturer.Manufacturer;
 import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.infrastructure.output.entities.ManufacturerEntity;
 import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.infrastructure.output.errors.ManufacturerNotFoundException;
 import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.infrastructure.output.mapper.ManufacturerPersistenceMapper;

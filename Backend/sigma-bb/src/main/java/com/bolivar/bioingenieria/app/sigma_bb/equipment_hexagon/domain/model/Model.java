@@ -1,4 +1,4 @@
-package com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.domain;
+package com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.domain.model;
 
 import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.domain.model.events.ModelCreatedEvent;
 import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.domain.model.events.ModelDeletedEvent;

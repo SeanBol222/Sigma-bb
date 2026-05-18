@@ -5,7 +5,7 @@ import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.application.port
 import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.application.services.model_services.commands.CreateModelCommand;
 import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.application.services.model_services.commands.DeleteModelCommand;
 import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.application.services.model_services.commands.UpdateModelCommand;
-import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.domain.Model;
+import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.domain.model.Model;
 import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.infrastructure.output.errors.ModelNotFoundException;
 import com.bolivar.bioingenieria.app.sigma_bb.shared.application.ports.output.EventDispatcherPort;
 import com.bolivar.bioingenieria.app.sigma_bb.shared.domain.events.DomainEvent;

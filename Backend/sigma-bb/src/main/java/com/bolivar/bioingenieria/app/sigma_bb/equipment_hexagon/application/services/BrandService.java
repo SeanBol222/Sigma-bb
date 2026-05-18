@@ -5,7 +5,7 @@ import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.application.port
 import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.application.services.brand_services.commands.CreateBrandCommand;
 import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.application.services.brand_services.commands.DeleteBrandCommand;
 import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.application.services.brand_services.commands.UpdateBrandCommand;
-import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.domain.Brand;
+import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.domain.brand.Brand;
 import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.infrastructure.output.errors.BrandNotFoundException;
 import com.bolivar.bioingenieria.app.sigma_bb.shared.application.ports.output.EventDispatcherPort;
 import com.bolivar.bioingenieria.app.sigma_bb.shared.domain.events.DomainEvent;

@@ -26,4 +26,22 @@ public class MetrologicalDataId implements Serializable {
 
     @Column(name = "k_id_tipo_equipo")
     private UUID equipmentTypeId;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        MetrologicalDataId that = (MetrologicalDataId) o;
+        return value != null ? value.equals(that.value) : that.value == null &&
+                type != null ? type.equals(that.type) : that.type == null &&
+                equipmentTypeId != null ? equipmentTypeId.equals(that.equipmentTypeId) : that.equipmentTypeId == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = value != null ? value.hashCode() : 0;
+        result = 31 * result + (type != null ? type.hashCode() : 0);
+        result = 31 * result + (equipmentTypeId != null ? equipmentTypeId.hashCode() : 0);
+        return result;
+    }
 }

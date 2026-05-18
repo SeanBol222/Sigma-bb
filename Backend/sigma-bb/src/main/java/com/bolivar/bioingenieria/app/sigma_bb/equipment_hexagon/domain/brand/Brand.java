@@ -1,4 +1,4 @@
-package com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.domain;
+package com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.domain.brand;
 
 import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.domain.brand.events.BrandCreatedEvent;
 import com.bolivar.bioingenieria.app.sigma_bb.equipment_hexagon.domain.brand.events.BrandDeletedEvent;

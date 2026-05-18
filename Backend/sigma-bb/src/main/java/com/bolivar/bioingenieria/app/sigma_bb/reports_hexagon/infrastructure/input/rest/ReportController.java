@@ -2,11 +2,11 @@ package com.bolivar.bioingenieria.app.sigma_bb.reports_hexagon.infrastructure.in
 
 import com.bolivar.bioingenieria.app.sigma_bb.reports_hexagon.application.services.ReportService;
 import com.bolivar.bioingenieria.app.sigma_bb.shared.domain.ReportRequest;
+import com.bolivar.bioingenieria.app.sigma_bb.reports_hexagon.infrastructure.input.model.response.ReportResponseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -21,9 +21,8 @@ public class ReportController {
     }
 
     @PostMapping
-    public ResponseEntity<Map<String, Object>> getReport(@RequestBody ReportRequest reportRequest) {
-        Map<String, Object> result = reportService.generateReport(UUID.randomUUID().toString(), reportRequest.modelId());
+    public ResponseEntity<ReportResponseDTO> getReport(@RequestBody ReportRequest reportRequest) {
+        ReportResponseDTO result = reportService.generateReport(UUID.randomUUID().toString(), reportRequest.modelId());
         return ResponseEntity.ok(result);
     }
 }
-
