@@ -47,7 +47,6 @@ public class PhoneRestAdapter {
 
     private final PersonRestMapper personRestMapper;
     private final PhonePersonRestMapper phonePersonRestMapper;
-    private final EmailPersonRestMapper emailPersonRestMapper;
 
     // -------------------------------------------------------
     // -------------------- CRUD TELEFONO ---------------------

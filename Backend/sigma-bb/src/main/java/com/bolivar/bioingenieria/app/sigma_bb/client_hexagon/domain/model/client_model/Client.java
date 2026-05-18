@@ -3,6 +3,7 @@ package com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.domain.model.clien
 import lombok.*;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Modelo de dominio que representa un cliente (empresa o persona jurídica).
@@ -46,12 +47,93 @@ public class Client {
     private boolean estadoActivo;
 
     /**
+     * Identificador del país asociado al cliente. Puede ser un código ISO o similar.
+     */
+    private String identificadorPais;
+
+    /**
      * Lista de {@link EmailClient} asociados al cliente.
      */
-    private List<EmailClient> correosCliente;
+    private List<EmailClient> emailClientList;
 
     /**
      * Lista de {@link PhoneClient} asociados al cliente.
      */
-    private List<PhoneClient> telefonosCliente;
+    private List<PhoneClient> phoneClientList;
+
+    /**
+     * Lista de {@link Headquarter} asociados al cliente.
+     */
+    private List<Headquarter> headquarterList;
+
+    // ----------------------------------------------------------------------
+    // ------------- Métodos para gestionar correos y teléfonos -------------
+    // ----------------------------------------------------------------------
+
+    /**
+     * Agrega un {@link EmailClient} a la lista de correos de la persona.
+     *
+     * @param email Objeto {@link EmailClient} a agregar
+     */
+    public void addEmail(EmailClient email) {
+        this.emailClientList.add(email);
+    }
+
+    /**
+     * Elimina (cambia su estadoActivo a false) un {@link EmailClient} de la lista de correos del cliente.
+     *
+     * @param idEmail UUID de {@link EmailClient} a eliminar
+     */
+    public void removeEmail(UUID idEmail) {
+        this.emailClientList.stream()
+                .filter(e -> e.getIdentificadorCorreoCliente().equals(idEmail))
+                .findFirst()
+                .ifPresent(e -> e.setEstadoActivo(false));
+    }
+
+    /**
+     * Agrega un {@link PhoneClient} a la lista de teléfonos del cliente.
+     *
+     * @param phone Objeto {@link PhoneClient} a agregar
+     */
+    public void addPhone(PhoneClient phone) {
+        this.phoneClientList.add(phone);
+    }
+
+    /**
+     * Elimina (cambia su estadoActivo a false) un {@link PhoneClient} de la lista de teléfonos del cliente.
+     *
+     * @param idPhone UUID de {@link PhoneClient} a eliminar
+     */
+    public void removePhone(UUID idPhone) {
+        this.phoneClientList.stream()
+                .filter(p -> p.getIdentificadorTelefonoCliente().equals(idPhone))
+                .findFirst()
+                .ifPresent(p -> p.setEstadoActivo(false));
+    }
+
+    // ----------------------------------------------------------------------
+    // ------------- Métodos para gestionar sedes  --------------------------
+    // ----------------------------------------------------------------------
+
+    /**
+     * Agrega un {@link Headquarter} a la lista de sedes.
+     *
+     * @param headquarter Objeto {@link Headquarter} a agregar
+     */
+    public void addHeadquarter(Headquarter headquarter) {
+         this.headquarterList.add(headquarter);
+    }
+
+    /**
+     * Elimina (cambia su estadoActivo a false) un {@link Headquarter} de la lista de sedes.
+     *
+     * @param idHeadquarter UUID de {@link Headquarter} a eliminar
+     */
+    public void removeHeadquarter(UUID idHeadquarter) {
+        this.headquarterList.stream()
+                .filter(e -> e.getIdentificadorSede().equals(idHeadquarter))
+                .findFirst()
+                .ifPresent(e -> e.setEstadoActivo(false));
+    }
 }

@@ -63,5 +63,61 @@ public class OpenApiConfig {
                 .pathsToMatch("/person/**") // Incluye todas las rutas bajo /person/**
                 .build();
     }
+
+    /**
+     * Grupo de documentación para los endpoints relacionados con clientes.
+     * Permite filtrar las rutas que se muestran en un grupo separado dentro de Swagger UI.
+     *
+     * @return instancia de {@link GroupedOpenApi} para el grupo "client"
+     */
+    @Bean
+    public GroupedOpenApi clientApi() {
+        return GroupedOpenApi.builder()
+                .group("client")
+                .pathsToMatch("/client/**") // Incluye todas las rutas bajo /client/**
+                .build();
+    }
+
+    /**
+     * Grupo de documentación para los endpoints relacionados con sedes.
+     * Permite filtrar las rutas que se muestran en un grupo separado dentro de Swagger UI.
+     *
+     * @return instancia de {@link GroupedOpenApi} para el grupo "headquarter"
+     */
+    @Bean
+    public GroupedOpenApi headquarterApi() {
+        return GroupedOpenApi.builder()
+                .group("headquarter")
+                .pathsToMatch("/headquarter/**") // Incluye todas las rutas bajo /headquarter/**
+                .build();
+    }
+
+    /**
+     * Grupo de documentación para los endpoints relacionados con áreas de servicio.
+     * Permite filtrar las rutas que se muestran en un grupo separado dentro de Swagger UI.
+     *
+     * @return instancia de {@link GroupedOpenApi} para el grupo "service-area"
+     */
+    @Bean
+    public GroupedOpenApi serviceAreaApi() {
+        return GroupedOpenApi.builder()
+                .group("service-area")
+                .pathsToMatch("/service-area/**") // Incluye todas las rutas bajo /service-area/**
+                .build();
+    }
+
+    /**
+     * Grupo de documentación para los endpoints relacionados con los recursos de los clientes.
+     * Permite filtrar las rutas que se muestran en un grupo separado dentro de Swagger UI.
+     *
+     * @return instancia de {@link GroupedOpenApi} para el grupo "client-equipment"
+     */
+    @Bean
+    public GroupedOpenApi clientEquipmentApi() {
+        return GroupedOpenApi.builder()
+                .group("client-equipment")
+                .pathsToMatch("/client-equipment/**") // Incluye todas las rutas bajo /client-equipment/**
+                .build();
+    }
 }
 

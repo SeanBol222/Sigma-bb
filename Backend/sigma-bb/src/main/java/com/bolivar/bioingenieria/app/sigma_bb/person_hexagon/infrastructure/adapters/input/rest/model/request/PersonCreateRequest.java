@@ -11,7 +11,8 @@ import java.util.List;
  * Se utiliza en la capa REST para recibir los datos básicos de la persona
  * junto con sus teléfonos y correos electrónicos asociados.
  */
-@Data
+@Setter
+@Getter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor

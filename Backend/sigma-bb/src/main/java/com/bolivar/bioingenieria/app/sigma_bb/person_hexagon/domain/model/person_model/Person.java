@@ -72,6 +72,10 @@ public class Person {
      */
     private List<PhonePerson> phonePersonList;
 
+    // ----------------------------------------------------------------------
+    // ------------- Métodos para gestionar correos y teléfonos -------------
+    // ----------------------------------------------------------------------
+
     /**
      * Agrega un {@link EmailPerson} a la lista de correos de la persona.
      *
