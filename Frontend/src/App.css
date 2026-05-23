@@ -1,0 +1,150 @@
+.page-shell {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
+
+.auth-card,
+.dashboard-card {
+  width: min(920px, 100%);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 28px;
+  background:
+    linear-gradient(180deg, rgba(15, 23, 42, 0.96), rgba(15, 23, 42, 0.84)),
+    radial-gradient(circle at top left, rgba(56, 189, 248, 0.16), transparent 42%),
+    radial-gradient(circle at bottom right, rgba(251, 191, 36, 0.12), transparent 38%);
+  box-shadow: 0 28px 90px rgba(15, 23, 42, 0.42);
+  padding: 32px;
+  color: #e2e8f0;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: rgba(56, 189, 248, 0.14);
+  color: #7dd3fc;
+  font-size: 0.82rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.auth-card h1,
+.dashboard-card h1 {
+  margin: 18px 0 12px;
+  font-size: clamp(2.1rem, 4vw, 3.5rem);
+  line-height: 1.02;
+}
+
+.subtitle {
+  max-width: 70ch;
+  color: #cbd5e1;
+  line-height: 1.6;
+}
+
+.primary-action,
+.secondary-action {
+  border-radius: 18px;
+  border: 1px solid transparent;
+  padding: 14px 18px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.primary-action {
+  margin-top: 24px;
+  background: linear-gradient(135deg, #38bdf8, #0ea5e9);
+  color: #082f49;
+}
+
+.secondary-action {
+  background: rgba(15, 23, 42, 0.75);
+  color: #f8fafc;
+  border-color: rgba(148, 163, 184, 0.18);
+}
+
+.primary-action:focus-visible,
+.secondary-action:focus-visible,
+.auth-card a:focus-visible {
+  outline: 2px solid #38bdf8;
+  outline-offset: 2px;
+}
+
+.card-note {
+  margin-top: 24px;
+  padding: 16px 18px;
+  border-radius: 20px;
+  background: rgba(15, 23, 42, 0.55);
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  display: grid;
+  gap: 6px;
+}
+
+.card-note p,
+.success-note {
+  margin: 0;
+  color: #cbd5e1;
+}
+
+.success-note {
+  margin-top: 16px;
+}
+
+.success-note a {
+  color: #7dd3fc;
+  text-decoration: none;
+}
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: start;
+  flex-wrap: wrap;
+}
+
+.token-panel {
+  margin-top: 24px;
+  display: grid;
+  gap: 12px;
+}
+
+.token-panel span {
+  color: #94a3b8;
+  font-size: 0.92rem;
+}
+
+.token-panel pre {
+  margin: 0;
+  padding: 16px;
+  border-radius: 20px;
+  background: rgba(2, 6, 23, 0.75);
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  color: #f8fafc;
+  white-space: pre-wrap;
+  word-break: break-word;
+  min-height: 220px;
+  overflow: auto;
+}
+
+.screen-loader {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  color: #e2e8f0;
+}
+
+@media (max-width: 640px) {
+  .page-shell {
+    padding: 14px;
+  }
+
+  .auth-card,
+  .dashboard-card {
+    padding: 22px;
+    border-radius: 22px;
+  }
+}
