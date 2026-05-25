@@ -1,6 +1,5 @@
 package com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.infraestructure.adapters.output.persistence.entity;
 
-import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.domain.model.client_model.ClientEquipment;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -49,18 +48,6 @@ public class ServiceAreaEntity {
     private boolean estadoActivo = true;
 
     /**
-     * Lista de equipos asociados a esta área de servicio.
-     * Se establece una relación uno a muchos con la entidad {@link ClientEquipmentEntity}.
-     * La eliminación en cascada asegura que al eliminar un área de servicio,
-     * también se eliminen los equipos relacionados.
-     */
-    @OneToMany(mappedBy = "serviceArea",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true,
-            fetch = FetchType.LAZY)
-    private List<ClientEquipmentEntity> clientEquipmentList;
-
-    /**
      * Relación uno a uno con la entidad {@link ManagerEntity}.
      * Cada área de servicio tiene asignado un único encargado o responsable.
      * La eliminación en cascada asegura que al eliminar un área de servicio,
@@ -73,12 +60,12 @@ public class ServiceAreaEntity {
     private List<ManagerEntity> managerList;
 
     /**
-     * Relación muchos a uno con la entidad {@link HeadquarterEntity}.
-     * Cada área de servicio está asociada a una única sede o sucursal.
-     * La columna "k_id_sede" en la tabla "area_servicio" actúa como clave foránea
-     * que referencia a la tabla "sede".
+     * Identificador único de la sede a la que pertenece el área de servicio.
+     * Define una relación muchos a uno (ManyToOne) con la entidad {@link HeadquarterEntity},
+     * donde múltiples áreas de servicio pueden estar asociadas a una misma sede. El campo
+     * k_id_sede en la tabla area_servicio actúa como clave foránea que referencia a la sede.
      */
-    @ManyToOne
-    @JoinColumn(name = "k_id_sede", nullable = false)
-    private HeadquarterEntity headquarter;
+    @Column(name = "k_id_sede", nullable = false)
+    @NotBlank
+    private UUID identificadorSede;
 }

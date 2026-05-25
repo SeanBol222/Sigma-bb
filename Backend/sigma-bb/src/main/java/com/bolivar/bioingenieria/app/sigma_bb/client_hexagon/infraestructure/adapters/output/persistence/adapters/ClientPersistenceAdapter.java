@@ -22,8 +22,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ClientPersistenceAdapter implements ClientPersistencePort {
 
-    private final ClientRepository clientRepository;
-    private final ClientPersistenceMapper clientPersistenceMapper;
+    private final ClientRepository clientRepository; // Repositorio de datos para Client
+    private final ClientPersistenceMapper clientPersistenceMapper; // Mapper para convertir entre modelos de dominio y entidades de persistencia
 
     /**
      * Busca un cliente por su identificador único.
@@ -71,4 +71,11 @@ public class ClientPersistenceAdapter implements ClientPersistencePort {
                 clientRepository.save(
                         clientPersistenceMapper.toClientEntity(client)));
     }
+
+    @Override
+    public boolean existsById(String clientId) {
+        return clientRepository.existsById(clientId);
+    }
+
+
 }

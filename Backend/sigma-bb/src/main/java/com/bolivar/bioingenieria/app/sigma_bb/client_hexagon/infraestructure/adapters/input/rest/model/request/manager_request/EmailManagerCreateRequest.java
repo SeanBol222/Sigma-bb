@@ -1,4 +1,4 @@
-package com.bolivar.bioingenieria.app.sigma_bb.person_hexagon.infrastructure.adapters.input.rest.model.request;
+package com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.infraestructure.adapters.input.rest.model.request.manager_request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
@@ -15,7 +15,7 @@ import lombok.*;
 @NoArgsConstructor
 @Schema(name = "EmailPersonCreateRequest",
         description = "DTO de entrada para crear un correo electrónico asociado a una persona")
-public class EmailPersonCreateRequest {
+public class EmailManagerCreateRequest {
 
     /**
      * Dirección de correo electrónico de la persona.

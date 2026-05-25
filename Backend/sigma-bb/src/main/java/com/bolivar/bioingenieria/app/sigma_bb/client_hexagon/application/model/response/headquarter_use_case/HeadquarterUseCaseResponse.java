@@ -1,6 +1,6 @@
 package com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.application.model.response.headquarter_use_case;
 
-import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.application.model.request.manager_use_case.ManagerUseCaseRequest;
+import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.application.model.response.manager_use_case.ManagerUseCaseResponse;
 import lombok.*;
 
 import java.util.List;
@@ -15,7 +15,8 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class HeadquarterUseCaseRequest {
+@ToString
+public class HeadquarterUseCaseResponse {
 
     /**
      * Identificador único de la sede.
@@ -44,9 +45,14 @@ public class HeadquarterUseCaseRequest {
 
     /**
      * Lista de encargados asociados a la sede.
-     * Tipo: {@link List} de {@link ManagerUseCaseRequest}.
+     * Tipo: {@link List} de {@link ManagerUseCaseResponse}.
      */
-    private List<ManagerUseCaseRequest> managerList;
+    private List<ManagerUseCaseResponse> managerList;
+
+    /**
+     * Identificador único del cliente al que pertenece la sede.
+     */
+    private String identificadorCliente;
 
     /**
      * Identificador único de la ciudad donde se ubica la sede.

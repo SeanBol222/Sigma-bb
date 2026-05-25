@@ -44,7 +44,7 @@ public class ClientEntity {
      */
     @Column(name = "n_tipo_identificacion", nullable = false)
     @NotBlank
-    private String tipoIdentifiacion;
+    private String tipoIdentificacion;
 
     /**
     * Razón social o nombre comercial del cliente.
@@ -90,20 +90,6 @@ public class ClientEntity {
             cascade = CascadeType.ALL,
             orphanRemoval = true)
     private List<PhoneClientEntity> phoneClientList;
-
-    /**
-     * Lista de {@link HeadquarterEntity} asociados al cliente.
-     *
-     * Define una relación uno a muchos (OneToMany) con la entidad
-     * HeadquarterEntity, donde un cliente puede tener múltiples sedes
-     * o sucursales asociadas. Se utiliza cascade ALL para propagar las
-     * operaciones y orphanRemoval para eliminar las sedes huérfanas.
-     */
-    @OneToMany(mappedBy = "client",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true,
-            fetch = FetchType.LAZY)
-    private List<HeadquarterEntity> headquarterList;
 
     /**
      * País de residencia o ubicación del cliente.

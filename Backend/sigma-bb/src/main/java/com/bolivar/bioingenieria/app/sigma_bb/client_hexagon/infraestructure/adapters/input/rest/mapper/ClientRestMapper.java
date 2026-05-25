@@ -1,5 +1,6 @@
 package com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.infraestructure.adapters.input.rest.mapper;
 
+import com.bolivar.bioingenieria.app.sigma_bb.bootstrap.map_struct.BooleanMapper;
 import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.domain.model.client_model.Client;
 import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.infraestructure.adapters.input.rest.model.request.client_request.ClientCreateRequest;
 import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.infraestructure.adapters.input.rest.model.response.client_responce.ClientResponse;
@@ -16,7 +17,8 @@ import java.util.List;
  * utilizados en la capa REST hacia y desde el modelo de dominio.</p>
  */
 @Mapper(componentModel = "spring",
-        unmappedSourcePolicy = ReportingPolicy.IGNORE)
+        unmappedSourcePolicy = ReportingPolicy.IGNORE,
+        uses = {BooleanMapper.class})
 public interface ClientRestMapper {
 
     /**

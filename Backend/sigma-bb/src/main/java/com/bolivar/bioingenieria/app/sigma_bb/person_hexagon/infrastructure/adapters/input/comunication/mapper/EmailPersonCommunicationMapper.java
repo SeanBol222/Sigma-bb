@@ -1,8 +1,9 @@
-package com.bolivar.bioingenieria.app.sigma_bb.person_hexagon.infrastructure.adapters.input.rest.mapper;
+package com.bolivar.bioingenieria.app.sigma_bb.person_hexagon.infrastructure.adapters.input.comunication.mapper;
 
+import com.bolivar.bioingenieria.app.sigma_bb.bootstrap.map_struct.BooleanMapper;
 import com.bolivar.bioingenieria.app.sigma_bb.person_hexagon.domain.model.person_model.EmailPerson;
-import com.bolivar.bioingenieria.app.sigma_bb.person_hexagon.infrastructure.adapters.input.rest.model.request.EmailPersonCreateRequest;
-import com.bolivar.bioingenieria.app.sigma_bb.person_hexagon.infrastructure.adapters.input.rest.model.response.EmailPersonResponse;
+import com.bolivar.bioingenieria.app.sigma_bb.person_hexagon.infrastructure.adapters.input.comunication.model.request.EmailPersonCommunicationRequest;
+import com.bolivar.bioingenieria.app.sigma_bb.person_hexagon.infrastructure.adapters.input.comunication.model.respose.EmailPersonCommunicationResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 
@@ -17,33 +18,34 @@ import java.util.List;
  * cuando hay campos en la fuente que no se mapean explícitamente.
  */
 @Mapper(componentModel = "spring",
-        unmappedSourcePolicy = ReportingPolicy.IGNORE)
-public interface EmailPersonRestMapper {
+        unmappedSourcePolicy = ReportingPolicy.IGNORE,
+        uses = {BooleanMapper.class})
+public interface EmailPersonCommunicationMapper {
 
     /**
-     * Convierte una petición de creación {@link EmailPersonCreateRequest} al
+     * Convierte una petición de creación {@link EmailPersonCommunicationRequest} al
      * modelo de dominio {@link EmailPerson}.
      *
      * @param request Request recibido por la API que contiene los datos del correo
      * @return Instancia de {@link EmailPerson} con los datos mapeados
      */
-    EmailPerson toEmailPerson(EmailPersonCreateRequest request);
+    EmailPerson toEmailPerson(EmailPersonCommunicationRequest request);
 
     /**
      * Convierte el modelo de dominio {@link EmailPerson} a la respuesta REST
-     * {@link EmailPersonResponse} que será enviada al cliente.
+     * {@link EmailPersonCommunicationResponse} que será enviada al cliente.
      *
      * @param emailPerson Modelo de dominio con la información del correo
-     * @return Objeto {@link EmailPersonResponse} listo para serializar en la respuesta
+     * @return Objeto {@link EmailPersonCommunicationResponse} listo para serializar en la respuesta
      */
-    EmailPersonResponse toEmailPersonResponse(EmailPerson emailPerson);
+    EmailPersonCommunicationResponse toEmailPersonCommunicationResponse(EmailPerson emailPerson);
 
     /**
      * Convierte una lista de modelos de dominio {@link EmailPerson} a una lista
-     * de objetos de respuesta {@link EmailPersonResponse}.
+     * de objetos de respuesta {@link EmailPersonCommunicationResponse}.
      *
      * @param emailPersonList Lista de modelos de dominio a convertir
-     * @return Lista de respuestas {@link EmailPersonResponse}
+     * @return Lista de respuestas {@link EmailPersonCommunicationResponse}
      */
-    List<EmailPersonResponse> toEmailPersonResponseList(List<EmailPerson> emailPersonList);
+    List<EmailPersonCommunicationResponse> toEmailPersonComunicationResponseList(List<EmailPerson> emailPersonList);
 }

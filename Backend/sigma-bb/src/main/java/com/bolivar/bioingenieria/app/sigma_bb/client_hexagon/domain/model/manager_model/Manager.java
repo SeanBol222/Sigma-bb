@@ -1,4 +1,4 @@
-package com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.domain.model.client_model;
+package com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.domain.model.manager_model;
 
 import lombok.*;
 import lombok.experimental.Accessors;

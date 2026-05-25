@@ -1,7 +1,8 @@
-package com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.domain.model.headquarter_model;
+package com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.domain.model.service_area_model;
 
-import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.domain.model.client_model.Manager;
+import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.domain.model.manager_model.Manager;
 import lombok.*;
+import lombok.experimental.Accessors;
 
 import java.util.List;
 import java.util.UUID;
@@ -16,6 +17,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
+@Accessors(chain = true)
 public class ServiceArea {
 
     /**

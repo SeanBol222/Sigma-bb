@@ -2,7 +2,6 @@ package com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.application.ports.
 
 import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.domain.model.client_model.Client;
 import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.domain.model.client_model.EmailClient;
-import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.domain.model.client_model.Headquarter;
 import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.domain.model.client_model.PhoneClient;
 
 import java.util.List;
@@ -126,36 +125,4 @@ public interface ClientServicePort {
      */
     Client removePhone(String clientId, UUID phoneId);
 
-    // ------------------------------------------------------------
-    // ------------- Operaciones CRUD para Headquarter ------------
-    // ------------------------------------------------------------
-
-    /**
-     * Agrega una {@link Headquarter} a un {@link Client}.
-     *
-     * @param clientId identificador del {@link Client}
-     * @param headquarter datos de la {@link Headquarter} a agregar
-     * @return {@link Client} actualizado
-     */
-    Client addHeadquarter(String clientId, Headquarter headquarter);
-
-
-    /**
-     * Actualiza una {@link Headquarter} asociada a un {@link Client}.
-     *
-     * @param clientId identificador del {@link Client}
-     * @param headquarterId identificador de la {@link Headquarter} a actualizar
-     * @param headquarter datos nuevos de la {@link Headquarter}
-     * @return {@link Client} actualizado
-     */
-    Client updateHeadquarter(String clientId, UUID headquarterId, Headquarter headquarter);
-
-    /**
-     * Elimina (marca como inactiva) una {@link Headquarter} asociada a un {@link Client}.
-     *
-     * @param clientId identificador del {@link Client}
-     * @param headquarterId identificador de la {@link Headquarter} a eliminar
-     * @return {@link Client} actualizado
-     */
-    Client removeHeadquarter(String clientId, UUID headquarterId);
 }

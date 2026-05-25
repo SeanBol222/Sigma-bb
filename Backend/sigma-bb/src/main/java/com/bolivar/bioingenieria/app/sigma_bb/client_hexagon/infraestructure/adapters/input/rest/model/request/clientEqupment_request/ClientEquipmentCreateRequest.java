@@ -5,7 +5,13 @@ import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
 
 import java.util.Date;
+import java.util.UUID;
 
+/**
+ * DTO de entrada para crear un nuevo equipo de cliente.
+ * Contiene la información necesaria para registrar un equipo en el sistema,
+ * incluyendo detalles del equipo, estado activo y los servicios asociados.
+ */
 @Builder
 @Setter
 @Getter
@@ -53,4 +59,13 @@ public class ClientEquipmentCreateRequest {
             requiredMode = Schema.RequiredMode.NOT_REQUIRED,
             example = "INV-2023-001")
     private String numeroInventario;
+
+    /**
+     * Identificador único que viene desde la tabla modelo.
+     * Referencia a la entidad {@link UUID} que representa el modelo del equipo.     *
+     */
+    @Schema(description = "Identificador único del modelo del equipo. Referencia a la entidad UUID que representa el modelo del equipo.",
+            requiredMode = Schema.RequiredMode.REQUIRED,
+            example = "550e8400-e29b-41d4-a716-446655440000")
+    private UUID identificadorModelo;
 }

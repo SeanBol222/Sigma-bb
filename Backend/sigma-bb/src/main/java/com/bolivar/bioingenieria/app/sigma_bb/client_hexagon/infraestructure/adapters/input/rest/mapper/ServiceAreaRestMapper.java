@@ -1,6 +1,7 @@
 package com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.infraestructure.adapters.input.rest.mapper;
 
-import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.domain.model.client_model.ServiceArea;
+import com.bolivar.bioingenieria.app.sigma_bb.bootstrap.map_struct.BooleanMapper;
+import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.domain.model.service_area_model.ServiceArea;
 import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.infraestructure.adapters.input.rest.model.request.serviceArea_request.ServiceAreaCreateRequest;
 import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.infraestructure.adapters.input.rest.model.response.serviceArea_response.ServiceAreaResponse;
 import org.mapstruct.Mapper;
@@ -15,7 +16,8 @@ import java.util.List;
  * utilizados en la capa REST hacia y desde el modelo de dominio relacionado con las áreas de servicio de los clientes.</p>
  */
 @Mapper(componentModel = "spring",
-        unmappedSourcePolicy = ReportingPolicy.IGNORE)
+        unmappedSourcePolicy = ReportingPolicy.IGNORE,
+        uses = {BooleanMapper.class})
 public interface ServiceAreaRestMapper {
 
     /**

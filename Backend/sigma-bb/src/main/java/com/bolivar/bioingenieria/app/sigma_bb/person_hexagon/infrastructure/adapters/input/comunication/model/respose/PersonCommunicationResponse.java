@@ -1,15 +1,19 @@
-package com.bolivar.bioingenieria.app.sigma_bb.person_hexagon.application.model.communication.respose;
+package com.bolivar.bioingenieria.app.sigma_bb.person_hexagon.infrastructure.adapters.input.comunication.model.respose;
 
 import lombok.*;
 
+import java.util.List;
 import java.util.UUID;
 
+/**
+ * Respuesta para la comunicación de información de una persona.
+ */
 @Builder
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class PersonComunicationResponse {
+public class PersonCommunicationResponse {
 
     /**
      * Identificador único de la persona.
@@ -40,6 +44,16 @@ public class PersonComunicationResponse {
      * Segundo apellido de la persona.
      */
     private String segundoApellido;
+
+    /**
+     * Lista de teléfonos asociados a la persona.
+     */
+    private List<PhonePersonCommunicationResponse> phonePersonList;
+
+    /**
+     * Lista de correos electrónicos asociados a la persona.
+     */
+    private List<EmailPersonCommunicationResponse> emailPersonList;
 
     /**
      * Tipo principal de persona.

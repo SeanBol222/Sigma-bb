@@ -13,7 +13,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class PersonCreateRequestUseCase {
+public class PersonUseCaseRequest {
 
     /**
      * Cédula de la persona.
@@ -63,10 +63,10 @@ public class PersonCreateRequestUseCase {
     /**
      * Lista de teléfonos asociados a la persona.
      */
-    private List<PhonePersonCreateRequestUseCase> phonePersonList;
+    private List<PhonePersonUseCaseRequest> phonePersonList;
 
     /**
      * Lista de correos electrónicos asociados a la persona.
      */
-    private List<EmailPersonCreateRequestUseCase> emailPersonList;
+    private List<EmailPersonUseCaseRequest> emailPersonList;
 }

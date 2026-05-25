@@ -1,6 +1,7 @@
 package com.bolivar.bioingenieria.app.sigma_bb.person_hexagon.domain.model.person_model;
 
 import lombok.*;
+import lombok.experimental.Accessors;
 
 import java.util.List;
 import java.util.UUID;
@@ -15,6 +16,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
+@Accessors(chain = true)
 public class Person {
 
     /**

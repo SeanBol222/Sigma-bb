@@ -3,6 +3,7 @@ package com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.domain.model.error
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 
 import java.time.LocalDateTime;
 import java.util.List;

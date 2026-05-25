@@ -1,4 +1,4 @@
-package com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.infraestructure.adapters.input.rest.controller;
+package com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.infraestructure.adapters.input.rest.controller.headquarter_controller;
 
 import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.application.ports.input.HeadquarterServicePort;
 import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.infraestructure.adapters.input.rest.mapper.HeadquarterRestMapper;
@@ -7,7 +7,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import lombok.ToString;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -101,13 +100,21 @@ public class HeadquarterRestAdapter {
                     "Recibe los datos de la sede en formato JSON, los valida y los transforma a una entidad de dominio para ser persistida. " +
                     "Luego, convierte el resultado a un objeto de respuesta.")
     @PreAuthorize("hasAuthority('admin.full')") // Solo los usuarios con autoridad 'admin.full' pueden acceder a esta información
-    @PostMapping("/v1/api")
+    @PostMapping("/v1/api/{clientId}")
     public ResponseEntity<?> createHeadquarter(
+            @Parameter(
+                    description = "ID del cliente al que se asociará la nueva sede",
+                    example = "900123456-7",
+                    required = true)
+            @PathVariable String clientId,
             @RequestBody HeadquarterCreateRequest headquarterCreateRequest) {
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(headquarterRestMapper.toHeadquarterResponse(
+                .body(headquarterRestMapper.toHeadquarterResponseFromUseCase(
                         headquarterServicePort.save(
-                                headquarterRestMapper.toHeadquarter(headquarterCreateRequest))));
+                                clientId,
+                                headquarterRestMapper.toHeadquarterUseCaseRequest(headquarterCreateRequest)
+                        )
+                ));
     }
 
     /**

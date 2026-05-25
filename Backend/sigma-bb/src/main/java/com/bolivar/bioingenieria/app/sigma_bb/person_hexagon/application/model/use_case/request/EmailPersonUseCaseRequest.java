@@ -11,7 +11,7 @@ import lombok.*;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class EmailPersonCreateRequestUseCase {
+public class EmailPersonUseCaseRequest {
     /**
      * Dirección de correo electrónico de la persona.
      */

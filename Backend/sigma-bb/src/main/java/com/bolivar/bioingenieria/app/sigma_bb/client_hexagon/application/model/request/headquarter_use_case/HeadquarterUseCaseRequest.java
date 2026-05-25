@@ -1,83 +1,50 @@
-package com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.infraestructure.adapters.input.rest.model.request.headquarter_request;
+package com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.application.model.request.headquarter_use_case;
 
-import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.domain.model.headquarter_model.Headquarter;
-import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.infraestructure.adapters.input.rest.model.request.manager_request.ManagerCreateRequest;
-import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.infraestructure.adapters.input.rest.model.request.serviceArea_request.ServiceAreaCreateRequest;
-import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotEmpty;
+import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.application.model.request.manager_use_case.ManagerUseCaseRequest;
 import lombok.*;
 
 import java.util.List;
 
 /**
- * DTO de entrada para crear una nueva {@link Headquarter}.
- * Contiene la información necesaria para registrar una sede en el sistema,
- * incluyendo detalles de ubicación y la lista opcional de {@link ServiceAreaCreateRequest}.
+ * DTO de entrada del caso de uso para crear o actualizar una sede.
+ * Contiene la información de ubicación de la sede, su ciudad y los encargados asociados.
  */
 @Builder
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Schema(name = "HeadquarterCreateRequest",
-        description = "DTO de entrada para crear una nueva sede o sucursal de un cliente. " +
-                "Contiene la información necesaria para registrar una sede en el sistema, " +
-                "incluyendo detalles de ubicación y estado activo.")
 @ToString
-public class HeadquarterCreateRequest {
+public class HeadquarterUseCaseRequest {
 
     /**
      * Nombre o denominación de la sede.
      */
-    @Schema(description = "Nombre o denominación de la sede",
-            requiredMode = Schema.RequiredMode.REQUIRED,
-            example = "Sede Principal")
-    @NotEmpty(message = "El nombre de la sede es obligatorio")
     private String nombreSede;
 
     /**
-     * Nombre de la calle en la dirección de la sede.
+     * Calle de la dirección de la sede.
      */
-    @Schema(description = "Nombre de la calle en la dirección de la sede",
-            requiredMode = Schema.RequiredMode.REQUIRED,
-            example = "Calle 123")
-    @NotEmpty(message = "El numero de la calle de la sede es obligatorio")
     private String direccionCalleSede;
 
     /**
-     * Nombre de la carrera en la dirección de la sede.
+     * Carrera de la dirección de la sede.
      */
-    @Schema(description = "Nombre de la carrera en la dirección de la sede",
-            requiredMode = Schema.RequiredMode.REQUIRED,
-            example = "Carrera 45")
-    @NotEmpty(message = "El numero de la carrera de la sede es obligatorio")
     private String direccionCarreraSede;
 
     /**
-     * Número de dirección de la sede.
+     * Número o complemento de la dirección de la sede.
      */
-    @Schema(description = "Número de dirección de la sede",
-            requiredMode = Schema.RequiredMode.REQUIRED,
-            example = "Número 67")
-    @NotEmpty(message = "El numero de la sede es obligatorio")
     private String direccionNumeroSede;
 
     /**
-     * Encargado responsable de la sede.
-     * Tipo: {@link ManagerCreateRequest}
+     * Lista de encargados asociados a la sede.
+     * Tipo: {@link List} de {@link ManagerUseCaseRequest}.
      */
-    @Schema(description = "Encargado responsable de la sede",
-            requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-    private List<ManagerCreateRequest> managerList;
+    private List<ManagerUseCaseRequest> managerList;
 
     /**
      * Identificador único de la ciudad donde se ubica la sede.
-     * Este campo es obligatorio y no puede estar vacío, representando
-     * el código o identificador de la ciudad en el sistema.
      */
-    @Schema(description = "Identificador único de la ciudad donde se ubica la sede",
-            requiredMode = Schema.RequiredMode.REQUIRED,
-            example = "BOG")
-    @NotEmpty(message = "El identificador de la ciudad es obligatorio")
     private String identificadorCiudad;
 }

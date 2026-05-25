@@ -43,4 +43,12 @@ public interface ClientPersistencePort {
      * @param client {@link Client} a eliminar
      */
     void delete(Client client);
+
+    /**
+     * Verifica si un {@link Client} existe en la base de datos por su identificador.
+     *
+     * @param clientId identificador del {@link Client} a verificar
+     * @return true si el {@link Client} existe, false en caso contrario
+     */
+    boolean existsById(String clientId);
 }

@@ -1,5 +1,6 @@
 package com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.infraestructure.adapters.input.rest.model.request.headquarter_request;
 
+import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.domain.model.headquarter_model.Headquarter;
 import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.infraestructure.adapters.input.rest.model.request.manager_request.ManagerCreateRequest;
 import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.infraestructure.adapters.input.rest.model.request.serviceArea_request.ServiceAreaCreateRequest;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -9,7 +10,7 @@ import lombok.*;
 import java.util.List;
 
 /**
- * DTO de entrada para crear una nueva {@link com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.domain.model.client_model.Headquarter}.
+ * DTO de entrada para crear una nueva {@link Headquarter}.
  * Contiene la información necesaria para registrar una sede en el sistema,
  * incluyendo detalles de ubicación y la lista opcional de {@link ServiceAreaCreateRequest}.
  */
@@ -60,14 +61,6 @@ public class HeadquarterCreateRequest {
             example = "Número 67")
     @NotEmpty(message = "El numero de la sede es obligatorio")
     private String direccionNumeroSede;
-
-    /**
-     * Lista de áreas de servicio asociadas a esta sede.
-     * Tipo: {@link List} de {@link ServiceAreaCreateRequest}
-     */
-    @Schema(description = "Lista de áreas de servicio asociadas a esta sede",
-            requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-    private List<ServiceAreaCreateRequest> serviceAreaList;
 
     /**
      * Encargado responsable de la sede.

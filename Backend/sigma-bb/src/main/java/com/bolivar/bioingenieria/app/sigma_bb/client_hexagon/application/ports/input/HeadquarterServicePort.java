@@ -1,8 +1,11 @@
 package com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.application.ports.input;
 
-import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.domain.model.client_model.Headquarter;
-import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.domain.model.client_model.Manager;
-import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.domain.model.client_model.ServiceArea;
+import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.application.model.request.headquarter_use_case.HeadquarterUseCaseRequest;
+import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.application.model.request.manager_use_case.ManagerUseCaseRequest;
+import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.application.model.response.headquarter_use_case.HeadquarterUseCaseResponse;
+import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.domain.model.headquarter_model.Headquarter;
+import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.domain.model.manager_model.Manager;
+import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.domain.model.service_area_model.ServiceArea;
 
 import java.util.List;
 import java.util.UUID;
@@ -42,7 +45,7 @@ public interface HeadquarterServicePort {
      * @param headquarter datos de la {@link Headquarter} a persistir
      * @return {@link Headquarter} almacenada
      */
-    Headquarter save(Headquarter headquarter);
+    HeadquarterUseCaseResponse save(String clientId, HeadquarterUseCaseRequest request);
 
     /**
      * Actualiza la información de una {@link Headquarter} existente.
@@ -61,37 +64,6 @@ public interface HeadquarterServicePort {
     void delete(UUID headquarterId);
 
     // ------------------------------------------------------------
-    // ------------- Operaciones CRUD para ServiceArea ------------
-    // ------------------------------------------------------------
-
-    /**
-     * Agrega una {@link ServiceArea} a una {@link Headquarter}.
-     *
-     * @param headquarterId identificador de la {@link Headquarter}
-     * @param serviceArea datos de la {@link ServiceArea} a agregar
-     * @return {@link Headquarter} actualizada
-     */
-    Headquarter addServiceArea(UUID headquarterId, ServiceArea serviceArea);
-
-    /**
-     * Actualiza una {@link ServiceArea} asociada a una {@link Headquarter}.
-     *
-     * @param headquarterId identificador de la {@link Headquarter}
-     * @param serviceAreaId identificador de la {@link ServiceArea} a actualizar
-     * @param serviceArea datos nuevos de la {@link ServiceArea}
-     * @return {@link Headquarter} actualizada
-     */
-    Headquarter updateServiceArea(UUID headquarterId, UUID serviceAreaId, ServiceArea serviceArea);
-
-    /**
-     * Elimina (marca como inactiva) una {@link ServiceArea} asociada a una {@link Headquarter}.
-     *
-     * @param headquarterId identificador de la {@link Headquarter}
-     * @param serviceAreaId identificador de la {@link ServiceArea} a eliminar
-     */
-    void deleteServiceArea(UUID headquarterId, UUID serviceAreaId);
-
-    // ------------------------------------------------------------
     // ------------- Operaciones CRUD para Manager ---------------
     // ------------------------------------------------------------
 
@@ -102,7 +74,7 @@ public interface HeadquarterServicePort {
      * @param manager datos del {@link Manager} a agregar
      * @return {@link Headquarter} actualizada
      */
-    Headquarter addManger(UUID headquarterId, Manager manager);
+    Headquarter addManger(UUID headquarterId, ManagerUseCaseRequest request);
 
     /**
      * Actualiza un {@link Manager} asociado a una {@link Headquarter}.
@@ -112,7 +84,7 @@ public interface HeadquarterServicePort {
      * @param manager datos nuevos del {@link Manager}
      * @return {@link Headquarter} actualizada
      */
-    Headquarter updateManger(UUID headquarterId, UUID managerId, Manager manager);
+    Headquarter updateManger(UUID headquarterId, UUID managerId, ManagerUseCaseRequest request);
 
     /**
      * Elimina (marca como inactivo) un {@link Manager} asociado a una {@link Headquarter}.

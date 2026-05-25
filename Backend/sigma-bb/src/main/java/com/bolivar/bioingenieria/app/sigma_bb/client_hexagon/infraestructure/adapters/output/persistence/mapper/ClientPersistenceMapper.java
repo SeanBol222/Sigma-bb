@@ -71,10 +71,5 @@ public interface ClientPersistenceMapper {
                     .forEach(phone ->
                             phone.setClient(clientEntity));
         }
-        if (clientEntity.getHeadquarterList() != null) {
-            clientEntity.getHeadquarterList()
-                    .forEach(headquarter ->
-                            headquarter.setClient(clientEntity));
-        }
     }
 }

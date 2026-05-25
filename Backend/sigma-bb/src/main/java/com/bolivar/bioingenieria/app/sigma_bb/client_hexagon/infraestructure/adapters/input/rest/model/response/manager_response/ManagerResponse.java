@@ -1,5 +1,6 @@
 package com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.infraestructure.adapters.input.rest.model.response.manager_response;
 
+import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.domain.model.manager_model.Manager;
 import lombok.*;
 
 import java.util.UUID;
@@ -7,7 +8,7 @@ import java.util.UUID;
 /**
  * DTO de salida para representar la información de un encargado o responsable dentro del sistema.
  *
- * <p>Contiene los detalles relevantes de un {@link com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.domain.model.client_model.Manager},
+ * <p>Contiene los detalles relevantes de un {@link Manager},
  * incluyendo su identificación, tipo o rol, y estado activo.</p>
  */
 @Builder

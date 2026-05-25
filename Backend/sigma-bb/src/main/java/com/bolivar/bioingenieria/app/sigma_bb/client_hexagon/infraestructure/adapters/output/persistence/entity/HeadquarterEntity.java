@@ -85,18 +85,6 @@ public class HeadquarterEntity {
     private boolean estadoActivo;
 
     /**
-     * Lista de {@link ServiceAreaEntity} asociadas a esta sede.
-     *
-     * Define una relación uno a muchos (OneToMany) con la entidad {@link ServiceAreaEntity},
-     * donde una sede puede tener múltiples áreas de servicio asociadas.
-     */
-    @OneToMany(mappedBy = "headquarter",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true,
-            fetch = FetchType.LAZY)
-    private List<ServiceAreaEntity> serviceAreaList;
-
-    /**
      * Encargado o responsable de la sede.
      *
      * Define una relación uno a uno (OneToOne) con la entidad {@link ManagerEntity},
@@ -110,14 +98,15 @@ public class HeadquarterEntity {
     private List<ManagerEntity> managerList;
 
     /**
-     * Referencia al {@link ClientEntity} al que pertenece esta sede.
+     * Identificador único del cliente al que pertenece la sede.
      *
-     * Define una relación muchos a uno (ManyToOne), donde múltiples sedes
-     * pueden estar asociadas a un mismo cliente.
+     * Define una relación muchos a uno (ManyToOne) con la entidad {ClientEntity},
+     * donde múltiples sedes pueden estar asociadas a un mismo cliente. El campo
+     * k_id_cliente en la tabla sede actúa como clave foránea que referencia al cliente.
      */
-    @ManyToOne
-    @JoinColumn(name = "k_id_cliente", nullable = false)
-    private ClientEntity client;
+    @Column(name = "k_id_cliente", nullable = false)
+    @NotBlank
+    private String identificadorCliente;
 
     /**
      * Identificador único de la ciudad donde se ubica la sede.

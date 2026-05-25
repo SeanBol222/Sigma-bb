@@ -1,7 +1,7 @@
 package com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.infraestructure.adapters.output.persistence.adapters;
 
 import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.application.ports.output.HeadquarterPersistencePort;
-import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.domain.model.client_model.Headquarter;
+import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.domain.model.headquarter_model.Headquarter;
 import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.infraestructure.adapters.output.persistence.mapper.HeadquarterPersistenceMapper;
 import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.infraestructure.adapters.output.persistence.repository.HeadquarterRepository;
 import lombok.RequiredArgsConstructor;
@@ -23,8 +23,8 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class HeadquarterPersistenceAdapter implements HeadquarterPersistencePort {
 
-    private final HeadquarterRepository headquarterRepository;
-    private final HeadquarterPersistenceMapper headquarterPersistenceMapper;
+    private final HeadquarterRepository headquarterRepository; // Repositorio de datos para Headquarter
+    private final HeadquarterPersistenceMapper headquarterPersistenceMapper; // Mapper para convertir entre modelos de dominio y entidades de persistencia
 
     /**
      * Busca una sede por su identificador único.

@@ -52,8 +52,6 @@ springdoc:
   swagger-ui:
     oauth:
       client-id: sigma-frontend
-      use-pkce-with-authorization-code-grant: true
-    oauth2-redirect-url: http://localhost:8100/swagger-ui/oauth2-redirect.html
 
 app:
   security:

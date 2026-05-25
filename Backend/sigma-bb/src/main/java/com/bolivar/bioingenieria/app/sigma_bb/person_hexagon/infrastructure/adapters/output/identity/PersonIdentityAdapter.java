@@ -1,9 +1,8 @@
 package com.bolivar.bioingenieria.app.sigma_bb.person_hexagon.infrastructure.adapters.output.identity;
 
-import com.bolivar.bioingenieria.app.sigma_bb.person_hexagon.application.ports.output.identity.PersonIdentityPort;
-import com.bolivar.bioingenieria.app.sigma_bb.person_hexagon.application.ports.output.identity.response.PersonIdentityResponse;
+import com.bolivar.bioingenieria.app.sigma_bb.person_hexagon.application.ports.output.PersonIdentityPort;
+import com.bolivar.bioingenieria.app.sigma_bb.person_hexagon.application.model.identity.response.PersonIdentityResponse;
 import com.bolivar.bioingenieria.app.sigma_bb.person_hexagon.utils.RoleType;
-import com.sun.codemodel.JStringLiteral;
 import jakarta.ws.rs.core.Response;
 import lombok.RequiredArgsConstructor;
 import org.keycloak.admin.client.Keycloak;

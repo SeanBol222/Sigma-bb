@@ -1,7 +1,7 @@
 package com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.infraestructure.adapters.output.persistence.adapters;
 
 import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.application.ports.output.ClientEquipmentPersistencePort;
-import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.domain.model.client_model.ClientEquipment;
+import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.domain.model.client_equipment_model.ClientEquipment;
 import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.infraestructure.adapters.output.persistence.mapper.ClientEquipmentPersistenceMapper;
 import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.infraestructure.adapters.output.persistence.repository.ClientEquipmentRepository;
 import lombok.RequiredArgsConstructor;
@@ -23,8 +23,8 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class ClientEquipmentPersistenceAdapter implements ClientEquipmentPersistencePort {
 
-    private final ClientEquipmentRepository clientEquipmentRepository;
-    private final ClientEquipmentPersistenceMapper clientEquipmentPersistenceMapper;
+    private final ClientEquipmentRepository clientEquipmentRepository; // Repositorio de datos para ClientEquipment
+    private final ClientEquipmentPersistenceMapper clientEquipmentPersistenceMapper; // Mapper para convertir entre modelos de dominio y entidades de persistencia
 
     /**
      * Busca un equipo de cliente por su identificador único.

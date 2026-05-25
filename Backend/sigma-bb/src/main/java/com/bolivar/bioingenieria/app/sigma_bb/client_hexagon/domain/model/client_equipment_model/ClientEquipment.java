@@ -1,7 +1,8 @@
-package com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.domain.model.client_model;
+package com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.domain.model.client_equipment_model;
 
 import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.domain.model.service_area_model.ServiceArea;
 import lombok.*;
+import lombok.experimental.Accessors;
 
 import java.util.Date;
 import java.util.UUID;
@@ -17,6 +18,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
+@Accessors(chain = true)
 public class ClientEquipment {
 
     /**

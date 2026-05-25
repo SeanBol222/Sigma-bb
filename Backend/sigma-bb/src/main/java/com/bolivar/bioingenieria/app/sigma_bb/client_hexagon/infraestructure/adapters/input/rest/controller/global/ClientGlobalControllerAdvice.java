@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import javax.security.sasl.AuthenticationException;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.stream.Collectors;
@@ -213,7 +214,7 @@ public class ClientGlobalControllerAdvice {
      * @return ErrorResponse con la información del error.
      */
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    @ExceptionHandler(SecurityException.class)
+    @ExceptionHandler(AuthenticationException.class)
     public ErrorResponse handleSecurityException() {
         return ErrorResponse.builder()
                 .code(UNAUTHORIZED.getCode())

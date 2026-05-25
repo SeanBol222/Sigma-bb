@@ -1,4 +1,4 @@
-package com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.application.model.request;
+package com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.application.model.request.manager_use_case;
 
 import lombok.*;
 
@@ -12,6 +12,7 @@ import lombok.*;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 public class PhoneMangerUseCaseRequest {
 
     /**

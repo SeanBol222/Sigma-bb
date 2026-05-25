@@ -1,16 +1,15 @@
 package com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.infraestructure.adapters.input.rest.model.response.headquarter_response;
 
+import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.domain.model.headquarter_model.Headquarter;
 import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.infraestructure.adapters.input.rest.model.response.manager_response.ManagerResponse;
 import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.infraestructure.adapters.input.rest.model.response.serviceArea_response.ServiceAreaResponse;
-import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
 
 import java.util.List;
 import java.util.UUID;
 
 /**
- * DTO de entrada para crear una nueva {@link com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.domain.model.client_model.Headquarter}.
+ * DTO de entrada para crear una nueva {@link Headquarter}.
  * Contiene la información necesaria para registrar una sede en el sistema,
  * incluyendo detalles de ubicación y la lista opcional de {@link ServiceAreaResponse}.
  */

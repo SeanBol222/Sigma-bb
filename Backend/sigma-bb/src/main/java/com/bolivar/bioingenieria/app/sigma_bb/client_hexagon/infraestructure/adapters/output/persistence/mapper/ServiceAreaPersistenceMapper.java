@@ -1,6 +1,6 @@
 package com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.infraestructure.adapters.output.persistence.mapper;
 
-import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.domain.model.client_model.ServiceArea;
+import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.domain.model.service_area_model.ServiceArea;
 import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.infraestructure.adapters.output.persistence.entity.ManagerEntity;
 import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.infraestructure.adapters.output.persistence.entity.ServiceAreaEntity;
 import org.mapstruct.AfterMapping;
@@ -59,11 +59,6 @@ public interface ServiceAreaPersistenceMapper {
      */
     @AfterMapping
     default void linkChildren(@MappingTarget ServiceAreaEntity serviceAreaEntity) {
-        if (serviceAreaEntity.getClientEquipmentList() != null) {
-            serviceAreaEntity.getClientEquipmentList()
-                    .forEach(equipment ->
-                            equipment.setServiceArea(serviceAreaEntity));
-        }
         if (serviceAreaEntity.getManagerList() != null) {
             for (ManagerEntity managerEntity : serviceAreaEntity.getManagerList()) {
                 managerEntity.setServiceArea(serviceAreaEntity);

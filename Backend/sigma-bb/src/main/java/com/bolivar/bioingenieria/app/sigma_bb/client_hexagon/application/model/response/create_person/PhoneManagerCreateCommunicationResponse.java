@@ -1,4 +1,4 @@
-package com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.application.model.response.create;
+package com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.application.model.response.create_person;
 
 import lombok.*;
 

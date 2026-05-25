@@ -1,6 +1,8 @@
-package com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.domain.model.client_model;
+package com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.domain.model.headquarter_model;
 
+import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.domain.model.manager_model.Manager;
 import lombok.*;
+import lombok.experimental.Accessors;
 
 import java.util.List;
 import java.util.UUID;
@@ -16,6 +18,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
+@Accessors(chain = true)
 public class Headquarter {
     /**
      * Identificador único de la sede.
@@ -59,7 +62,7 @@ public class Headquarter {
      * Identificador único del cliente al que pertenece la sede.
      * Tipo: {@link UUID}
      */
-    private UUID identificadorCliente;
+    private String identificadorCliente;
 
     /**
      * Lista de encargados responsables de la sede.
@@ -76,8 +79,9 @@ public class Headquarter {
     *
     * @param manager Objeto {@link Manager} a agregar
     */
-    public void addManager(Manager manager) {
+    public Headquarter addManager(Manager manager) {
         this.managerList.add(manager);
+        return this;
     }
 
     /**

@@ -80,11 +80,11 @@ public class ClientEquipmentEntity {
     */
 
     /**
-     * Área de servicio a la que está asociado el equipo.
-     * Relación ManyToOne con la entidad {@link ServiceAreaEntity}.
+     * Identificador único del área de servicio a la que está asignado el equipo.
+     * Referencia a la entidad {@link UUID} que representa el área de servicio.
      */
-    @ManyToOne
-    @JoinColumn(name = "k_id_area_servicio", nullable = false)
-    private ServiceAreaEntity serviceArea;
+    @Column(name = "k_id_area_servicio", nullable = false)
+    @NotBlank
+    private String identificadorAreaServicio;
 
 }

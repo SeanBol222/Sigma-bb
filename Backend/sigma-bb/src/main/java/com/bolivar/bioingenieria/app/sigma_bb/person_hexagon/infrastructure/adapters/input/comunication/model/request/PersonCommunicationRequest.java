@@ -1,6 +1,7 @@
-package com.bolivar.bioingenieria.app.sigma_bb.person_hexagon.application.model.communication.request;
+package com.bolivar.bioingenieria.app.sigma_bb.person_hexagon.infrastructure.adapters.input.comunication.model.request;
 
 import lombok.*;
+import lombok.experimental.Accessors;
 
 import java.util.List;
 
@@ -12,6 +13,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Accessors(chain = true)
 public class PersonCommunicationRequest {
 
     /**

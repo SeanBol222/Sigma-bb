@@ -44,13 +44,13 @@ public class ClientResponse {
      * Lista de teléfonos asociados al cliente.
      * Cada elemento es un {@link PhoneClientResponse} con los datos del teléfono a almacenar.
      */
-    private List<PhoneClientResponse> telefonosCliente;
+    private List<PhoneClientResponse> phoneClientList;
 
     /**
      * Lista de correos electrónicos asociados al cliente.
      * Cada elemento es un {@link EmailClientResponse} con los datos del correo a almacenar.
      */
-    private List<EmailClientResponse> correosCliente;
+    private List<EmailClientResponse> emailClientList;
 
     /**
     * Lista de sedes o sucursales (headquarters) asociadas al cliente.

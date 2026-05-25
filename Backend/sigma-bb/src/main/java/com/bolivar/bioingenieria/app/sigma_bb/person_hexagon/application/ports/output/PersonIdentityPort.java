@@ -1,4 +1,4 @@
-package com.bolivar.bioingenieria.app.sigma_bb.person_hexagon.application.ports.output.identity;
+package com.bolivar.bioingenieria.app.sigma_bb.person_hexagon.application.ports.output;
 
 import com.bolivar.bioingenieria.app.sigma_bb.person_hexagon.application.model.identity.response.PersonIdentityResponse;
 import com.bolivar.bioingenieria.app.sigma_bb.person_hexagon.utils.RoleType;

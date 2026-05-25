@@ -3,9 +3,9 @@ package com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.application.servic
 import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.application.ports.input.ServiceAreaServicePort;
 import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.application.ports.output.ServiceAreaPersistencePort;
 import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.domain.exception.ServiceAreaFoundException;
-import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.domain.model.client_model.ClientEquipment;
-import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.domain.model.client_model.Manager;
-import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.domain.model.client_model.ServiceArea;
+import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.domain.model.client_equipment_model.ClientEquipment;
+import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.domain.model.manager_model.Manager;
+import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.domain.model.service_area_model.ServiceArea;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -26,7 +26,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public class ServiceAreaService implements ServiceAreaServicePort {
 
-    private final ServiceAreaPersistencePort serviceAreaPersistencePort;
+    private final ServiceAreaPersistencePort serviceAreaPersistencePort; // Puerto de persistencia para acceder a los datos de áreas de servicio
 
     /**
      * Busca una {@link ServiceArea} por su identificador único.
@@ -60,14 +60,7 @@ public class ServiceAreaService implements ServiceAreaServicePort {
      */
     @Override
     public ServiceArea save(ServiceArea serviceArea) {
-
         serviceArea.setIdentificadorAreaServicio(UUID.randomUUID());
-
-        for (ClientEquipment equipment : serviceArea.getClientEquipmentList()) {
-            equipment.setIdentificadorAreaServicio(serviceArea.getIdentificadorAreaServicio());
-            equipment.setIdentificadorEquipoCliente(UUID.randomUUID());
-        }
-
         return serviceAreaPersistencePort.save(serviceArea);
     }
 
@@ -103,75 +96,6 @@ public class ServiceAreaService implements ServiceAreaServicePort {
                     return serviceAreaPersistencePort.save(existingServiceArea);
                 }).orElseThrow(ServiceAreaFoundException::new);
 
-    }
-
-    // ------------------------------------------------------------
-    // -------------------CRUD CLIENT EQUIPMENT--------------------
-    // ------------------------------------------------------------
-
-    /**
-     * Agrega un {@link ClientEquipment} a una {@link ServiceArea}.
-     * Genera un identificador único para el nuevo equipo.
-     *
-     * @param serviceAreaId identificador de la {@link ServiceArea}
-     * @param clientEquipment datos del {@link ClientEquipment} a agregar
-     * @return {@link ServiceArea} actualizada
-     * @throws ServiceAreaFoundException si el área no existe
-     */
-    @Override
-    public ServiceArea addClientEquipment(UUID serviceAreaId, ClientEquipment clientEquipment) {
-        return serviceAreaPersistencePort.findById(serviceAreaId)
-                .map(existingServiceArea -> {
-                    clientEquipment.setIdentificadorAreaServicio(existingServiceArea.getIdentificadorAreaServicio());
-                    clientEquipment.setIdentificadorEquipoCliente(UUID.randomUUID());
-                    existingServiceArea.addServiceArea(clientEquipment);
-                    return serviceAreaPersistencePort.save(existingServiceArea);
-                }).orElseThrow(ServiceAreaFoundException::new);
-    }
-
-    /**
-     * Actualiza un {@link ClientEquipment} existente dentro de una {@link ServiceArea}.
-     *
-     * @param serviceAreaId identificador de la {@link ServiceArea}
-     * @param clientEquipmentId identificador del {@link ClientEquipment} a actualizar
-     * @param clientEquipment datos nuevos del {@link ClientEquipment}
-     * @return {@link ServiceArea} actualizada
-     * @throws ServiceAreaFoundException si el área no existe
-     */
-    @Override
-    public ServiceArea updateClientEquipment(UUID serviceAreaId, UUID clientEquipmentId, ClientEquipment clientEquipment) {
-        return serviceAreaPersistencePort.findById(serviceAreaId)
-                .map(existingServiceArea -> {
-                    existingServiceArea.getClientEquipmentList().stream()
-                            .filter(e -> e.getIdentificadorEquipoCliente().equals(clientEquipmentId))
-                            .findFirst()
-                            .ifPresent(e -> {
-                                e.setSerie(clientEquipment.getSerie());
-                                e.setFechaCompra(clientEquipment.getFechaCompra());
-                                e.setValorCompra(clientEquipment.getValorCompra());
-                                e.setNumeroInventario(clientEquipment.getNumeroInventario());
-                            });
-                    return serviceAreaPersistencePort.save(existingServiceArea);
-                }).orElseThrow(ServiceAreaFoundException::new);
-    }
-
-    /**
-     * Elimina (marca como inactivo) un {@link ClientEquipment} asociado a una {@link ServiceArea}.
-     *
-     * @param serviceAreaId identificador de la {@link ServiceArea}
-     * @param clientEquipmentId identificador del {@link ClientEquipment} a eliminar
-     * @throws ServiceAreaFoundException si el área no existe
-     */
-    @Override
-    public void deleteClientEquipment(UUID serviceAreaId, UUID clientEquipmentId) {
-        serviceAreaPersistencePort.findById(serviceAreaId)
-                .map(existingServiceArea -> {
-                    existingServiceArea.getClientEquipmentList().stream()
-                            .filter(e -> e.getIdentificadorEquipoCliente().equals(clientEquipmentId))
-                            .findFirst()
-                            .ifPresent(e -> e.setEstadoActivo(false));
-                    return serviceAreaPersistencePort.save(existingServiceArea);
-                }).orElseThrow(ServiceAreaFoundException::new);
     }
 
     // ------------------------------------------------------------

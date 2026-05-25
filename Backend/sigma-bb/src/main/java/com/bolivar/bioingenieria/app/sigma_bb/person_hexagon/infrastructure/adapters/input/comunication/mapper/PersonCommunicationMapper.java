@@ -1,7 +1,8 @@
 package com.bolivar.bioingenieria.app.sigma_bb.person_hexagon.infrastructure.adapters.input.comunication.mapper;
 
-import com.bolivar.bioingenieria.app.sigma_bb.person_hexagon.application.model.communication.request.PersonCommunicationRequest;
-import com.bolivar.bioingenieria.app.sigma_bb.person_hexagon.application.model.communication.respose.PersonComunicationResponse;
+import com.bolivar.bioingenieria.app.sigma_bb.bootstrap.map_struct.BooleanMapper;
+import com.bolivar.bioingenieria.app.sigma_bb.person_hexagon.infrastructure.adapters.input.comunication.model.request.PersonCommunicationRequest;
+import com.bolivar.bioingenieria.app.sigma_bb.person_hexagon.infrastructure.adapters.input.comunication.model.respose.PersonCommunicationResponse;
 import com.bolivar.bioingenieria.app.sigma_bb.person_hexagon.domain.model.person_model.Person;
 import com.bolivar.bioingenieria.app.sigma_bb.person_hexagon.infrastructure.adapters.input.rest.model.request.PersonCreateRequest;
 import com.bolivar.bioingenieria.app.sigma_bb.person_hexagon.infrastructure.adapters.input.rest.model.response.PersonResponse;
@@ -13,8 +14,13 @@ import org.mapstruct.ReportingPolicy;
  * Convierte entre los DTOs de entrada y salida de la capa REST y el modelo de dominio {@link Person}.
  */
 @Mapper(componentModel = "spring",
-        unmappedSourcePolicy = ReportingPolicy.IGNORE)
-public interface PersonComunicationMapper {
+        unmappedSourcePolicy = ReportingPolicy.IGNORE,
+        uses = {
+                BooleanMapper.class,
+                EmailPersonCommunicationMapper.class,
+                PhonePersonCommunicationMapper.class
+        })
+public interface PersonCommunicationMapper {
 
     /**
      * Convierte un DTO de {@link PersonCreateRequest} a su modelo de dominio correspondiente.
@@ -30,6 +36,6 @@ public interface PersonComunicationMapper {
      * @param person Objeto de dominio con la información de la persona
      * @return DTO de respuesta {@link PersonResponse} para exponer al cliente
      */
-    PersonComunicationResponse toPersonComunicationResponse(Person person);
+    PersonCommunicationResponse toPersonCommunicationResponse(Person person);
 
 }

@@ -11,7 +11,7 @@ import lombok.*;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class PhonePersonCreateRequestUseCase {
+public class PhonePersonUseCaseRequest {
 
     /**
      * Número telefónico de la persona.

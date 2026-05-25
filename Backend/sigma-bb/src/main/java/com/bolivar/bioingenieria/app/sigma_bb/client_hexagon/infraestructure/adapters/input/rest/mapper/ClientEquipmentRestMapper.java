@@ -1,6 +1,7 @@
 package com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.infraestructure.adapters.input.rest.mapper;
 
-import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.domain.model.client_model.ClientEquipment;
+import com.bolivar.bioingenieria.app.sigma_bb.bootstrap.map_struct.BooleanMapper;
+import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.domain.model.client_equipment_model.ClientEquipment;
 import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.infraestructure.adapters.input.rest.model.request.clientEqupment_request.ClientEquipmentCreateRequest;
 import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.infraestructure.adapters.input.rest.model.response.clientEquipment_response.ClientEquipmentResponse;
 import org.mapstruct.Mapper;
@@ -15,7 +16,8 @@ import java.util.List;
  * utilizados en la capa REST hacia y desde el modelo de dominio relacionado con los equipos de los clientes.</p>
  */
 @Mapper(componentModel = "spring",
-        unmappedSourcePolicy = ReportingPolicy.IGNORE)
+        unmappedSourcePolicy = ReportingPolicy.IGNORE,
+        uses = {BooleanMapper.class})
 public interface ClientEquipmentRestMapper {
 
     /**

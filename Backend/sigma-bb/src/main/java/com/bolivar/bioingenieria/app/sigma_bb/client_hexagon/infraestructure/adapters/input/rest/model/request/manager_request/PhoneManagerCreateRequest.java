@@ -1,4 +1,4 @@
-package com.bolivar.bioingenieria.app.sigma_bb.person_hexagon.infrastructure.adapters.input.rest.model.request;
+package com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.infraestructure.adapters.input.rest.model.request.manager_request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
@@ -16,7 +16,7 @@ import lombok.*;
 @NoArgsConstructor
 @Schema(name = "PhonePersonCreateRequest",
         description = "DTO de entrada para crear un teléfono asociado a una persona")
-public class PhonePersonCreateRequest {
+public class PhoneManagerCreateRequest {
 
     /**
      * Número telefónico de la persona.

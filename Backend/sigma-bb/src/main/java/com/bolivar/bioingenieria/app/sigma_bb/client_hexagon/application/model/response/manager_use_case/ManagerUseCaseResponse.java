@@ -1,10 +1,11 @@
-package com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.application.model.response.use_case;
+package com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.application.model.response.manager_use_case;
 
 import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.application.model.request.manager_use_case.EmailManagerUseCaseRequest;
 import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.application.model.request.manager_use_case.PhoneMangerUseCaseRequest;
 import lombok.*;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * DTO de entrada para la comunicación relacionada con la información personal de una persona.
@@ -16,7 +17,13 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 public class ManagerUseCaseResponse {
+
+    /**
+     * Identificador único de la persona.
+     */
+    private UUID identificadorPersona;
 
     /**
      * Número de cédula de la persona.

@@ -1,6 +1,6 @@
 package com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.infraestructure.adapters.output.persistence.mapper;
 
-import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.domain.model.client_model.Headquarter;
+import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.domain.model.headquarter_model.Headquarter;
 import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.infraestructure.adapters.output.persistence.entity.HeadquarterEntity;
 import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.infraestructure.adapters.output.persistence.entity.ManagerEntity;
 import org.mapstruct.AfterMapping;
@@ -56,12 +56,7 @@ public interface HeadquarterPersistenceMapper {
      * @param headquarterEntity Entidad {@link HeadquarterEntity} con las relaciones a vincular
      */
     @AfterMapping
-    default void linkChlidren(@MappingTarget HeadquarterEntity headquarterEntity) {
-        if (headquarterEntity.getServiceAreaList() != null) {
-            headquarterEntity.getServiceAreaList()
-                    .forEach(serviceAreaEntity ->
-                            serviceAreaEntity.setHeadquarter(headquarterEntity));
-        }
+    default void linkChildren(@MappingTarget HeadquarterEntity headquarterEntity) {
         if (headquarterEntity.getManagerList() != null) {
             for (ManagerEntity managerEntity : headquarterEntity.getManagerList()) {
                 managerEntity.setHeadquarter(headquarterEntity);

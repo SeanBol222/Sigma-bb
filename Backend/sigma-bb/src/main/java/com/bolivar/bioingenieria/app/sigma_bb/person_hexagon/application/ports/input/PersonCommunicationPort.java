@@ -1,7 +1,7 @@
-package com.bolivar.bioingenieria.app.sigma_bb.person_hexagon.application.ports.output;
+package com.bolivar.bioingenieria.app.sigma_bb.person_hexagon.application.ports.input;
 
-import com.bolivar.bioingenieria.app.sigma_bb.person_hexagon.application.model.communication.request.PersonCommunicationRequest;
-import com.bolivar.bioingenieria.app.sigma_bb.person_hexagon.application.model.communication.respose.PersonComunicationResponse;
+import com.bolivar.bioingenieria.app.sigma_bb.person_hexagon.infrastructure.adapters.input.comunication.model.request.PersonCommunicationRequest;
+import com.bolivar.bioingenieria.app.sigma_bb.person_hexagon.infrastructure.adapters.input.comunication.model.respose.PersonCommunicationResponse;
 
 import java.util.UUID;
 
@@ -21,7 +21,7 @@ public interface PersonCommunicationPort {
      * @param id UUID de la persona a buscar
      * @return PersonComunicationResponse que contiene la información de la persona encontrada
      */
-    PersonComunicationResponse findById(UUID id);
+    PersonCommunicationResponse findById(UUID id);
 
     /**
      * Guarda la información de una persona a partir de los datos proporcionados en el request.

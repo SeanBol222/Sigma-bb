@@ -24,7 +24,7 @@ public class ClientCreateRequest {
     /**
      * Identificador único del cliente.
      * Normalmente es el NIT o el código fiscal/tributario que identifica al cliente en el negocio.
-     * @see #tipoIdentifiacion
+     * @see #tipoIdentificacion
      */
     @Schema(description = "Identificador único del cliente, como NIT o código definido por el negocio",
             example = "900123456-7",
@@ -40,7 +40,7 @@ public class ClientCreateRequest {
             example = "NIT_juridico",
             requiredMode = Schema.RequiredMode.REQUIRED)
     @NotEmpty(message = "El tipo de identificación es obligatorio")
-    private String tipoIdentifiacion;
+    private String tipoIdentificacion;
 
     /**
      * Razón social o nombre comercial del cliente.
@@ -66,14 +66,6 @@ public class ClientCreateRequest {
     @Schema(description = "Lista de correos electrónicos asociados al cliente",
             requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     private List<EmailClientCreateRequest> emailClientList;
-
-    /**
-     * Lista de sedes o sucursales asociadas al cliente.
-     * Cada elemento es un {@link HeadquarterCreateRequest} con los datos de la sede a almacenar.
-     */
-    @Schema(description = "Lista de sedes o sucursales asociadas al cliente",
-            requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-    private List<HeadquarterCreateRequest> headquarterList;
 
     /**
      * Identificador del país asociado al cliente.

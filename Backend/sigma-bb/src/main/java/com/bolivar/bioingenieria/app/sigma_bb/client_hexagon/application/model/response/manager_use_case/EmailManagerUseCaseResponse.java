@@ -1,4 +1,4 @@
-package com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.application.model.response.use_case;
+package com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.application.model.response.manager_use_case;
 
 import lombok.*;
 
