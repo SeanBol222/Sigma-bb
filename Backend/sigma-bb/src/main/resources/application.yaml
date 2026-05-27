@@ -34,7 +34,7 @@ keycloak:
     server-url: http://keycloak:8080
     realm: sigma-bb-realm
     client-id: sigma-backend-admin
-    client-secret: 9Cot2ejOPeDDYvjDXMWcYuwneWEjA30c
+    client-secret: eYO3gNsxs52pl0widPWKsSp2bgxImZCU
 
 logging:
   level:
