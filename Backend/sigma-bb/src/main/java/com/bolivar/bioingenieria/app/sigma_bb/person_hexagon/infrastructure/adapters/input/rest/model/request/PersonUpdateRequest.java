@@ -1,6 +1,7 @@
 package com.bolivar.bioingenieria.app.sigma_bb.person_hexagon.infrastructure.adapters.input.rest.model.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
 
@@ -23,7 +24,7 @@ public class PersonUpdateRequest {
     @Schema(description = "Número de cédula de la persona",
             example = "123456789",
             requiredMode = Schema.RequiredMode.REQUIRED)
-    @NotEmpty(message = "La cédula es obligatoria")
+    @NotBlank(message = "La cédula es obligatoria")
     private String cedula;
 
     /**
@@ -32,7 +33,7 @@ public class PersonUpdateRequest {
     @Schema(description = "Primer nombre de la persona",
             example = "Juan",
             requiredMode = Schema.RequiredMode.REQUIRED)
-    @NotEmpty(message = "El primer nombre es obligatorio")
+    @NotBlank(message = "El primer nombre es obligatorio")
     private String primerNombre;
 
     /**
@@ -49,7 +50,7 @@ public class PersonUpdateRequest {
     @Schema(description = "Primer apellido de la persona",
             example = "Pérez",
             requiredMode = Schema.RequiredMode.REQUIRED)
-    @NotEmpty(message = "El primer apellido es obligatorio")
+    @NotBlank(message = "El primer apellido es obligatorio")
     private String primerApellido;
 
     /**
@@ -66,7 +67,7 @@ public class PersonUpdateRequest {
     @Schema(description = "Tipo principal de la persona",
             example = "representante_legal",
             requiredMode = Schema.RequiredMode.REQUIRED)
-    @NotEmpty(message = "El tipo de persona es obligatorio")
+    @NotBlank(message = "El tipo de persona es obligatorio")
     private String tipoPersona;
 
     /**

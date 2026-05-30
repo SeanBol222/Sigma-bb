@@ -1,6 +1,5 @@
 package com.bolivar.bioingenieria.app.sigma_bb.person_hexagon.infrastructure.adapters.input.rest.mapper;
 
-import com.bolivar.bioingenieria.app.sigma_bb.bootstrap.map_struct.BooleanMapper;
 import com.bolivar.bioingenieria.app.sigma_bb.person_hexagon.domain.model.person_model.EmailPerson;
 import com.bolivar.bioingenieria.app.sigma_bb.person_hexagon.infrastructure.adapters.input.rest.model.request.EmailPersonCreateRequest;
 import com.bolivar.bioingenieria.app.sigma_bb.person_hexagon.infrastructure.adapters.input.rest.model.response.EmailPersonResponse;
@@ -18,8 +17,7 @@ import java.util.List;
  * cuando hay campos en la fuente que no se mapean explícitamente.
  */
 @Mapper(componentModel = "spring",
-        unmappedSourcePolicy = ReportingPolicy.IGNORE,
-        uses = {BooleanMapper.class})
+        unmappedSourcePolicy = ReportingPolicy.IGNORE)
 public interface EmailPersonRestMapper {
 
     /**

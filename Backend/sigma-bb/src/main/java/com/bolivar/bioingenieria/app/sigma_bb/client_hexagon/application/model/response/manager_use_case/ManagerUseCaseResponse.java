@@ -23,46 +23,17 @@ public class ManagerUseCaseResponse {
     /**
      * Identificador único de la persona.
      */
-    private UUID identificadorPersona;
+    private UUID identificadorEncargado;
 
     /**
-     * Número de cédula de la persona.
+     * Tipo de encargado
      */
-    private String cedula;
+    private String tipoEncargado;
 
     /**
-     * Primer nombre de la persona.
-     */
-    private String primerNombre;
-
-    /**
-     * Segundo nombre de la persona.
-     */
-    private String segundoNombre;
-
-    /**
-     * Primer apellido de la persona.
-     */
-    private String primerApellido;
-
-    /**
-     * Segundo apellido de la persona.
-     */
-    private String segundoApellido;
-
-    /**
-     * Lista de teléfonos asociados a la persona.
-     */
-    private List<PhoneMangerUseCaseRequest> phonePersonList;
-
-    /**
-     * Lista de correos electrónicos asociados a la persona.
-     */
-    private List<EmailManagerUseCaseRequest> emailPersonList;
-
-    /**
-     * Tipo principal de persona.
-     */
-    private String tipoPersona;
+    * Lista de correos electrónicos asociados a la persona.
+    * Tipo: {@link List} de {@link EmailManagerUseCaseRequest}
+    */
+    private boolean estadoActivo;
 
 }

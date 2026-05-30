@@ -1,6 +1,5 @@
 package com.bolivar.bioingenieria.app.sigma_bb.person_hexagon.infrastructure.adapters.input.comunication.mapper;
 
-import com.bolivar.bioingenieria.app.sigma_bb.bootstrap.map_struct.BooleanMapper;
 import com.bolivar.bioingenieria.app.sigma_bb.person_hexagon.infrastructure.adapters.input.comunication.model.request.PersonCommunicationRequest;
 import com.bolivar.bioingenieria.app.sigma_bb.person_hexagon.infrastructure.adapters.input.comunication.model.respose.PersonCommunicationResponse;
 import com.bolivar.bioingenieria.app.sigma_bb.person_hexagon.domain.model.person_model.Person;
@@ -16,7 +15,6 @@ import org.mapstruct.ReportingPolicy;
 @Mapper(componentModel = "spring",
         unmappedSourcePolicy = ReportingPolicy.IGNORE,
         uses = {
-                BooleanMapper.class,
                 EmailPersonCommunicationMapper.class,
                 PhonePersonCommunicationMapper.class
         })

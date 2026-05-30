@@ -1,6 +1,5 @@
 package com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.application.mapper;
 
-import com.bolivar.bioingenieria.app.sigma_bb.bootstrap.map_struct.BooleanMapper;
 import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.application.model.request.headquarter_use_case.HeadquarterUseCaseRequest;
 import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.application.model.response.headquarter_use_case.HeadquarterUseCaseResponse;
 import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.domain.model.headquarter_model.Headquarter;
@@ -16,7 +15,6 @@ import java.util.List;
 @Mapper(componentModel = "spring",
         unmappedSourcePolicy = ReportingPolicy.IGNORE,
         uses = {
-                BooleanMapper.class,
                 ManagerServiceMapper.class
         })
 public interface HeadquarterServiceMapper {

@@ -1,21 +1,20 @@
 package com.bolivar.bioingenieria.app.sigma_bb.person_hexagon.infrastructure.adapters.input.rest.controller.global;
 
-import com.bolivar.bioingenieria.app.sigma_bb.person_hexagon.domain.exception.PersonNotFoundException;
-import com.bolivar.bioingenieria.app.sigma_bb.person_hexagon.domain.model.error_model.ErrorResponse;
-import org.springframework.context.support.DefaultMessageSourceResolvable;
-import org.springframework.dao.DataAccessException;
+import com.bolivar.bioingenieria.app.sigma_bb.bootstrap.exception.response.GlobalErrorResponse;
+import com.bolivar.bioingenieria.app.sigma_bb.person_hexagon.domain.exception.*;
+import com.bolivar.bioingenieria.app.sigma_bb.person_hexagon.domain.model.error_model.PersonErrorResponse;
+import com.bolivar.bioingenieria.app.sigma_bb.person_hexagon.infrastructure.adapters.input.rest.controller.EmailPersonRestAdapter;
+import com.bolivar.bioingenieria.app.sigma_bb.person_hexagon.infrastructure.adapters.input.rest.controller.PersonRestAdapter;
+import com.bolivar.bioingenieria.app.sigma_bb.person_hexagon.infrastructure.adapters.input.rest.controller.PhonePersonRestAdapter;
 import org.springframework.http.HttpStatus;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
-import java.util.stream.Collectors;
 
-import static com.bolivar.bioingenieria.app.sigma_bb.person_hexagon.utils.ErrorCatalog.*;
+import static com.bolivar.bioingenieria.app.sigma_bb.person_hexagon.utils.PersonErrorCatalog.*;
 
 /**
  * Manejador global de excepciones para el módulo de personas.
@@ -33,7 +32,13 @@ import static com.bolivar.bioingenieria.app.sigma_bb.person_hexagon.utils.ErrorC
  * - Errores de seguridad
  * - Excepciones genéricas
  */
-@RestControllerAdvice("personGlobalControllerAdvice")
+@RestControllerAdvice(
+        assignableTypes = {
+            PersonRestAdapter.class,
+            PhonePersonRestAdapter.class,
+            EmailPersonRestAdapter.class
+        }
+)
 public class PersonGlobalControllerAdvice {
 
     /**
@@ -48,68 +53,10 @@ public class PersonGlobalControllerAdvice {
      */
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(PersonNotFoundException.class)
-    public ErrorResponse handlePersonNotFoundException() {
-        return ErrorResponse.builder()
+    public PersonErrorResponse handlePersonNotFoundException() {
+        return PersonErrorResponse.builder()
                 .code(PERSON_NOT_FOUND.getCode())
                 .message(PERSON_NOT_FOUND.getMessage())
-                .timestamp(LocalDateTime.now())
-                .build();
-    }
-
-    /**
-     * Maneja las excepciones generadas cuando la validación de los datos de entrada falla.
-     *
-     * Este metodo captura la excepción {@link MethodArgumentNotValidException}, la cual ocurre
-     * cuando un objeto anotado con @Valid no cumple con las restricciones definidas.
-     *
-     * Se encarga de:
-     * - Obtener los errores de validación desde el BindingResult.
-     * - Extraer los mensajes de error asociados a cada campo inválido.
-     * - Construir una respuesta estructurada (ErrorResponse) con:
-     *   - Código de error predefinido.
-     *   - Mensaje general de error.
-     *   - Lista de detalles con los mensajes específicos de cada campo.
-     *   - Marca de tiempo del error.
-     *
-     * @param ex Excepción que contiene los errores de validación.
-     * @return ErrorResponse con la información detallada de los errores.
-     */
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ErrorResponse handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
-
-        BindingResult result = ex.getBindingResult();
-
-        return ErrorResponse.builder()
-                .code(INVALID_PERSON_DATA.getCode())
-                .message(INVALID_PERSON_DATA.getMessage())
-                .details(result.getFieldErrors()
-                        .stream()
-                        .map(DefaultMessageSourceResolvable::getDefaultMessage)
-                        .collect(Collectors.toList()))
-                .timestamp(LocalDateTime.now())
-                .build();
-    }
-
-    /**
-     * Maneja errores relacionados con el acceso a la base de datos.
-     *
-     * Se ejecuta cuando ocurre una {@link DataAccessException} y retorna
-     * una respuesta con:
-     * - Código de error.
-     * - Mensaje general de fallo en base de datos.
-     * - Lista de detalles vacía.
-     * - Fecha y hora del error.
-     *
-     * @return ErrorResponse con la información del error.
-     */
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    @ExceptionHandler(DataAccessException.class)
-    public ErrorResponse handleDataAccessException() {
-        return ErrorResponse.builder()
-                .code(DATABASE_ERROR.getCode())
-                .message(DATABASE_ERROR.getMessage())
-                .details(Collections.emptyList())
                 .timestamp(LocalDateTime.now())
                 .build();
     }
@@ -128,33 +75,102 @@ public class PersonGlobalControllerAdvice {
      */
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Exception.class)
-    public ErrorResponse handleGenericException() {
-        return ErrorResponse.builder()
+    public GlobalErrorResponse handleGenericException(Exception ex) {
+        return GlobalErrorResponse.builder()
                 .code(UNKNOWN_ERROR.getCode())
                 .message(UNKNOWN_ERROR.getMessage())
+                .details(Collections.singletonList(ex.getMessage()))
+                .timestamp(LocalDateTime.now())
+                .build();
+    }
+
+    /**
+     * Maneja excepciones relacionadas con la existencia previa de un usuario en Keycloak.
+     *
+     * Se ejecuta cuando ocurre una {@link KeycloakUserAlreadyExistsException} y retorna
+     * una respuesta con estado HTTP 409 (CONFLICT) que incluye:
+     * - Código de error específico para usuario ya existente en Keycloak.
+     * - Mensaje descriptivo del error.
+     * - Lista de detalles vacía.
+     * - Fecha y hora en que ocurrió el error.
+     *
+     * @return ErrorResponse con la información del error.
+     */
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ExceptionHandler(KeycloakUserAlreadyExistsException.class)
+    public PersonErrorResponse handleKeycloakUserAlreadyExistsException() {
+        return PersonErrorResponse.builder()
+                .code(KEYCLOAK_USER_ALREADY_EXISTS.getCode())
+                .message(KEYCLOAK_USER_ALREADY_EXISTS.getMessage())
                 .details(Collections.emptyList())
                 .timestamp(LocalDateTime.now())
                 .build();
     }
 
     /**
-     * Maneja excepciones relacionadas con problemas de seguridad o autenticación.
+     * Maneja excepciones relacionadas con datos inválidos en la integración de Keycloak.
      *
-     * Se ejecuta cuando ocurre una {@link SecurityException}, retornando una respuesta
-     * con estado HTTP 401 (UNAUTHORIZED) que incluye:
-     * - Código de error
-     * - Mensaje descriptivo
-     * - Lista de detalles vacía
-     * - Fecha y hora en que ocurrió el error
+     * Se ejecuta cuando ocurre una {@link KeycloakInvalidDataException} y retorna
+     * una respuesta con estado HTTP 400 (BAD_REQUEST) que incluye:
+     * - Código de error específico para datos inválidos en Keycloak.
+     * - Mensaje descriptivo del error.
+     * - Lista de detalles vacía.
+     * - Fecha y hora en que ocurrió el error.
      *
-     * @return ErrorResponse con la información del error
+     * @return ErrorResponse con la información del error.
+     */
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(KeycloakInvalidDataException.class)
+    public PersonErrorResponse handleKeycloakInvalidDataException() {
+        return PersonErrorResponse.builder()
+                .code(KEYCLOAK_INVALID_DATA.getCode())
+                .message(KEYCLOAK_INVALID_DATA.getMessage())
+                .details(Collections.emptyList())
+                .timestamp(LocalDateTime.now())
+                .build();
+    }
+
+    /**
+     * Maneja excepciones relacionadas con la falta de autorización en Keycloak.
+     *
+     * Se ejecuta cuando ocurre una {@link KeycloakUnauthorizedException} y retorna
+     * una respuesta con estado HTTP 401 (UNAUTHORIZED) que incluye:
+     * - Código de error específico para falta de autorización en Keycloak.
+     * - Mensaje descriptivo del error.
+     * - Lista de detalles vacía.
+     * - Fecha y hora en que ocurrió el error.
+     *
+     * @return ErrorResponse con la información del error.
      */
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    @ExceptionHandler(SecurityException.class)
-    public ErrorResponse handleSecurityException() {
-        return ErrorResponse.builder()
-                .code(UNAUTHORIZED.getCode())
-                .message(UNAUTHORIZED.getMessage())
+    @ExceptionHandler(KeycloakUnauthorizedException.class)
+    public PersonErrorResponse handleKeycloakUnauthorizedException() {
+        return PersonErrorResponse.builder()
+                .code(KEYCLOAK_UNAUTHORIZED.getCode())
+                .message(KEYCLOAK_UNAUTHORIZED.getMessage())
+                .details(Collections.emptyList())
+                .timestamp(LocalDateTime.now())
+                .build();
+    }
+
+    /**
+     * Maneja excepciones relacionadas con problemas de conexión a Keycloak.
+     *
+     * Se ejecuta cuando ocurre una {@link KeycloakConnectionException} y retorna
+     * una respuesta con estado HTTP 503 (SERVICE_UNAVAILABLE) que incluye:
+     * - Código de error específico para problemas de conexión a Keycloak.
+     * - Mensaje descriptivo del error.
+     * - Lista de detalles vacía.
+     * - Fecha y hora en que ocurrió el error.
+     *
+     * @return ErrorResponse con la información del error.
+     */
+    @ResponseStatus(HttpStatus.SERVICE_UNAVAILABLE)
+    @ExceptionHandler(KeycloakConnectionException.class)
+    public PersonErrorResponse handleKeycloakConnectionException() {
+        return PersonErrorResponse.builder()
+                .code(KEYCLOAK_CONNECTION_ERROR.getCode())
+                .message(KEYCLOAK_CONNECTION_ERROR.getMessage())
                 .details(Collections.emptyList())
                 .timestamp(LocalDateTime.now())
                 .build();

@@ -44,6 +44,12 @@ public class HeadquarterUseCaseResponse {
     private String direccionNumeroSede;
 
     /**
+     * Indica si la sede está activa en el sistema.
+     * true: sede en operación; false: sede inactiva o cerrada.
+     */
+    private boolean estadoActivo;
+
+    /**
      * Lista de encargados asociados a la sede.
      * Tipo: {@link List} de {@link ManagerUseCaseResponse}.
      */

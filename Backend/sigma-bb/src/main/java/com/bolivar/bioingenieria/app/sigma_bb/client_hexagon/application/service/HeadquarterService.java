@@ -89,18 +89,16 @@ public class HeadquarterService implements HeadquarterServicePort {
 
         headquarter.setIdentificadorSede(UUID.randomUUID());
         headquarter.setIdentificadorCliente(clientId);
+        headquarter.setEstadoActivo(true);
 
         Manager manager = headquarter.getManagerList().getFirst();
 
-        UUID managerId = addManagerLogicGetUUID(request.getManagerList().getFirst());
-
-        manager.setIdentificadorEncargado(managerId);
+        manager.setIdentificadorEncargado(addManagerLogicGetUUID(request.getManagerList().getFirst()));
         manager.setTipoEncargado("HEADQUARTER");
-
-        Headquarter saved = headquarterPersistencePort.save(headquarter);
+        manager.setEstadoActivo(true);
 
         return headquarterServiceMapper
-                .toHeadquarterUseCaseResponse(saved);
+                .toHeadquarterUseCaseResponse(headquarterPersistencePort.save(headquarter));
     }
 
     /**
@@ -156,9 +154,15 @@ public class HeadquarterService implements HeadquarterServicePort {
     @Override
     @Transactional
     public Headquarter addManger(UUID headquarterId, ManagerUseCaseRequest request) {
+
+        Manager newManager = managerServiceMapper.toManager(request);
+        newManager.setIdentificadorEncargado(addManagerLogicGetUUID(request));
+        newManager.setEstadoActivo(true);
+        newManager.setTipoEncargado("HEADQUARTER");
+
         return headquarterPersistencePort.findById(headquarterId)
                 .map(existingHeadquarter -> {
-                    existingHeadquarter.addManager(addManagerLogic(request));
+                    existingHeadquarter.addManager(newManager);
                     return headquarterPersistencePort.save(existingHeadquarter);
                 })
                 .orElseThrow(HeadquarterFoundException::new);
@@ -222,24 +226,6 @@ public class HeadquarterService implements HeadquarterServicePort {
                                         .setTipoPersona("MANAGER")
                         ))
                 .getIdentificadorEncargado();
-    }
 
-    /**
-     * Lógica auxiliar para agregar un {@link Manager} a una {@link Headquarter}.
-     * Convierte el {@link ManagerUseCaseRequest} en un {@link Manager} y
-     * persiste la información de la persona responsable a través del
-     * {@link PersonCommunicationPort}.
-     *
-     * @param request datos del {@link ManagerUseCaseRequest} a agregar
-     * @return {@link Manager} construido a partir del DTO y con el identificador de persona asignado
-     */
-    private Manager addManagerLogic(ManagerUseCaseRequest request){
-        return managerServiceMapper.toManager(request)
-                .setIdentificadorEncargado(
-                        personCommunicationPort.save(
-                                managerServiceMapper.toPersonCommunicationRequest(request)
-                                        .setTipoPersona("MANAGER")
-                        )
-                );
     }
 }

@@ -30,12 +30,13 @@ public interface ClientEquipmentServicePort {
     List<ClientEquipment> findAll();
 
     /**
-     * Crea y almacena un {@link ClientEquipment}.
+     * Guarda un nuevo {@link ClientEquipment} en el sistema.
      *
-     * @param clientEquipment datos del {@link ClientEquipment} a persistir
-     * @return {@link ClientEquipment} almacenado
+     * @param serviceAreaId identificador del área de servicio a la que se asociará el equipo
+     * @param clientEquipment datos del {@link ClientEquipment} a guardar
+     * @return {@link ClientEquipment} guardado con su identificador generado
      */
-    ClientEquipment save(ClientEquipment clientEquipment);
+    ClientEquipment save(UUID serviceAreaId, UUID modelId, ClientEquipment clientEquipment);
 
     /**
      * Actualiza la información de un {@link ClientEquipment} existente.

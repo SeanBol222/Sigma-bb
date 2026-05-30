@@ -1,6 +1,5 @@
 package com.bolivar.bioingenieria.app.sigma_bb.person_hexagon.infrastructure.adapters.input.rest.mapper;
 
-import com.bolivar.bioingenieria.app.sigma_bb.bootstrap.map_struct.BooleanMapper;
 import com.bolivar.bioingenieria.app.sigma_bb.person_hexagon.application.model.use_case.request.PersonUseCaseRequest;
 import com.bolivar.bioingenieria.app.sigma_bb.person_hexagon.domain.model.person_model.Person;
 import com.bolivar.bioingenieria.app.sigma_bb.person_hexagon.infrastructure.adapters.input.rest.model.request.PersonCreateRequest;
@@ -16,8 +15,7 @@ import java.util.List;
  * Convierte entre los DTOs de entrada y salida de la capa REST y el modelo de dominio {@link Person}.
  */
 @Mapper(componentModel = "spring",
-        unmappedSourcePolicy = ReportingPolicy.IGNORE,
-        uses = {BooleanMapper.class})
+        unmappedSourcePolicy = ReportingPolicy.IGNORE)
 public interface PersonRestMapper {
 
     /**

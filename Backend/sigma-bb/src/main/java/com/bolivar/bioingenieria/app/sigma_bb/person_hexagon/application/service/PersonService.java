@@ -65,11 +65,14 @@ public class  PersonService implements PersonServicePort {
     @Override
     public Person save(Person person) {
         person.setIdentificador(UUID.randomUUID());
+        person.setEstadoActivo(true);
         for(PhonePerson phone : person.getPhonePersonList()) {
             phone.setIdTelefonoPersona(UUID.randomUUID());
+            phone.setEstadoActivo(true);
         }
         for(EmailPerson email : person.getEmailPersonList()) {
             email.setIdCorreoPersona(UUID.randomUUID());
+            email.setEstadoActivo(true);
         }
         return personPersistencePort.save(person);
     }
@@ -94,6 +97,7 @@ public class  PersonService implements PersonServicePort {
                     RoleType.ENGINEER,
                     UUID.fromString(keycloakUserId)
             );
+            person.setEstadoActivo(true);
 
             return personPersistencePort.save(person);
 
@@ -127,6 +131,7 @@ public class  PersonService implements PersonServicePort {
                     RoleType.ADMIN,
                     UUID.fromString(keycloakUserId)
             );
+            person.setEstadoActivo(true);
 
             return personPersistencePort.save(person);
 
@@ -160,6 +165,7 @@ public class  PersonService implements PersonServicePort {
                     RoleType.CEO_CLIENT,
                     UUID.fromString(keycloakUserId)
             );
+            person.setEstadoActivo(true);
 
             return personPersistencePort.save(person);
 
@@ -370,6 +376,7 @@ public class  PersonService implements PersonServicePort {
                         .stream()
                         .map(emailRequest -> EmailPerson.builder()
                                 .idCorreoPersona(UUID.randomUUID())
+                                .estadoActivo(true)
                                 .correoPersona(emailRequest.getCorreoPersona())
                                 .build())
                         .toList())
@@ -377,6 +384,7 @@ public class  PersonService implements PersonServicePort {
                         .stream()
                         .map(phoneRequest -> PhonePerson.builder()
                                 .idTelefonoPersona(UUID.randomUUID())
+                                .estadoActivo(true)
                                 .telefonoPersona(phoneRequest.getTelefonoPersona())
                                 .build())
                         .toList())

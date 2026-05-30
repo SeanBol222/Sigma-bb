@@ -50,8 +50,13 @@ public class ClientEquipmentService implements ClientEquipmentServicePort
      * @return El equipo de cliente guardado con su identificador generado
      */
     @Override
-    public ClientEquipment save(ClientEquipment clientEquipment) {
+    public ClientEquipment save(UUID serviceAreaId, UUID modelId, ClientEquipment clientEquipment) {
+
         clientEquipment.setIdentificadorEquipoCliente(UUID.randomUUID());
+        clientEquipment.setEstadoActivo(true);
+        clientEquipment.setIdentificadorAreaServicio(serviceAreaId);
+        clientEquipment.setIdentificadorModelo(modelId);
+
         return clientEquipmentPersistencePort.save(clientEquipment);
     }
 

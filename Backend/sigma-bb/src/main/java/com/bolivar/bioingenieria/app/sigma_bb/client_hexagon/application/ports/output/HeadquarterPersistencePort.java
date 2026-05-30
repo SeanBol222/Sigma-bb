@@ -44,4 +44,12 @@ public interface HeadquarterPersistencePort {
      */
     void delete(Headquarter headquarter);
 
+        /**
+        * Verifica si una {@link Headquarter} existe por su identificador único.
+        *
+        * @param headquarterId identificador de la {@link Headquarter} a verificar
+        * @return true si la {@link Headquarter} existe, false en caso contrario
+        */
+    boolean existsById(UUID headquarterId);
+
 }

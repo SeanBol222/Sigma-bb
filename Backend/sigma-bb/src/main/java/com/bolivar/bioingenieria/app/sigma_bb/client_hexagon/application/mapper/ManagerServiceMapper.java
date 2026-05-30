@@ -1,6 +1,5 @@
 package com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.application.mapper;
 
-import com.bolivar.bioingenieria.app.sigma_bb.bootstrap.map_struct.BooleanMapper;
 import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.application.model.request.manager_use_case.ManagerUseCaseRequest;
 import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.application.model.response.create_person.ManagerCreateCommunicationResponse;
 import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.application.model.response.manager_use_case.ManagerUseCaseResponse;
@@ -15,8 +14,8 @@ import java.util.List;
  * Mapper para convertir entre {@link ManagerUseCaseRequest}, {@link ManagerUseCaseResponse} y el modelo de dominio {@link Manager}.
  */
 @Mapper(componentModel = "spring",
-        unmappedSourcePolicy = ReportingPolicy.IGNORE,
-        uses = {BooleanMapper.class})
+        unmappedSourcePolicy = ReportingPolicy.IGNORE
+)
 public interface ManagerServiceMapper {
 
     /**
