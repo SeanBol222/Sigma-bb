@@ -1,11 +1,21 @@
 package com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.application.service;
 
+import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.application.mapper.ManagerServiceMapper;
+import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.application.mapper.ServiceAreaServiceMapper;
+import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.application.model.request.manager_use_case.ManagerUseCaseRequest;
+import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.application.model.request.service_area_use_case.ServiceAreaUseCaseRequest;
+import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.application.model.response.service_area_use_case.ServiceAreaUseCaseResponse;
 import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.application.ports.input.ServiceAreaServicePort;
+import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.application.ports.output.HeadquarterPersistencePort;
 import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.application.ports.output.ServiceAreaPersistencePort;
+import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.domain.exception.ClientNotFoundException;
+import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.domain.exception.HeadquarterFoundException;
 import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.domain.exception.ServiceAreaFoundException;
-import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.domain.model.client_model.ClientEquipment;
-import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.domain.model.client_model.Manager;
-import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.domain.model.client_model.ServiceArea;
+import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.domain.model.client_equipment_model.ClientEquipment;
+import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.domain.model.headquarter_model.Headquarter;
+import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.domain.model.manager_model.Manager;
+import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.domain.model.service_area_model.ServiceArea;
+import com.bolivar.bioingenieria.app.sigma_bb.person_hexagon.application.ports.input.PersonCommunicationPort;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -26,7 +36,11 @@ import java.util.UUID;
 @AllArgsConstructor
 public class ServiceAreaService implements ServiceAreaServicePort {
 
-    private final ServiceAreaPersistencePort serviceAreaPersistencePort;
+    private final ServiceAreaPersistencePort serviceAreaPersistencePort; // Puerto de persistencia para acceder a los datos de áreas de servicio
+    private final HeadquarterPersistencePort headquarterPersistencePort; // Puerto de persistencia para acceder a los datos de sedes
+    private final ServiceAreaServiceMapper serviceAreaServiceMapper; // Mapper para convertir entre DTOs
+    private final ManagerServiceMapper managerServiceMapper; // Mapper para convertir entre DTOs de manager
+    private final PersonCommunicationPort personCommunicationPort; // Puerto de comunicación para gestionar personas en el
 
     /**
      * Busca una {@link ServiceArea} por su identificador único.
@@ -52,23 +66,44 @@ public class ServiceAreaService implements ServiceAreaServicePort {
     }
 
     /**
-     * Crea y almacena una nueva {@link ServiceArea}.
-     * Genera identificadores únicos para el área y todos los {@link ClientEquipment} asociados.
+     * Crea una nueva {@link ServiceArea} y la asocia a una {@link Headquarter}.
      *
-     * @param serviceArea datos de la {@link ServiceArea} a persistir
-     * @return {@link ServiceArea} almacenada
+     * @param headquarterId identificador de la {@link Headquarter} a la que se asociará el área de servicio
+     * @param request datos de la nueva {@link ServiceArea} a crear
+     * @return información de la {@link ServiceArea} creada
+     * @throws ClientNotFoundException si la sede no existe
      */
     @Override
-    public ServiceArea save(ServiceArea serviceArea) {
+    public ServiceAreaUseCaseResponse save(UUID headquarterId, ServiceAreaUseCaseRequest request) {
 
-        serviceArea.setIdentificadorAreaServicio(UUID.randomUUID());
-
-        for (ClientEquipment equipment : serviceArea.getClientEquipmentList()) {
-            equipment.setIdentificadorAreaServicio(serviceArea.getIdentificadorAreaServicio());
-            equipment.setIdentificadorEquipoCliente(UUID.randomUUID());
+        if (!headquarterPersistencePort.existsById(headquarterId)) {
+            throw new ClientNotFoundException();
         }
 
-        return serviceAreaPersistencePort.save(serviceArea);
+        ServiceArea serviceArea = serviceAreaServiceMapper
+                .toServiceArea(request);
+
+        serviceArea.setIdentificadorAreaServicio(UUID.randomUUID());
+        serviceArea.setIdentificadorSede(headquarterId);
+        serviceArea.setEstadoActivo(true);
+
+        Manager manager = serviceArea.getManagerList().getFirst();
+
+        manager.setIdentificadorEncargado(addManagerLogicGetUUID(request.getManagerList().getFirst()));
+        manager.setTipoEncargado("SERVICE_AREA");
+        manager.setEstadoActivo(true);
+
+        ServiceAreaUseCaseResponse response = serviceAreaServiceMapper
+                .toServiceAreaUseCaseResponse(serviceAreaPersistencePort.save(serviceArea));
+
+        System.out.println("\n\n\n\n\n" + response + "\n\n\n\n\n");
+
+        return response;
+
+
+//        return serviceAreaServiceMapper
+//                .toServiceAreaUseCaseResponse(serviceAreaPersistencePort.save(serviceArea));
+//
     }
 
     /**
@@ -106,93 +141,30 @@ public class ServiceAreaService implements ServiceAreaServicePort {
     }
 
     // ------------------------------------------------------------
-    // -------------------CRUD CLIENT EQUIPMENT--------------------
-    // ------------------------------------------------------------
-
-    /**
-     * Agrega un {@link ClientEquipment} a una {@link ServiceArea}.
-     * Genera un identificador único para el nuevo equipo.
-     *
-     * @param serviceAreaId identificador de la {@link ServiceArea}
-     * @param clientEquipment datos del {@link ClientEquipment} a agregar
-     * @return {@link ServiceArea} actualizada
-     * @throws ServiceAreaFoundException si el área no existe
-     */
-    @Override
-    public ServiceArea addClientEquipment(UUID serviceAreaId, ClientEquipment clientEquipment) {
-        return serviceAreaPersistencePort.findById(serviceAreaId)
-                .map(existingServiceArea -> {
-                    clientEquipment.setIdentificadorAreaServicio(existingServiceArea.getIdentificadorAreaServicio());
-                    clientEquipment.setIdentificadorEquipoCliente(UUID.randomUUID());
-                    existingServiceArea.addServiceArea(clientEquipment);
-                    return serviceAreaPersistencePort.save(existingServiceArea);
-                }).orElseThrow(ServiceAreaFoundException::new);
-    }
-
-    /**
-     * Actualiza un {@link ClientEquipment} existente dentro de una {@link ServiceArea}.
-     *
-     * @param serviceAreaId identificador de la {@link ServiceArea}
-     * @param clientEquipmentId identificador del {@link ClientEquipment} a actualizar
-     * @param clientEquipment datos nuevos del {@link ClientEquipment}
-     * @return {@link ServiceArea} actualizada
-     * @throws ServiceAreaFoundException si el área no existe
-     */
-    @Override
-    public ServiceArea updateClientEquipment(UUID serviceAreaId, UUID clientEquipmentId, ClientEquipment clientEquipment) {
-        return serviceAreaPersistencePort.findById(serviceAreaId)
-                .map(existingServiceArea -> {
-                    existingServiceArea.getClientEquipmentList().stream()
-                            .filter(e -> e.getIdentificadorEquipoCliente().equals(clientEquipmentId))
-                            .findFirst()
-                            .ifPresent(e -> {
-                                e.setSerie(clientEquipment.getSerie());
-                                e.setFechaCompra(clientEquipment.getFechaCompra());
-                                e.setValorCompra(clientEquipment.getValorCompra());
-                                e.setNumeroInventario(clientEquipment.getNumeroInventario());
-                            });
-                    return serviceAreaPersistencePort.save(existingServiceArea);
-                }).orElseThrow(ServiceAreaFoundException::new);
-    }
-
-    /**
-     * Elimina (marca como inactivo) un {@link ClientEquipment} asociado a una {@link ServiceArea}.
-     *
-     * @param serviceAreaId identificador de la {@link ServiceArea}
-     * @param clientEquipmentId identificador del {@link ClientEquipment} a eliminar
-     * @throws ServiceAreaFoundException si el área no existe
-     */
-    @Override
-    public void deleteClientEquipment(UUID serviceAreaId, UUID clientEquipmentId) {
-        serviceAreaPersistencePort.findById(serviceAreaId)
-                .map(existingServiceArea -> {
-                    existingServiceArea.getClientEquipmentList().stream()
-                            .filter(e -> e.getIdentificadorEquipoCliente().equals(clientEquipmentId))
-                            .findFirst()
-                            .ifPresent(e -> e.setEstadoActivo(false));
-                    return serviceAreaPersistencePort.save(existingServiceArea);
-                }).orElseThrow(ServiceAreaFoundException::new);
-    }
-
-    // ------------------------------------------------------------
     // -----------------------CRUD MANAGER-------------------------
     // ------------------------------------------------------------
 
     /**
-     * Agrega un {@link Manager} a una {@link ServiceArea}.
+     * Agrega un nuevo {@link Manager} a una {@link ServiceArea}.
      *
-     * @param serviceAreaId identificador de la {@link ServiceArea}
-     * @param manager datos del {@link Manager} a agregar
-     * @return {@link ServiceArea} actualizada
+     * @param serviceAreaId identificador de la {@link ServiceArea} a la que se asociará el nuevo {@link Manager}
+     * @param request datos del nuevo {@link Manager} a agregar
+     * @return {@link ServiceArea} actualizada con el nuevo {@link Manager}
      * @throws ServiceAreaFoundException si el área no existe
      */
     @Override
-    public ServiceArea addManger(UUID serviceAreaId, Manager manager) {
+    public ServiceArea addManger(UUID serviceAreaId, ManagerUseCaseRequest request) {
+        Manager newManager = managerServiceMapper.toManager(request);
+        newManager.setIdentificadorEncargado(addManagerLogicGetUUID(request));
+        newManager.setEstadoActivo(true);
+        newManager.setTipoEncargado("SERVICE_AREA");
+
         return serviceAreaPersistencePort.findById(serviceAreaId)
                 .map(existingServiceArea -> {
-                    existingServiceArea.addManager(manager);
+                    existingServiceArea.addManager(newManager);
                     return serviceAreaPersistencePort.save(existingServiceArea);
-                }).orElseThrow(ServiceAreaFoundException::new);
+                })
+                .orElseThrow(ServiceAreaFoundException::new);
     }
 
     /**
@@ -232,5 +204,25 @@ public class ServiceAreaService implements ServiceAreaServicePort {
                     existingServiceArea.removeManager(managerId);
                     return serviceAreaPersistencePort.save(existingServiceArea);
                 }).orElseThrow(ServiceAreaFoundException::new);
+    }
+
+    /**
+     * Lógica auxiliar para agregar un {@link Manager} a una {@link Headquarter}.
+     * Convierte el {@link ManagerUseCaseRequest} en un {@link Manager} y
+     * persiste la información de la persona responsable a través del
+     * {@link PersonCommunicationPort}.
+     *
+     * @param request datos del {@link ManagerUseCaseRequest} a agregar
+     * @return {@link Manager} construido a partir del DTO y con el identificador de persona asignado
+     */
+    private UUID addManagerLogicGetUUID(ManagerUseCaseRequest request){
+        return managerServiceMapper.toManager(request)
+                .setIdentificadorEncargado(
+                        personCommunicationPort.save(
+                                managerServiceMapper.toPersonCommunicationRequest(request)
+                                        .setTipoPersona("MANAGER")
+                        ))
+                .getIdentificadorEncargado();
+
     }
 }

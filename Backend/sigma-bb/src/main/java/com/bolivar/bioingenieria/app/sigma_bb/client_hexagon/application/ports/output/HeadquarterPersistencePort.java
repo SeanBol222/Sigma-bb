@@ -1,6 +1,6 @@
 package com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.application.ports.output;
 
-import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.domain.model.client_model.Headquarter;
+import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.domain.model.headquarter_model.Headquarter;
 
 import java.util.List;
 import java.util.Optional;
@@ -43,5 +43,13 @@ public interface HeadquarterPersistencePort {
      * @param headquarter {@link Headquarter} a eliminar
      */
     void delete(Headquarter headquarter);
+
+        /**
+        * Verifica si una {@link Headquarter} existe por su identificador único.
+        *
+        * @param headquarterId identificador de la {@link Headquarter} a verificar
+        * @return true si la {@link Headquarter} existe, false en caso contrario
+        */
+    boolean existsById(UUID headquarterId);
 
 }

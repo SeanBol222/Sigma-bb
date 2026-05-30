@@ -1,11 +1,20 @@
 package com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.application.service;
 
+import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.application.mapper.HeadquarterServiceMapper;
+import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.application.mapper.ManagerServiceMapper;
+import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.application.model.request.headquarter_use_case.HeadquarterUseCaseRequest;
+import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.application.model.request.manager_use_case.ManagerUseCaseRequest;
+import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.application.model.response.headquarter_use_case.HeadquarterUseCaseResponse;
 import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.application.ports.input.HeadquarterServicePort;
+import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.application.ports.output.ClientPersistencePort;
 import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.application.ports.output.HeadquarterPersistencePort;
+import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.domain.exception.ClientNotFoundException;
 import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.domain.exception.HeadquarterFoundException;
-import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.domain.model.client_model.Headquarter;
-import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.domain.model.client_model.Manager;
-import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.domain.model.client_model.ServiceArea;
+import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.domain.model.headquarter_model.Headquarter;
+import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.domain.model.manager_model.Manager;
+import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.domain.model.service_area_model.ServiceArea;
+import com.bolivar.bioingenieria.app.sigma_bb.person_hexagon.application.ports.input.PersonCommunicationPort;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -26,8 +35,11 @@ import java.util.UUID;
 @AllArgsConstructor
 public class HeadquarterService implements HeadquarterServicePort {
 
-    private final HeadquarterPersistencePort headquarterPersistencePort;
-    //private final PersonComunicationPort personComunicationPort;
+    private final HeadquarterPersistencePort headquarterPersistencePort; // Puerto de persistencia para acceder a los datos de sedes
+    private final ClientPersistencePort clientPersistencePort; // Puerto de persistencia para acceder a los datos de equipos de cliente
+    private final PersonCommunicationPort personCommunicationPort; // Puerto de comunicación para gestionar datos de personas (gerentes)
+    private final ManagerServiceMapper managerServiceMapper; // Mapper para convertir entre DTOs de gerentes y el modelo de dominio
+    private final HeadquarterServiceMapper headquarterServiceMapper; // Mapper para convertir entre DTOs de sedes y el modelo de dominio
 
     /**
      * Busca una {@link Headquarter} por su identificador único.
@@ -58,23 +70,35 @@ public class HeadquarterService implements HeadquarterServicePort {
      * Genera identificadores únicos para la sede, el gerente responsable
      * y todas las {@link ServiceArea} asociadas.
      *
-     * @param headquarter datos de la {@link Headquarter} a persistir
+     * @param request datos de la {@link HeadquarterUseCaseRequest} a persistir
      * @return {@link Headquarter} almacenada
      */
     @Override
-    public Headquarter save(Headquarter headquarter) {
+    @Transactional
+    public HeadquarterUseCaseResponse save(
+            String clientId,
+            HeadquarterUseCaseRequest request
+    ) {
+
+        if (!clientPersistencePort.existsById(clientId)) {
+            throw new ClientNotFoundException();
+        }
+
+        Headquarter headquarter = headquarterServiceMapper
+                .toHeadquarter(request);
 
         headquarter.setIdentificadorSede(UUID.randomUUID());
-        for (Manager manager : headquarter.getManagerList()) {
-            manager.setIdentificadorEncargado(UUID.randomUUID());
-        }
+        headquarter.setIdentificadorCliente(clientId);
+        headquarter.setEstadoActivo(true);
 
-        for (ServiceArea serviceArea : headquarter.getServiceAreaList()) {
-            serviceArea.setIdentificadorSede(headquarter.getIdentificadorSede());
-            serviceArea.setIdentificadorAreaServicio(UUID.randomUUID());
-        }
+        Manager manager = headquarter.getManagerList().getFirst();
 
-        return headquarterPersistencePort.save(headquarter);
+        manager.setIdentificadorEncargado(addManagerLogicGetUUID(request.getManagerList().getFirst()));
+        manager.setTipoEncargado("HEADQUARTER");
+        manager.setEstadoActivo(true);
+
+        return headquarterServiceMapper
+                .toHeadquarterUseCaseResponse(headquarterPersistencePort.save(headquarter));
     }
 
     /**
@@ -114,72 +138,6 @@ public class HeadquarterService implements HeadquarterServicePort {
                 .orElseThrow(HeadquarterFoundException::new);
     }
 
-    // ------------------------------------------------------------
-    // ----------- Operaciones CRUD para ServiceArea --------------
-    // ------------------------------------------------------------
-
-    /**
-     * Agrega una {@link ServiceArea} a una {@link Headquarter}.
-     * Genera un identificador único para la nueva área de servicio.
-     *
-     * @param headquarterId identificador de la {@link Headquarter}
-     * @param serviceArea datos de la {@link ServiceArea} a agregar
-     * @return {@link Headquarter} actualizada
-     * @throws HeadquarterFoundException si la sede no existe
-     */
-    @Override
-    public Headquarter addServiceArea(UUID headquarterId, ServiceArea serviceArea) {
-        return headquarterPersistencePort.findById(headquarterId)
-                .map(existingHeadquarter -> {
-                    serviceArea.setIdentificadorSede(existingHeadquarter.getIdentificadorSede());
-                    serviceArea.setIdentificadorAreaServicio(UUID.randomUUID());
-                    existingHeadquarter.addServiceArea(serviceArea);
-                    return headquarterPersistencePort.save(existingHeadquarter);
-                })
-                .orElseThrow(HeadquarterFoundException::new);
-    }
-
-    /**
-     * Actualiza una {@link ServiceArea} asociada a una {@link Headquarter}.
-     *
-     * @param headquarterId identificador de la {@link Headquarter}
-     * @param serviceAreaId identificador de la {@link ServiceArea} a actualizar
-     * @param serviceArea datos nuevos de la {@link ServiceArea}
-     * @return {@link Headquarter} actualizada
-     * @throws HeadquarterFoundException si la sede no existe
-     */
-    @Override
-    public Headquarter updateServiceArea(UUID headquarterId, UUID serviceAreaId, ServiceArea serviceArea) {
-        return headquarterPersistencePort.findById(headquarterId)
-                .map(existingHeadquarter -> {
-                    existingHeadquarter.getServiceAreaList().stream()
-                            .filter(e -> e.getIdentificadorAreaServicio().equals(serviceAreaId))
-                            .findFirst()
-                            .ifPresent(e -> {
-                                e.setNombreAreaServicio(serviceArea.getNombreAreaServicio());
-                            });
-                    return headquarterPersistencePort.save(existingHeadquarter);
-                })
-                .orElseThrow(HeadquarterFoundException::new);
-    }
-
-    /**
-     * Elimina (marca como inactiva) una {@link ServiceArea} asociada a una {@link Headquarter}.
-     *
-     * @param headquarterId identificador de la {@link Headquarter}
-     * @param serviceAreaId identificador de la {@link ServiceArea} a eliminar
-     * @throws HeadquarterFoundException si la sede no existe
-     */
-    @Override
-    public void deleteServiceArea(UUID headquarterId, UUID serviceAreaId) {
-        headquarterPersistencePort.findById(headquarterId)
-                .map(existingHeadquarter -> {
-                    existingHeadquarter.removeServiceArea(serviceAreaId);
-                    return headquarterPersistencePort.save(existingHeadquarter);
-                })
-                .orElseThrow(HeadquarterFoundException::new);
-    }
-
     // -----------------------------------------------------------
     // ------------- Operaciones CRUD para Manager ---------------
     // -----------------------------------------------------------
@@ -189,15 +147,22 @@ public class HeadquarterService implements HeadquarterServicePort {
      * Genera un identificador único para el nuevo gerente.
      *
      * @param headquarterId identificador de la {@link Headquarter}
-     * @param manager datos del {@link Manager} a agregar
+     * @param request datos del {@link ManagerUseCaseRequest} a agregar
      * @return {@link Headquarter} actualizada
      * @throws HeadquarterFoundException si la sede no existe
      */
     @Override
-    public Headquarter addManger(UUID headquarterId, Manager manager) {
+    @Transactional
+    public Headquarter addManger(UUID headquarterId, ManagerUseCaseRequest request) {
+
+        Manager newManager = managerServiceMapper.toManager(request);
+        newManager.setIdentificadorEncargado(addManagerLogicGetUUID(request));
+        newManager.setEstadoActivo(true);
+        newManager.setTipoEncargado("HEADQUARTER");
+
         return headquarterPersistencePort.findById(headquarterId)
                 .map(existingHeadquarter -> {
-                    existingHeadquarter.addManager(manager);
+                    existingHeadquarter.addManager(newManager);
                     return headquarterPersistencePort.save(existingHeadquarter);
                 })
                 .orElseThrow(HeadquarterFoundException::new);
@@ -208,19 +173,19 @@ public class HeadquarterService implements HeadquarterServicePort {
      *
      * @param headquarterId identificador de la {@link Headquarter}
      * @param managerId identificador del {@link Manager} a actualizar
-     * @param manager datos nuevos del {@link Manager}
+     * @param request datos nuevos del {@link ManagerUseCaseRequest}
      * @return {@link Headquarter} actualizada
      * @throws HeadquarterFoundException si la sede no existe
      */
     @Override
-    public Headquarter updateManger(UUID headquarterId, UUID managerId, Manager manager) {
+    public Headquarter updateManger(UUID headquarterId, UUID managerId, ManagerUseCaseRequest request) {
         return headquarterPersistencePort.findById(headquarterId)
                 .map(existingHeadquarter -> {
                     existingHeadquarter.getManagerList().stream()
                             .filter(e -> e.getIdentificadorEncargado().equals(managerId))
                             .findFirst()
                             .ifPresent(e -> {
-                                e.setTipoEncargado(manager.getTipoEncargado());
+                                //e.setTipoEncargado(manager.getTipoEncargado());
                             });
                     return headquarterPersistencePort.save(existingHeadquarter);
                 })
@@ -242,5 +207,25 @@ public class HeadquarterService implements HeadquarterServicePort {
                     return headquarterPersistencePort.save(existingHeadquarter);
                 })
                 .orElseThrow(HeadquarterFoundException::new);
+    }
+
+    /**
+     * Lógica auxiliar para agregar un {@link Manager} a una {@link Headquarter}.
+     * Convierte el {@link ManagerUseCaseRequest} en un {@link Manager} y
+     * persiste la información de la persona responsable a través del
+     * {@link PersonCommunicationPort}.
+     *
+     * @param request datos del {@link ManagerUseCaseRequest} a agregar
+     * @return {@link Manager} construido a partir del DTO y con el identificador de persona asignado
+     */
+    private UUID addManagerLogicGetUUID(ManagerUseCaseRequest request){
+        return managerServiceMapper.toManager(request)
+                .setIdentificadorEncargado(
+                        personCommunicationPort.save(
+                                managerServiceMapper.toPersonCommunicationRequest(request)
+                                        .setTipoPersona("MANAGER")
+                        ))
+                .getIdentificadorEncargado();
+
     }
 }

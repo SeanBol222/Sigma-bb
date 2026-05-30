@@ -1,6 +1,7 @@
 package com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.domain.model.client_model;
 
 import lombok.*;
+import lombok.experimental.Accessors;
 
 import java.util.UUID;
 
@@ -15,6 +16,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
+@Accessors(chain = true)
 public class EmailClient {
 
     /**

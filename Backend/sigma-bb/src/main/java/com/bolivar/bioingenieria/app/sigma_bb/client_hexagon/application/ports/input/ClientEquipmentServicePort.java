@@ -1,6 +1,6 @@
 package com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.application.ports.input;
 
-import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.domain.model.client_model.ClientEquipment;
+import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.domain.model.client_equipment_model.ClientEquipment;
 
 import java.util.List;
 import java.util.UUID;
@@ -30,12 +30,13 @@ public interface ClientEquipmentServicePort {
     List<ClientEquipment> findAll();
 
     /**
-     * Crea y almacena un {@link ClientEquipment}.
+     * Guarda un nuevo {@link ClientEquipment} en el sistema.
      *
-     * @param clientEquipment datos del {@link ClientEquipment} a persistir
-     * @return {@link ClientEquipment} almacenado
+     * @param serviceAreaId identificador del área de servicio a la que se asociará el equipo
+     * @param clientEquipment datos del {@link ClientEquipment} a guardar
+     * @return {@link ClientEquipment} guardado con su identificador generado
      */
-    ClientEquipment save(ClientEquipment clientEquipment);
+    ClientEquipment save(UUID serviceAreaId, UUID modelId, ClientEquipment clientEquipment);
 
     /**
      * Actualiza la información de un {@link ClientEquipment} existente.

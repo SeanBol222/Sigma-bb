@@ -60,6 +60,7 @@ services:
 
       KC_DB: postgres
       KC_DB_URL: jdbc:postgresql://postgres17:${POSTGRES_PORT}/keycloak
+      KEYCLOAK_IMPORT: /opt/keycloak/imports/real-export.json - Dkeycloak.profile.feature.upload_scripts=enable
       KC_DB_USERNAME: ${POSTGRES_ROOT_USER}
       KC_DB_PASSWORD: ${POSTGRES_ROOT_PASSWORD}
 
@@ -74,6 +75,7 @@ services:
     volumes:
       - ./keycloak/themes:/opt/keycloak/themes
       - ./keycloak/providers:/opt/keycloak/providers
+      - ./keycloak/imports:/opt/keycloak/imports
     networks:
       - sigma-bb-network
     restart: always

@@ -1,9 +1,11 @@
 package com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.application.ports.input;
 
-import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.domain.model.client_model.ClientEquipment;
-import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.domain.model.client_model.Headquarter;
-import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.domain.model.client_model.Manager;
-import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.domain.model.client_model.ServiceArea;
+import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.application.model.request.manager_use_case.ManagerUseCaseRequest;
+import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.application.model.request.service_area_use_case.ServiceAreaUseCaseRequest;
+import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.application.model.response.service_area_use_case.ServiceAreaUseCaseResponse;
+import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.domain.model.client_equipment_model.ClientEquipment;
+import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.domain.model.manager_model.Manager;
+import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.domain.model.service_area_model.ServiceArea;
 
 import java.util.List;
 import java.util.UUID;
@@ -20,7 +22,7 @@ import java.util.UUID;
 public interface ServiceAreaServicePort {
 
     // ------------------------------------------------------------
-    // -------------------CRUD SERVICE AREA------------------------
+    // ------------------ CRUD SERVICE AREA -----------------------
     // ------------------------------------------------------------
 
     /**
@@ -39,12 +41,13 @@ public interface ServiceAreaServicePort {
     List<ServiceArea> findAll();
 
     /**
-     * Crea y almacena una {@link ServiceArea}.
+     * Crea una nueva {@link ServiceArea} y la asocia a una {@link com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.domain.model.headquarter_model.Headquarter}.
      *
-     * @param serviceArea datos de la {@link ServiceArea} a persistir
-     * @return {@link ServiceArea} almacenada
+     * @param headquarterId identificador de la {@link com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.domain.model.headquarter_model.Headquarter} a la que se asociará el área de servicio
+     * @param request datos de la nueva {@link ServiceArea} a crear
+     * @return información de la {@link ServiceArea} creada
      */
-    ServiceArea save(ServiceArea serviceArea);
+    ServiceAreaUseCaseResponse save(UUID headquarterId, ServiceAreaUseCaseRequest request);
 
     /**
      * Actualiza la información de una {@link ServiceArea} existente.
@@ -63,48 +66,17 @@ public interface ServiceAreaServicePort {
     void delete(UUID serviceAreaId);
 
     // ------------------------------------------------------------
-    // ---------------- CRUD EQUIPMENT CLIENT ---------------------
+    // ------------- Operaciones CRUD para Manager ----------------
     // ------------------------------------------------------------
 
     /**
-     * Agrega un {@link ClientEquipment} a una {@link ServiceArea}.
+     * Agrega un nuevo {@link Manager} a una {@link ServiceArea}.
      *
-     * @param serviceAreaId identificador de la {@link ServiceArea}
-     * @param clientEquipment datos del {@link ClientEquipment} a agregar
-     * @return {@link ServiceArea} actualizada
+     * @param serviceAreaId identificador de la {@link ServiceArea} a la que se asociará el nuevo {@link Manager}
+     * @param request datos del nuevo {@link Manager} a agregar
+     * @return {@link ServiceArea} actualizada con el nuevo {@link Manager}
      */
-    ServiceArea addClientEquipment(UUID serviceAreaId, ClientEquipment clientEquipment);
-
-    /**
-     * Actualiza un {@link ClientEquipment} existente dentro de una {@link ServiceArea}.
-     *
-     * @param serviceAreaId identificador de la {@link ServiceArea}
-     * @param clientEquipmentId identificador del {@link ClientEquipment} a actualizar
-     * @param clientEquipment datos nuevos del {@link ClientEquipment}
-     * @return {@link ServiceArea} actualizada
-     */
-    ServiceArea updateClientEquipment(UUID serviceAreaId, UUID clientEquipmentId, ClientEquipment clientEquipment);
-
-    /**
-     * Elimina (marca como inactivo) un {@link ClientEquipment} asociado a una {@link ServiceArea}.
-     *
-     * @param serviceAreaId identificador de la {@link ServiceArea}
-     * @param clientEquipmentId identificador del {@link ClientEquipment} a eliminar
-     */
-    void deleteClientEquipment(UUID serviceAreaId, UUID clientEquipmentId);
-
-    // ------------------------------------------------------------
-    // ------------- Operaciones CRUD para Manager ---------------
-    // ------------------------------------------------------------
-
-    /**
-     * Agrega un {@link Manager} a una {@link ServiceArea}.
-     *
-     * @param serviceAreaId identificador de la {@link ServiceArea}
-     * @param manager datos del {@link Manager} a agregar
-     * @return {@link ServiceArea} actualizada
-     */
-    ServiceArea addManger(UUID serviceAreaId, Manager manager);
+    ServiceArea addManger(UUID serviceAreaId, ManagerUseCaseRequest request);
 
     /**
      * Actualiza un {@link Manager} asociado a una {@link ServiceArea}.

@@ -1,7 +1,8 @@
 package com.bolivar.bioingenieria.app.sigma_bb.person_hexagon.infrastructure.adapters.input.rest.model.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 import java.util.List;
@@ -26,7 +27,7 @@ public class PersonCreateRequest {
     @Schema(description = "Número de cédula de la persona",
             example = "123456789",
             requiredMode = Schema.RequiredMode.REQUIRED)
-    @NotEmpty(message = "La cédula es obligatoria")
+    @NotBlank(message = "La cédula es obligatoria")
     private String cedula;
 
     /**
@@ -35,7 +36,7 @@ public class PersonCreateRequest {
     @Schema(description = "Primer nombre de la persona",
             example = "Juan",
             requiredMode = Schema.RequiredMode.REQUIRED)
-    @NotEmpty(message = "El primer nombre es obligatorio")
+    @NotBlank(message = "El primer nombre es obligatorio")
     private String primerNombre;
 
     /**
@@ -52,7 +53,7 @@ public class PersonCreateRequest {
     @Schema(description = "Primer apellido de la persona",
             example = "Pérez",
             requiredMode = Schema.RequiredMode.REQUIRED)
-    @NotEmpty(message = "El primer apellido es obligatorio")
+    @NotBlank(message = "El primer apellido es obligatorio")
     private String primerApellido;
 
     /**
@@ -69,7 +70,7 @@ public class PersonCreateRequest {
     @Schema(description = "Nombre de usuario para la identidad de la persona",
             example = "juan.perez",
             requiredMode = Schema.RequiredMode.REQUIRED)
-    @NotEmpty(message = "El nombre de usuario es obligatorio")
+    @NotBlank(message = "El nombre de usuario es obligatorio")
     private String nombreUsuario;
 
     /**
@@ -78,7 +79,7 @@ public class PersonCreateRequest {
     @Schema(description = "Contraseña para la identidad de la persona",
             example = "P@ssw0rd",
             requiredMode = Schema.RequiredMode.REQUIRED)
-    @NotEmpty(message = "La contraseña es obligatoria")
+    @NotBlank(message = "La contraseña es obligatoria")
     private String password;
 
     /**
@@ -86,6 +87,7 @@ public class PersonCreateRequest {
      */
     @Schema(description = "Lista de teléfonos asociados a la persona",
             requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+    @Valid
     private List<PhonePersonCreateRequest> phonePersonList;
 
     /**
@@ -93,6 +95,7 @@ public class PersonCreateRequest {
      */
     @Schema(description = "Lista de correos electrónicos asociados a la persona",
             requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+    @Valid
     private List<EmailPersonCreateRequest> emailPersonList;
 
 }

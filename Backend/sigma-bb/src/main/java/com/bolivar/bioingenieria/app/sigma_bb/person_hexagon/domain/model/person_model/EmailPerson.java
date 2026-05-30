@@ -1,6 +1,7 @@
 package com.bolivar.bioingenieria.app.sigma_bb.person_hexagon.domain.model.person_model;
 
 import lombok.*;
+import lombok.experimental.Accessors;
 
 import java.util.UUID;
 
@@ -13,6 +14,7 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Accessors(chain = true)
 public class EmailPerson {
     /**
      * Identificador único del correo electrónico de la persona.

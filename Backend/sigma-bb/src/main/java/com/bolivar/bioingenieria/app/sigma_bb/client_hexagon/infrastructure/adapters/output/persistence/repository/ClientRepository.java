@@ -1,0 +1,14 @@
+package com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.infrastructure.adapters.output.persistence.repository;
+
+import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.infrastructure.adapters.output.persistence.entity.ClientEntity;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+/**
+ * Interfaz repositorio para la persistencia de entidades {@link ClientEntity}.
+ *
+ * Proporciona operaciones CRUD (Crear, Leer, Actualizar, Eliminar) estándar
+ * para la gestión de clientes en la base de datos. Extiende JpaRepository
+ * para aprovechar las funcionalidades que proporciona Spring Data JPA.
+ */
+public interface ClientRepository extends JpaRepository<ClientEntity, String> {
+}

@@ -1,6 +1,6 @@
 package com.bolivar.bioingenieria.app.sigma_bb.person_hexagon.application.ports.input;
 
-import com.bolivar.bioingenieria.app.sigma_bb.person_hexagon.application.ports.input.request.PersonCreateRequestUseCase;
+import com.bolivar.bioingenieria.app.sigma_bb.person_hexagon.application.model.use_case.request.PersonUseCaseRequest;
 import com.bolivar.bioingenieria.app.sigma_bb.person_hexagon.domain.model.person_model.EmailPerson;
 import com.bolivar.bioingenieria.app.sigma_bb.person_hexagon.domain.model.person_model.Person;
 import com.bolivar.bioingenieria.app.sigma_bb.person_hexagon.domain.model.person_model.PhonePerson;
@@ -43,7 +43,7 @@ public interface PersonServicePort {
      * @param personCreateRequestUseCase DTO de solicitud para la creación de una persona cliente
      * @return {@link Person} creada con rol de cliente
      */
-    Person registerEngineer(PersonCreateRequestUseCase personCreateRequestUseCase);
+    Person registerEngineer(PersonUseCaseRequest personCreateRequestUseCase);
 
     /**
      * Registra una nueva {@link Person} con el rol de administrador.
@@ -51,7 +51,7 @@ public interface PersonServicePort {
      * @param personCreateRequestUseCase DTO de solicitud para la creación de una persona administrador
      * @return {@link Person} creada con rol de administrador
      */
-    Person registerAdmin(PersonCreateRequestUseCase personCreateRequestUseCase);
+    Person registerAdmin(PersonUseCaseRequest personCreateRequestUseCase);
 
     /**
      * Registra una nueva {@link Person} con el rol de CEO-Client.
@@ -59,7 +59,7 @@ public interface PersonServicePort {
      * @param personCreateRequestUseCase DTO de solicitud para la creación de una persona CEO
      * @return {@link Person} creada con rol de CEO
      */
-    Person registerCEOClient(PersonCreateRequestUseCase personCreateRequestUseCase);
+    Person registerCEOClient(PersonUseCaseRequest personCreateRequestUseCase);
 
     /**
      * Actualiza la información de una {@link Person} existente.

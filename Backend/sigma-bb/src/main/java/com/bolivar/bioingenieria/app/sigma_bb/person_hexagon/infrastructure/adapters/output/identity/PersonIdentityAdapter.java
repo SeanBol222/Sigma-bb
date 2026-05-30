@@ -1,9 +1,12 @@
 package com.bolivar.bioingenieria.app.sigma_bb.person_hexagon.infrastructure.adapters.output.identity;
 
-import com.bolivar.bioingenieria.app.sigma_bb.person_hexagon.application.ports.output.identity.PersonIdentityPort;
-import com.bolivar.bioingenieria.app.sigma_bb.person_hexagon.application.ports.output.identity.response.PersonIdentityResponse;
+import com.bolivar.bioingenieria.app.sigma_bb.person_hexagon.application.ports.output.PersonIdentityPort;
+import com.bolivar.bioingenieria.app.sigma_bb.person_hexagon.application.model.identity.response.PersonIdentityResponse;
+import com.bolivar.bioingenieria.app.sigma_bb.person_hexagon.domain.exception.KeycloakConnectionException;
+import com.bolivar.bioingenieria.app.sigma_bb.person_hexagon.domain.exception.KeycloakInvalidDataException;
+import com.bolivar.bioingenieria.app.sigma_bb.person_hexagon.domain.exception.KeycloakUnauthorizedException;
+import com.bolivar.bioingenieria.app.sigma_bb.person_hexagon.domain.exception.KeycloakUserAlreadyExistsException;
 import com.bolivar.bioingenieria.app.sigma_bb.person_hexagon.utils.RoleType;
-import com.sun.codemodel.JStringLiteral;
 import jakarta.ws.rs.core.Response;
 import lombok.RequiredArgsConstructor;
 import org.keycloak.admin.client.Keycloak;
@@ -58,11 +61,7 @@ public class PersonIdentityAdapter implements PersonIdentityPort {
                 .users()
                 .create(user);
 
-        if (response.getStatus() == 201) {
-            return response.getLocation().getPath().replaceAll(".*/([^/]+)$", "$1");
-        } else {
-            throw new RuntimeException("Error al crear ingeniero en Keycloak: " + response.getStatus());
-        }
+        return getResponse(response);
     }
 
     @Override
@@ -81,5 +80,21 @@ public class PersonIdentityAdapter implements PersonIdentityPort {
     @Override
     public UUID createSuperAdminUser(PersonIdentityResponse personIdentityResponse) {
         return null;
+    }
+
+    private String getResponse(Response response){
+        int status = response.getStatus();
+
+        switch (status) {
+            case 201 -> {
+                return response.getLocation()
+                        .getPath()
+                        .replaceAll(".*/([^/]+)$", "$1");
+            }
+            case 409 -> throw new KeycloakUserAlreadyExistsException();
+            case 400 -> throw new KeycloakInvalidDataException();
+            case 401, 403 -> throw new KeycloakUnauthorizedException();
+            default -> throw new KeycloakConnectionException();
+        }
     }
 }

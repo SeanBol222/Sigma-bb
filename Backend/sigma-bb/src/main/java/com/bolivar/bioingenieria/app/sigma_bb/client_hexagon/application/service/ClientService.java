@@ -4,6 +4,7 @@ import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.application.ports.i
 import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.application.ports.output.ClientPersistencePort;
 import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.domain.exception.ClientNotFoundException;
 import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.domain.model.client_model.*;
+import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.domain.model.headquarter_model.Headquarter;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -24,7 +25,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public class ClientService implements ClientServicePort {
 
-    private final ClientPersistencePort clientPersistencePort;
+    private final ClientPersistencePort clientPersistencePort; // Puerto de persistencia para acceder a los datos de clientes
 
     // ---------------------------------------------------------------
     // -------------------- METODOS DE CLIENTE -----------------------
@@ -64,26 +65,13 @@ public class ClientService implements ClientServicePort {
     public Client save(Client client) {
         for(EmailClient email : client.getEmailClientList()){
             email.setIdentificadorCorreoCliente(UUID.randomUUID());
+            email.setEstadoActivo(true);
         }
         for(PhoneClient phone : client.getPhoneClientList()){
             phone.setIdentificadorTelefonoCliente(UUID.randomUUID());
+            phone.setEstadoActivo(true);
         }
-        for(Headquarter headquarter : client.getHeadquarterList()){
-            headquarter.setIdentificadorSede(UUID.randomUUID());
-            for (Manager manager : headquarter.getManagerList()) {
-                manager.setIdentificadorEncargado(UUID.randomUUID());
-            }
-            for (ServiceArea serviceArea : headquarter.getServiceAreaList()) {
-                serviceArea.setIdentificadorAreaServicio(UUID.randomUUID());
-                for (Manager manager : serviceArea.getManagerList()) {
-                    manager.setIdentificadorEncargado(UUID.randomUUID());
-                }
-                for (ClientEquipment clientEquipment : serviceArea.getClientEquipmentList()) {
-                    clientEquipment.setIdentificadorEquipoCliente(UUID.randomUUID());
-                }
-            }
-        }
-        return clientPersistencePort.save(client);
+        return clientPersistencePort.save(client.setEstadoActivo(true));
     }
 
     /**
@@ -98,7 +86,7 @@ public class ClientService implements ClientServicePort {
     public Client update(String clientId, Client client) {
         return clientPersistencePort.findById(clientId)
                 .map(existingClient -> {
-                    existingClient.setTipoIdentifiacion(client.getTipoIdentifiacion());
+                    existingClient.setTipoIdentificacion(client.getTipoIdentificacion());
                     existingClient.setRazonSocial(client.getRazonSocial());
                     existingClient.setEmailClientList(client.getEmailClientList());
                     existingClient.setPhoneClientList(client.getPhoneClientList());
@@ -253,70 +241,4 @@ public class ClientService implements ClientServicePort {
                 .orElseThrow(ClientNotFoundException::new);
     }
 
-    // ---------------------------------------------------------------------------------
-    // ----------------------- Métodos CRUD de Headquarter ---------------------------
-    // ---------------------------------------------------------------------------------
-
-    /**
-     * Agrega una {@link Headquarter} a un {@link Client}.
-     *
-     * @param clientId identificador del {@link Client}
-     * @param headquarter {@link Headquarter} a agregar
-     * @return {@link Client} actualizado
-     * @throws ClientNotFoundException si el cliente no existe
-     */
-    @Override
-    public Client addHeadquarter(String clientId, Headquarter headquarter) {
-        return clientPersistencePort.findById(clientId)
-                .map(existingClient -> {
-                    existingClient.addHeadquarter(headquarter);
-                    return clientPersistencePort.save(existingClient);
-                })
-                .orElseThrow(ClientNotFoundException::new);
-    }
-
-    /**
-     * Actualiza una {@link Headquarter} asociada a un {@link Client}.
-     *
-     * @param clientId identificador del {@link Client}
-     * @param headquarterId identificador de la {@link Headquarter} a actualizar
-     * @param headquarter datos nuevos de la {@link Headquarter}
-     * @return {@link Client} actualizado
-     * @throws ClientNotFoundException si el cliente no existe
-     */
-    @Override
-    public Client updateHeadquarter(String clientId, UUID headquarterId, Headquarter headquarter) {
-        return clientPersistencePort.findById(clientId)
-                .map(existingClient -> {
-                    existingClient.getHeadquarterList().stream()
-                            .filter(h -> h.getIdentificadorSede().equals(headquarterId))
-                            .findFirst()
-                            .ifPresent(h -> {
-                                h.setNombreSede(headquarter.getNombreSede());
-                                h.setDireccionCalleSede(headquarter.getDireccionCalleSede());
-                                h.setDireccionCarreraSede(headquarter.getDireccionCarreraSede());
-                                h.setDireccionNumeroSede(headquarter.getDireccionNumeroSede());
-                            });
-                    return clientPersistencePort.save(existingClient);
-                })
-                .orElseThrow(ClientNotFoundException::new);
-    }
-
-    /**
-     * Elimina (marca como inactiva) una {@link Headquarter} asociada a un {@link Client}.
-     *
-     * @param clientId identificador del {@link Client}
-     * @param headquarterId identificador de la {@link Headquarter} a eliminar
-     * @return {@link Client} actualizado
-     * @throws ClientNotFoundException si el cliente no existe
-     */
-    @Override
-    public Client removeHeadquarter(String clientId, UUID headquarterId) {
-        return clientPersistencePort.findById(clientId)
-                .map(existingClient -> {
-                    existingClient.removeHeadquarter(headquarterId);
-                    return clientPersistencePort.save(existingClient);
-                })
-                .orElseThrow(ClientNotFoundException::new);
-    }
 }

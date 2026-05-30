@@ -1,6 +1,7 @@
 package com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.domain.model.client_model;
 
 import lombok.*;
+import lombok.experimental.Accessors;
 
 import java.util.List;
 import java.util.UUID;
@@ -24,6 +25,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
+@Accessors(chain = true)
 public class Client {
 
     /**
@@ -34,7 +36,7 @@ public class Client {
     /**
      * Tipo de identificación asociado al cliente (por ejemplo: NIT, Cédula, Pasaporte).
      */
-    private String tipoIdentifiacion;
+    private String tipoIdentificacion;
 
     /**
      * Razón social o nombre comercial del cliente.
@@ -60,11 +62,6 @@ public class Client {
      * Lista de {@link PhoneClient} asociados al cliente.
      */
     private List<PhoneClient> phoneClientList;
-
-    /**
-     * Lista de {@link Headquarter} asociados al cliente.
-     */
-    private List<Headquarter> headquarterList;
 
     // ----------------------------------------------------------------------
     // ------------- Métodos para gestionar correos y teléfonos -------------
@@ -110,30 +107,5 @@ public class Client {
                 .filter(p -> p.getIdentificadorTelefonoCliente().equals(idPhone))
                 .findFirst()
                 .ifPresent(p -> p.setEstadoActivo(false));
-    }
-
-    // ----------------------------------------------------------------------
-    // ------------- Métodos para gestionar sedes  --------------------------
-    // ----------------------------------------------------------------------
-
-    /**
-     * Agrega un {@link Headquarter} a la lista de sedes.
-     *
-     * @param headquarter Objeto {@link Headquarter} a agregar
-     */
-    public void addHeadquarter(Headquarter headquarter) {
-         this.headquarterList.add(headquarter);
-    }
-
-    /**
-     * Elimina (cambia su estadoActivo a false) un {@link Headquarter} de la lista de sedes.
-     *
-     * @param idHeadquarter UUID de {@link Headquarter} a eliminar
-     */
-    public void removeHeadquarter(UUID idHeadquarter) {
-        this.headquarterList.stream()
-                .filter(e -> e.getIdentificadorSede().equals(idHeadquarter))
-                .findFirst()
-                .ifPresent(e -> e.setEstadoActivo(false));
     }
 }

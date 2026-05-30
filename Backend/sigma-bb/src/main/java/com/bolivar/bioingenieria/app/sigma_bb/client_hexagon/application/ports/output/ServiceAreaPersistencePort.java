@@ -1,6 +1,6 @@
 package com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.application.ports.output;
 
-import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.domain.model.client_model.ServiceArea;
+import com.bolivar.bioingenieria.app.sigma_bb.client_hexagon.domain.model.service_area_model.ServiceArea;
 
 import java.util.List;
 import java.util.Optional;
